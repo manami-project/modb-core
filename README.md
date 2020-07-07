@@ -26,7 +26,7 @@ Apart from the interfaces defining the API and the objects defining an anime thi
 + Default implementation for `PathConverter` which extends an `AnimeConverter` to convert files and directories
 
 ## HttpClient
-+ A client for HTTP requests based on okhttp4
++ A client for HTTP requests based on [okhttp](https://github.com/square/okhttp)
 + Can use individual retries if a request fails
 
 ### Retries
@@ -35,7 +35,7 @@ Apart from the interfaces defining the API and the objects defining an anime thi
 + `RetryBehavior`s can be stored in a `RetryableRegistry` to be able to simply reuse specific `RetrybleBehavior`
 
 ## Logger
-+ Delegate for SLF4J logger
++ Delegate for [SLF4J](https://github.com/qos-ch/slf4j) logger
 ```kotlin
 companion object {
     private val log by LoggerDelegate()
