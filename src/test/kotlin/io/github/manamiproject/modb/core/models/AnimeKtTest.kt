@@ -119,24 +119,26 @@ internal class AnimeKtTest {
             fun `must not add a synonym if it equals the title`() {
                 // given
                 val title = "Death Note"
-
-                // when
-                val result = Anime(
-                    _title =  title,
-                    _synonyms = mutableListOf(title)
+                val anime = Anime(
+                        _title =  title
                 )
 
+                // when
+                anime.addSynonyms(mutableListOf(title))
+
                 // then
-                assertThat(result.synonyms).isEmpty()
+                assertThat(anime.synonyms).isEmpty()
             }
 
             @Test
             fun `must not add blank synonym`() {
-                // when
+                // given
                 val anime = Anime(
-                    _title = "Death Note",
-                    _synonyms = mutableListOf("         ")
+                        _title = "Death Note"
                 )
+
+                // when
+                anime.addSynonyms(mutableListOf("         "))
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -146,12 +148,12 @@ internal class AnimeKtTest {
             fun `successfully add a synonym`() {
                 // given
                 val synonym = "Caderno da Morte"
+                val anime = Anime(
+                    _title = "Death Note"
+                )
 
                 // when
-                val anime = Anime(
-                    _title = "Death Note",
-                    _synonyms = mutableListOf(synonym)
-                )
+                anime.addSynonyms(mutableListOf(synonym))
 
                 // then
                 assertThat(anime.synonyms).containsExactly(synonym)
@@ -161,12 +163,12 @@ internal class AnimeKtTest {
             fun `must not add a duplicated synonym`() {
                 // given
                 val synonym = "Caderno da Morte"
+                val anime = Anime(
+                    _title = "Death Note"
+                )
 
                 // when
-                val anime = Anime(
-                    _title = "Death Note",
-                    _synonyms = mutableListOf(synonym, synonym)
-                )
+                anime.addSynonyms(mutableListOf(synonym, synonym))
 
                 // then
                 assertThat(anime.synonyms).containsExactly(synonym)
@@ -179,11 +181,13 @@ internal class AnimeKtTest {
                 val two =  "DN"
                 val three =  "Quaderno della Morte"
                 val four = "Sveska Smrti"
+                val anime = Anime(
+                    _title = "Death Note"
+                )
 
                 // when
-                val anime = Anime(
-                    _title = "Death Note",
-                    _synonyms = mutableListOf(
+                anime.addSynonyms(
+                    mutableListOf(
                         four,
                         two,
                         three,
@@ -199,12 +203,12 @@ internal class AnimeKtTest {
             fun `synonym comparison to title is not case sensitive`() {
                 // given
                 val title  =  "Death Note"
+                val anime = Anime(
+                    _title = title
+                )
 
                 // when
-                val anime = Anime(
-                    _title = title,
-                    _synonyms = mutableListOf(title.toUpperCase())
-                )
+                anime.addSynonyms(mutableListOf(title.toUpperCase()))
 
                 // then
                 assertThat(anime.synonyms).containsExactly(title.toUpperCase())
@@ -214,14 +218,16 @@ internal class AnimeKtTest {
             fun `synonym comparison is not case sensitive`() {
                 // given
                 val title  =  "Death Note"
+                val anime = Anime(
+                        _title = title
+                )
 
                 // when
-                val anime = Anime(
-                    _title = title,
-                    _synonyms = mutableListOf(
-                        title.toLowerCase(),
-                        title.toUpperCase()
-                    )
+                anime.addSynonyms(
+                        mutableListOf(
+                                title.toLowerCase(),
+                                title.toUpperCase()
+                        )
                 )
 
                 // then
@@ -233,15 +239,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf(" $expectedTitleOne", " $expectedTitleTwo")
+                anime.addSynonyms(
+                        mutableListOf(
+                                " $expectedTitleOne",
+                                " $expectedTitleTwo"
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
 
             @Test
@@ -249,15 +260,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf("$expectedTitleOne ", "$expectedTitleTwo ")
+                anime.addSynonyms(
+                        mutableListOf(
+                                "$expectedTitleOne ",
+                                "$expectedTitleTwo "
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
 
             @Test
@@ -265,15 +281,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf("Death        Note", "Made      in        Abyss")
+                anime.addSynonyms(
+                        mutableListOf(
+                                "Death        Note",
+                                "Made      in        Abyss"
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
 
             @Test
@@ -281,15 +302,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf("Death\tNote", "Made\tin\tAbyss")
+                anime.addSynonyms(
+                        mutableListOf(
+                                "Death\tNote",
+                                "Made\tin\tAbyss"
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
 
             @Test
@@ -297,15 +323,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf("Death\nNote", "Made\nin\nAbyss")
+                anime.addSynonyms(
+                        mutableListOf(
+                                "Death\nNote",
+                                "Made\nin\nAbyss"
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
 
             @Test
@@ -313,15 +344,20 @@ internal class AnimeKtTest {
                 // given
                 val expectedTitleOne = "Death Note"
                 val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime(
+                        _title = "Title"
+                )
 
                 // when
-                val result = Anime(
-                    _title = "Title",
-                    _synonyms = mutableListOf("Death\r\nNote", "Made\r\nin\r\nAbyss")
+                anime.addSynonyms(
+                        mutableListOf(
+                                "Death\r\nNote",
+                                "Made\r\nin\r\nAbyss"
+                        )
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
         }
 
@@ -376,9 +412,8 @@ internal class AnimeKtTest {
                 val two = "DN"
 
                 val anime = Anime(
-                    _title = "Death Note",
-                    _synonyms = mutableListOf(two)
-                )
+                    _title = "Death Note"
+                ).addSynonyms(mutableListOf(two))
 
                 // when
                 anime.addSynonyms(listOf(two, one))
@@ -531,9 +566,8 @@ internal class AnimeKtTest {
             // given
             val source = URL("https://myanimelist.net/anime/1535")
             val anime = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(source)
-            )
+                _title =  "Death Note"
+            ).addSources(mutableListOf(source))
 
             // when
             anime.addSources(listOf(source))
@@ -583,9 +617,8 @@ internal class AnimeKtTest {
             // given
             val relatedAnime = URL("https://myanimelist.net/anime/2994")
             val anime = Anime(
-                _title =  "Death Note",
-                _relatedAnime = mutableListOf(relatedAnime)
-            )
+                _title =  "Death Note"
+            ).addRelations(mutableListOf(relatedAnime))
 
             // when
             anime.addRelations(listOf(relatedAnime))
@@ -616,9 +649,8 @@ internal class AnimeKtTest {
             // given
             val link = URL("https://myanimelist.net/anime/1535")
             val anime = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(link)
-            )
+                _title =  "Death Note"
+            ).addSources(mutableListOf(link))
 
             // when
             anime.addRelations(listOf(link))
@@ -632,9 +664,8 @@ internal class AnimeKtTest {
             // given
             val relatedAnime = URL("https://myanimelist.net/anime/2994")
             val anime = Anime(
-                _title =  "Death Note",
-                _relatedAnime = mutableListOf(relatedAnime)
-            )
+                _title =  "Death Note"
+            ).addRelations(mutableListOf(relatedAnime))
 
             // when
             anime.removeRelationIf { it.toString() == "https://myanimelist.net/anime/2994" }
@@ -652,13 +683,13 @@ internal class AnimeKtTest {
             // given
             val title =  "Death Note"
             val a = Anime(
-                _title = title,
-                _sources = mutableListOf(URL("https://myanimelist.net/anime/1535"))
-            )
+                _title = title
+            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
+
+
             val b = Anime(
-                _title = title,
-                _sources = mutableListOf(URL("https://myanimelist.net/anime/1535"))
-            )
+                _title = title
+            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
 
             // when
             val result = a == b
@@ -672,15 +703,16 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title,
-                _sources = mutableListOf(URL("https://myanimelist.net/anime/1535"))
-            )
+                _title =  title
+            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
+
             val b = Anime(
-                _title =  title,
-                _sources = mutableListOf(
-                    URL("https://myanimelist.net/anime/1535"),
-                    URL("https://anidb.net/anime/4563")
-                )
+                _title =  title
+            ).addSources(
+                    mutableListOf(
+                            URL("https://myanimelist.net/anime/1535"),
+                            URL("https://anidb.net/anime/4563")
+                    )
             )
 
             // when
@@ -695,13 +727,12 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title,
-                _relatedAnime = mutableListOf(URL("https://myanimelist.net/anime/2994"))
-            )
+                _title =  title
+            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
+
             val b = Anime(
-                _title =  title,
-                _relatedAnime = mutableListOf(URL("https://myanimelist.net/anime/2994"))
-            )
+                _title =  title
+            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
 
             // when
             val result = a == b
@@ -715,15 +746,16 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title,
-                _relatedAnime = mutableListOf(URL("https://myanimelist.net/anime/2994"))
-            )
+                _title =  title
+            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
+
             val b = Anime(
-                _title =  title,
-                _relatedAnime = mutableListOf(
-                    URL("https://myanimelist.net/anime/2994"),
-                    URL("http://anilist.co/anime/2994")
-                )
+                _title =  title
+            ).addRelations(
+                    mutableListOf(
+                            URL("https://myanimelist.net/anime/2994"),
+                            URL("http://anilist.co/anime/2994")
+                    )
             )
 
             // when
@@ -738,13 +770,12 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title,
-                _synonyms = mutableListOf("Caderno da Morte")
-            )
+                _title =  title
+            ).addSynonyms(mutableListOf("Caderno da Morte"))
+
             val b = Anime(
-                _title =  title,
-                _synonyms = mutableListOf("Caderno da Morte")
-            )
+                _title =  title
+            ).addSynonyms(mutableListOf("Caderno da Morte"))
 
             // when
             val result = a == b
@@ -758,15 +789,66 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title,
-                _synonyms = mutableListOf("Caderno da Morte")
-            )
+                _title =  title
+            ).addSynonyms(mutableListOf("Caderno da Morte"))
+
+
             val b = Anime(
-                _title =  title,
-                _synonyms = mutableListOf(
-                    "Caderno da Morte",
-                    "Quaderno della Morte"
-                )
+                _title =  title
+            ).addSynonyms(
+                    mutableListOf(
+                            "Caderno da Morte",
+                            "Quaderno della Morte"
+                    )
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+        }
+
+        @Test
+        fun `is equal if tags are the same`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                    _title =  title
+            ).addTags(mutableListOf("comedy", "slice of life"))
+
+            val b = Anime(
+                    _title =  title
+            ).addTags(
+                    mutableListOf(
+                            "slice of life",
+                            "comedy"
+                    )
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @Test
+        fun `is not equal if tags are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                    _title =  title
+            ).addTags(mutableListOf("slice of life"))
+
+
+            val b = Anime(
+                    _title =  title
+            ).addTags(
+                    mutableListOf(
+                            "slice of life",
+                            "comedy"
+                    )
             )
 
             // when
@@ -784,13 +866,12 @@ internal class AnimeKtTest {
         fun `add title and synonyms of the other anime to this anime's synonyms`() {
             // given
             val anime = Anime(
-                _title =  "Death Note",
-                _synonyms = mutableListOf("Caderno da Morte")
-            )
+                _title =  "Death Note"
+            ).addSynonyms(mutableListOf("Caderno da Morte"))
+
             val other = Anime(
-                _title =  "DEATH NOTE",
-                _synonyms = mutableListOf("Caderno da Morte", "Quaderno della Morte")
-            )
+                _title =  "DEATH NOTE"
+            ).addSynonyms(mutableListOf("Caderno da Morte", "Quaderno della Morte"))
 
             // when
             val result = anime.mergeWith(other)
@@ -804,14 +885,29 @@ internal class AnimeKtTest {
         fun `merge related anime and source links`() {
             // given
             val anime = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(URL("https://myanimelist.net/anime/1535")),
-                _relatedAnime = mutableListOf(URL("https://myanimelist.net/anime/2994"))
+                _title =  "Death Note"
+            ).addSources(
+                    mutableListOf(
+                            URL("https://myanimelist.net/anime/1535"
+                            )
+                    )
+            ).addRelations(
+                    mutableListOf(
+                            URL("https://myanimelist.net/anime/2994")
+                    )
             )
+
             val other = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(URL("https://anidb.net/anime/4563")),
-                _relatedAnime = mutableListOf(URL("https://anidb.net/anime/8146"), URL("https://anidb.net/anime/8147"))
+                _title =  "Death Note"
+            ).addSources(
+                    mutableListOf(
+                            URL("https://anidb.net/anime/4563")
+                    )
+            ).addRelations(
+                    mutableListOf(
+                            URL("https://anidb.net/anime/8146"),
+                            URL("https://anidb.net/anime/8147")
+                    )
             )
 
             // when
@@ -833,13 +929,12 @@ internal class AnimeKtTest {
         fun `merge tags`() {
             // given
             val anime = Anime(
-                _title =  "Death Note",
-                _tags = mutableListOf("Psychological", "Thriller", "Shounen")
-            )
+                _title =  "Death Note"
+            ).addTags(mutableListOf("Psychological", "Thriller", "Shounen"))
+
             val other = Anime(
-                _title =  "Death Note",
-                _tags = mutableListOf("Mystery", "Police", "Psychological", "Supernatural", "Thriller")
-            )
+                _title =  "Death Note"
+            ).addTags(mutableListOf("Mystery", "Police", "Psychological", "Supernatural", "Thriller"))
 
             // when
             val result = anime.mergeWith(other)
@@ -859,12 +954,17 @@ internal class AnimeKtTest {
         fun `other direction - add title and synonyms of the other anime to this anime's synonyms`() {
             // given
             val anime = Anime(
-                _title =  "Death Note",
-                _synonyms = mutableListOf("Caderno da Morte")
-            )
+                _title =  "Death Note"
+            ).addSynonyms(mutableListOf("Caderno da Morte"))
+
+
             val other = Anime(
-                _title =  "DEATH NOTE",
-                _synonyms = mutableListOf("Caderno da Morte", "Quaderno della Morte")
+                _title =  "DEATH NOTE"
+            ).addSynonyms(
+                    mutableListOf(
+                            "Caderno da Morte",
+                            "Quaderno della Morte"
+                    )
             )
 
             // when
@@ -879,14 +979,22 @@ internal class AnimeKtTest {
         fun `other direction - merge related anime and source links`() {
             // given
             val anime = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(URL("https://myanimelist.net/anime/1535")),
-                _relatedAnime = mutableListOf(URL("https://myanimelist.net/anime/2994"))
+                _title =  "Death Note"
+            ).addSources(
+                    mutableListOf(URL("https://myanimelist.net/anime/1535"))
+            ).addRelations(
+                    mutableListOf(URL("https://myanimelist.net/anime/2994"))
             )
+
             val other = Anime(
-                _title =  "Death Note",
-                _sources = mutableListOf(URL("https://anidb.net/anime/4563")),
-                _relatedAnime = mutableListOf(URL("https://anidb.net/anime/8146"), URL("https://anidb.net/anime/8147"))
+                _title =  "Death Note"
+            ).addSources(
+                    mutableListOf(URL("https://anidb.net/anime/4563"))
+            ).addRelations(
+                    mutableListOf(
+                            URL("https://anidb.net/anime/8146"),
+                            URL("https://anidb.net/anime/8147")
+                    )
             )
 
             // when
@@ -991,130 +1099,134 @@ internal class AnimeKtTest {
             fun `tags added by constructor are set to lower case`() {
                 // given
                 val tag = "EXAMPLE"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf(tag)
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf(tag))
+
                 // then
-                assertThat(result.tags.first()).isNotEqualTo(tag)
-                assertThat(result.tags.first()).isEqualTo(tag.toLowerCase())
+                assertThat(anime.tags.first()).isNotEqualTo(tag)
+                assertThat(anime.tags.first()).isEqualTo(tag.toLowerCase())
             }
 
             @Test
             fun `remove leading whitespace from title`() {
                 // given
                 val expectedTag = "example"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf(" $expectedTag")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf(" $expectedTag"))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `remove tailing whitespace from title`() {
                 // given
                 val expectedTag = "example"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("$expectedTag ")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("$expectedTag "))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `replace multiple whitespaces with a single whitespace in title`() {
                 // given
                 val expectedTag = "slice of life"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("slice     of      life")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("slice     of      life"))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `replace tab character with whitespace in title`() {
                 // given
                 val expectedTag = "slice of life"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("slice\tof\tlife")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("slice\tof\tlife"))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `replace line feed character with whitespace in title`() {
                 // given
                 val expectedTag = "slice of life"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("slice\nof\nlife")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("slice\nof\nlife"))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `replace carriage return line feed with whitespace in title`() {
                 // given
                 val expectedTag = "slice of life"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("slice\r\nof\r\nlife")
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("slice\r\nof\r\nlife"))
+
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
             }
 
             @Test
             fun `don't add tag if it's an empty string`() {
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf(EMPTY)
+                // given
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf(EMPTY))
+
                 // then
-                assertThat(result.tags).isEmpty()
+                assertThat(anime.tags).isEmpty()
             }
 
             @Test
             fun `don't add tag if it's a blank string`() {
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf("     ")
+                // given
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf("     "))
+
                 // then
-                assertThat(result.tags).isEmpty()
+                assertThat(anime.tags).isEmpty()
             }
 
             @Test
@@ -1122,15 +1234,15 @@ internal class AnimeKtTest {
                 // given
                 val tag1 = "a tag"
                 val tag2 = "before the other"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf(tag2, tag1)
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf(tag2, tag1))
+
                 // then
-                assertThat(result.tags).containsExactly(tag1, tag2)
+                assertThat(anime.tags).containsExactly(tag1, tag2)
             }
 
             @Test
@@ -1138,16 +1250,16 @@ internal class AnimeKtTest {
                 // given
                 val tag1 = "a tag"
                 val tag2 = "before the other"
-
-                // when
-                val result = Anime(
-                    _title = "Test",
-                    _tags = mutableListOf(tag2, tag1, tag1, tag2)
+                val anime = Anime(
+                        _title = "Test"
                 )
 
+                // when
+                anime.addTags(mutableListOf(tag2, tag1, tag1, tag2))
+
                 // then
-                assertThat(result.tags).hasSize(2)
-                assertThat(result.tags).containsExactly(tag1, tag2)
+                assertThat(anime.tags).hasSize(2)
+                assertThat(anime.tags).containsExactly(tag1, tag2)
             }
         }
 

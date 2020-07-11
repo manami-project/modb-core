@@ -34,7 +34,7 @@ object Json {
      * Parse an [InputStream] into an object.
      * @since 1.0.0
      * @param json Valid JSON as [InputStream]
-     * @return Deserialzed JSON as object of given type [T]
+     * @return Deserialized JSON as object of given type [T]
      */
     inline fun <reified T> parseJson(json: InputStream): T? {
         return Klaxon()
@@ -74,11 +74,10 @@ internal class AnimeKlaxonConverter : Converter {
             duration = Duration(
                 value = (jv.obj?.get("duration") as JsonObject).int("value")!!,
                 unit = DurationUnit.valueOf((jv.obj?.get("duration") as JsonObject).string("unit")!!)
-            ),
-            _synonyms = (jv.obj?.get("_synonyms") as JsonArray<*>).value.map { it as String }.toMutableList(),
-            _sources = (jv.obj?.get("_sources") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList(),
-            _relatedAnime = (jv.obj?.get("_relatedAnime") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList(),
-            _tags =(jv.obj?.get("_tags") as JsonArray<*>).value.map { it as String }.toMutableList()
-        )
+            )
+        ).addSynonyms((jv.obj?.get("_synonyms") as JsonArray<*>).value.map { it as String }.toMutableList())
+         .addSources((jv.obj?.get("_sources") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList())
+         .addRelations((jv.obj?.get("_relatedAnime") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList())
+         .addTags((jv.obj?.get("_tags") as JsonArray<*>).value.map { it as String }.toMutableList())
     }
 }

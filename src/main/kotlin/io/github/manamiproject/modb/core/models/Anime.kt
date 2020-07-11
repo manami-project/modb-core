@@ -1,11 +1,15 @@
 package io.github.manamiproject.modb.core.models
 
-import io.github.manamiproject.modb.core.extensions.doIfNotEmpty
+import io.github.manamiproject.modb.core.collections.SortedList
+import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
+import io.github.manamiproject.modb.core.collections.SortedList.Companion.URL_COMPARATOR
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.models.Anime.Status.UNKNOWN
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
+import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
 import java.net.URL
+import java.util.*
 
 /**
  * @since 1.0.0
@@ -22,10 +26,6 @@ typealias Episodes = Int
  * @param picture URL to a (large) poster/cover
  * @param thumbnail URL to a thumbnail poster/cover
  * @param duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
- * @param _sources Direct links to the anime on the website of meta data providers. **Example:** `Death Note` on myanimelist.net: `https://myanimelist.net/anime/1535`
- * @param _synonyms List of multilingual synonyms
- * @param _relatedAnime Direct links to anime on the website if meta data providers. These anime are directly related to this one like a sequel or a movie to a series.
- * @param _tags List of tags describing the anime. They can relate to the anime's content or define the genres
  * @throws IllegalArgumentException if _title is blank
  */
 data class Anime(
@@ -36,27 +36,8 @@ data class Anime(
     val animeSeason: AnimeSeason = AnimeSeason(),
     val picture: URL = URL("https://cdn.myanimelist.net/images/qm_50.gif"),
     val thumbnail: URL = URL("https://cdn.myanimelist.net/images/qm_50.gif"),
-    val duration: Duration = Duration(0, Duration.TimeUnit.SECONDS),
-    private var _sources: MutableList<URL> = mutableListOf(),
-    private var _synonyms: MutableList<String> = mutableListOf(),
-    private var _relatedAnime: MutableList<URL> = mutableListOf(),
-    private var _tags: MutableList<String> = mutableListOf()
+    val duration: Duration = Duration(0, SECONDS)
 ) {
-
-    @Transient
-    private val urlComparator = Comparator<URL> { o1, o2 -> o1.toString().compareTo(o2.toString()) }
-
-    init {
-        require(_title.isNotBlank()) { "Title cannot be blank." }
-
-        cleanupTitleAndSynonyms()
-
-        _relatedAnime.removeIf { _sources.contains(it) }
-
-        cleanupTags()
-        distinctListEntries()
-        sortLists()
-    }
 
     /**
      * Main title.
@@ -66,18 +47,20 @@ data class Anime(
         get() = _title
 
     /**
-     * Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
-     * @since 1.0.0
-     */
-    val synonyms: List<String>
-        get() = _synonyms
-
-    /**
      * Duplicate-free list of related anime. Sorted ascending.
      * @since 1.0.0
      */
     val sources: List<URL>
         get() = _sources
+    private var _sources: SortedList<URL> = SortedList(comparator = URL_COMPARATOR)
+
+    /**
+     * Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
+     * @since 1.0.0
+     */
+    val synonyms: List<String>
+        get() = _synonyms
+    private var _synonyms: SortedList<String> = SortedList(comparator = STRING_COMPARATOR)
 
     /**
      * Duplicate-free list of related anime. Sorted ascending.
@@ -85,6 +68,7 @@ data class Anime(
      */
     val relatedAnime: List<URL>
         get() = _relatedAnime
+    private var _relatedAnime: SortedList<URL> = SortedList(comparator = URL_COMPARATOR)
 
     /**
      * Duplicate-free list of tags. Sorted ascending. All tags are lower case.
@@ -92,6 +76,12 @@ data class Anime(
      */
     val tags: List<String>
         get() = _tags
+    private var _tags: SortedList<String> = SortedList(comparator = STRING_COMPARATOR)
+
+    init {
+        require(_title.isNotBlank()) { "Title cannot be blank." }
+        _title = cleanupTitle(_title)
+    }
 
     /**
      * Add additional synonyms to the existing list. This will **not** override [synonyms].
@@ -101,12 +91,11 @@ data class Anime(
      */
     fun addSynonyms(synonyms: List<String>): Anime {
         synonyms.asSequence()
-            .map { cleanupString(it) }
+            .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
-            .filter { it != title }
+            .filter { it != _title }
             .filter { !_synonyms.contains(it) }
-            .map { _synonyms.add(it) }
-            .doIfNotEmpty { _synonyms.sort() }
+            .forEach { _synonyms.add(it) }
 
         return this
     }
@@ -120,8 +109,7 @@ data class Anime(
     fun addSources(sources: List<URL>): Anime {
         sources.asSequence()
             .filter { !_sources.contains(it) }
-            .map { _sources.add(it) }
-            .doIfNotEmpty { _sources.sortWith(urlComparator) }
+            .forEach { _sources.add(it) }
 
         return this
     }
@@ -135,8 +123,7 @@ data class Anime(
     fun addRelations(relatedAnime: List<URL>): Anime {
         relatedAnime.asSequence()
             .filter { !_relatedAnime.contains(it) && !_sources.contains(it) }
-            .map { _relatedAnime.add(it) }
-            .doIfNotEmpty { _relatedAnime.sortWith(urlComparator) }
+            .forEach { _relatedAnime.add(it) }
 
         return this
     }
@@ -149,12 +136,11 @@ data class Anime(
      */
     fun addTags(tags: List<String>): Anime {
         tags.asSequence()
-            .map { cleanupString(it) }
+            .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
             .map { it.toLowerCase() }
             .filter { !_tags.contains(it) }
-            .map { _tags.add(it) }
-            .doIfNotEmpty { _tags.sort() }
+            .forEach { _tags.add(it) }
 
         return this
     }
@@ -167,8 +153,6 @@ data class Anime(
      */
     fun removeRelationIf(condition: (URL) -> Boolean): Anime {
         _relatedAnime.removeIf { condition.invoke(it) }
-        _relatedAnime.sortWith(urlComparator)
-
         return this
     }
 
@@ -201,7 +185,7 @@ data class Anime(
         return this
     }
 
-    private fun cleanupString(original: String): String {
+    private fun cleanupTitle(original: String): String {
         var editedTitle = original
 
         REPLACEMENTS.forEach { replacement ->
@@ -223,36 +207,24 @@ data class Anime(
         return editedTitle
     }
 
-    private fun cleanupTitleAndSynonyms() {
-        _title = cleanupString(_title)
-        _synonyms = _synonyms.asSequence()
-            .map { cleanupString(it) }
-            .filter { it.isNotBlank() }
-            .toMutableList()
-        _synonyms.removeIf { it == _title }
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is Anime) return false
+
+        return _title == other.title
+                && type == other.type
+                && episodes == other.episodes
+                && status == other.status
+                && animeSeason == other.animeSeason
+                && picture == other.picture
+                && thumbnail == other.thumbnail
+                && duration == other.duration
+                && _sources.toList() == other.sources.toList()
+                && _synonyms.toList() == other.synonyms.toList()
+                && _relatedAnime.toList() == other.relatedAnime.toList()
+                && _tags.toList() == other.tags.toList()
     }
 
-    private fun cleanupTags() {
-        _tags = _tags.asSequence()
-            .map { cleanupString(it) }
-            .filter { it.isNotBlank() }
-            .map { it.toLowerCase() }
-            .toMutableList()
-    }
-
-    private fun distinctListEntries() {
-        _synonyms = _synonyms.distinct().toMutableList()
-        _sources = _sources.distinct().toMutableList()
-        _relatedAnime = _relatedAnime.distinct().toMutableList()
-        _tags = _tags.distinct().toMutableList()
-    }
-
-    private fun sortLists() {
-        _synonyms.sort()
-        _sources.sortWith(urlComparator)
-        _relatedAnime.sortWith(urlComparator)
-        _tags.sort()
-    }
+    override fun hashCode(): Int = Objects.hashCode(this)
 
     private companion object {
         private val log by LoggerDelegate()

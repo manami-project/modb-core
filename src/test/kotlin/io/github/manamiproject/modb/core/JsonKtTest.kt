@@ -30,20 +30,30 @@ internal class JsonKtTest {
             ),
             picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-            duration = Duration(24, MINUTES),
-            _synonyms = mutableListOf(
-                "Clannad ~After Story~: Another World, Kyou Chapter",
-                "Clannad: After Story OVA",
-                "クラナド　アフターストーリー　もうひとつの世界　杏編"
-            ),
-            _sources = mutableListOf(
-                URL("https://myanimelist.net/anime/6351")
-            ),
-            _relatedAnime = mutableListOf(
-                URL("https://myanimelist.net/anime/2167")
-            ),
-            _tags = mutableListOf("comedy", "romance")
+            duration = Duration(24, MINUTES)
+        ).addSources(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/6351")
+                )
+        ).addSynonyms(
+                mutableListOf(
+                        "Clannad ~After Story~: Another World, Kyou Chapter",
+                        "Clannad: After Story OVA",
+                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                )
+        ).addRelations(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/2167")
+                )
+        ).addTags(
+                mutableListOf(
+                        "comedy",
+                        "romance"
+                )
         )
+
+
+
         val inputStream = testResource("json_tests/anime_all_properties_set.json").newInputStream()
 
         // when
@@ -67,19 +77,26 @@ internal class JsonKtTest {
             ),
             picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-            duration = Duration(24, MINUTES),
-            _synonyms = mutableListOf(
-                "Clannad ~After Story~: Another World, Kyou Chapter",
-                "Clannad: After Story OVA",
-                "クラナド　アフターストーリー　もうひとつの世界　杏編"
-            ),
-            _sources = mutableListOf(
-                URL("https://myanimelist.net/anime/6351")
-            ),
-            _relatedAnime = mutableListOf(
-                URL("https://myanimelist.net/anime/2167")
-            ),
-            _tags = mutableListOf("comedy", "romance")
+            duration = Duration(24, MINUTES)
+        ).addSources(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/6351")
+                )
+        ).addSynonyms(
+                mutableListOf(
+                        "Clannad ~After Story~: Another World, Kyou Chapter",
+                        "Clannad: After Story OVA",
+                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                )
+        ).addRelations(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/2167")
+                )
+        ).addTags(
+                mutableListOf(
+                        "comedy",
+                        "romance"
+                )
         )
 
         val json = loadTestResource("json_tests/anime_all_properties_set.json")
@@ -105,36 +122,29 @@ internal class JsonKtTest {
             ),
             picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-            duration = Duration(24, MINUTES),
-            _synonyms = mutableListOf(
-                "Clannad ~After Story~: Another World, Kyou Chapter",
-                "Clannad: After Story OVA",
-                "クラナド　アフターストーリー　もうひとつの世界　杏編"
-            ),
-            _sources = mutableListOf(
-                URL("https://myanimelist.net/anime/6351")
-            ),
-            _relatedAnime = mutableListOf(
-                URL("https://myanimelist.net/anime/2167")
-            ),
-            _tags = mutableListOf("comedy", "romance")
+            duration = Duration(24, MINUTES)
+        ).addSynonyms(
+                mutableListOf(
+                        "Clannad ~After Story~: Another World, Kyou Chapter",
+                        "Clannad: After Story OVA",
+                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                )
+        ).addSources(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/6351")
+                )
+        ).addRelations(
+                mutableListOf(
+                        URL("https://myanimelist.net/anime/2167")
+                )
+        ).addTags(
+                mutableListOf(
+                        "comedy",
+                        "romance"
+                )
         )
 
         val expectedJson = "{\n" +
-                "  \"_title\": \"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen\",\n" +
-                "  \"type\": \"TV\",\n" +
-                "  \"episodes\": 24,\n" +
-                "  \"status\": \"FINISHED\",\n" +
-                "  \"animeSeason\": {\n" +
-                "    \"season\": \"SUMMER\",\n" +
-                "    \"_year\": 2009\n" +
-                "  },\n" +
-                "  \"picture\": \"https://cdn.myanimelist.net/images/anime/10/19621.jpg\",\n" +
-                "  \"thumbnail\": \"https://cdn.myanimelist.net/images/anime/10/19621t.jpg\",\n" +
-                "  \"duration\": {\n" +
-                "    \"value\": 24,\n" +
-                "    \"unit\": \"MINUTES\"\n" +
-                "  },\n" +
                 "  \"_sources\": [\n" +
                 "    \"https://myanimelist.net/anime/6351\"\n" +
                 "  ],\n" +
@@ -149,7 +159,21 @@ internal class JsonKtTest {
                 "  \"_tags\": [\n" +
                 "    \"comedy\",\n"+
                 "    \"romance\"\n"+
-                "  ]\n" +
+                "  ],\n" +
+                "  \"_title\": \"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen\",\n" +
+                "  \"type\": \"TV\",\n" +
+                "  \"episodes\": 24,\n" +
+                "  \"status\": \"FINISHED\",\n" +
+                "  \"animeSeason\": {\n" +
+                "    \"season\": \"SUMMER\",\n" +
+                "    \"_year\": 2009\n" +
+                "  },\n" +
+                "  \"picture\": \"https://cdn.myanimelist.net/images/anime/10/19621.jpg\",\n" +
+                "  \"thumbnail\": \"https://cdn.myanimelist.net/images/anime/10/19621t.jpg\",\n" +
+                "  \"duration\": {\n" +
+                "    \"value\": 24,\n" +
+                "    \"unit\": \"MINUTES\"\n" +
+                "  }\n" +
                 "}"
 
         // when
@@ -179,6 +203,10 @@ internal class JsonKtTest {
         val anime = Anime("Death Note")
 
         val expectedJson = "{\n" +
+                "  \"_sources\": [],\n" +
+                "  \"_synonyms\": [],\n" +
+                "  \"_relatedAnime\": [],\n" +
+                "  \"_tags\": [],\n" +
                 "  \"_title\": \"Death Note\",\n" +
                 "  \"type\": \"TV\",\n" +
                 "  \"episodes\": 0,\n" +
@@ -192,11 +220,7 @@ internal class JsonKtTest {
                 "  \"duration\": {\n" +
                 "    \"value\": 0,\n" +
                 "    \"unit\": \"SECONDS\"\n" +
-                "  },\n" +
-                "  \"_sources\": [],\n" +
-                "  \"_synonyms\": [],\n" +
-                "  \"_relatedAnime\": [],\n" +
-                "  \"_tags\": []\n" +
+                "  }\n" +
                 "}"
 
         // when
