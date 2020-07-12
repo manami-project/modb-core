@@ -9,7 +9,6 @@ import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
 import java.net.URL
-import java.util.*
 
 /**
  * @since 1.0.0
@@ -226,7 +225,21 @@ data class Anime(
                 && _tags.toList() == other.tags.toList()
     }
 
-    override fun hashCode(): Int = Objects.hashCode(this)
+    override fun hashCode(): Int {
+        var result = _title.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + episodes
+        result = 31 * result + status.hashCode()
+        result = 31 * result + animeSeason.hashCode()
+        result = 31 * result + picture.hashCode()
+        result = 31 * result + thumbnail.hashCode()
+        result = 31 * result + duration.hashCode()
+        result = 31 * result + _sources.hashCode()
+        result = 31 * result + _synonyms.hashCode()
+        result = 31 * result + _relatedAnime.hashCode()
+        result = 31 * result + _tags.hashCode()
+        return result
+    }
 
     private companion object {
         private val log by LoggerDelegate()
