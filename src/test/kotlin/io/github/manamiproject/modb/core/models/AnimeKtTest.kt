@@ -592,6 +592,22 @@ internal class AnimeKtTest {
             // then
             assertThat(anime.sources).containsExactly(one, two, three, four)
         }
+
+        @Test
+        fun `remove related anime if the same url has been added to sources`() {
+            // given
+            val source = URL("https://myanimelist.net/anime/1535")
+            val anime = Anime(
+                    _title =  "Death Note"
+            ).addRelations(mutableListOf(source))
+
+            // when
+            anime.addSources(listOf(source))
+
+            // then
+            assertThat(anime.sources).containsExactly(source)
+            assertThat(anime.relatedAnime).isEmpty()
+        }
     }
 
     @Nested

@@ -108,8 +108,10 @@ data class Anime(
      */
     fun addSources(sources: List<URL>): Anime {
         sources.asSequence()
-            .filter { !_sources.contains(it) }
+            .filterNot { _sources.contains(it) }
             .forEach { _sources.add(it) }
+
+        removeRelationIf { sources.contains(it) }
 
         return this
     }
