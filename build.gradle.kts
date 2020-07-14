@@ -18,9 +18,9 @@ val projectName = "modb-core"
 
 dependencies {
     api("org.slf4j:slf4j-api:1.7.30")
+    api(kotlin("stdlib-jdk8"))
 
     implementation(platform(kotlin("bom")))
-    implementation(kotlin("stdlib-jdk8"))
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("com.beust:klaxon:5.2")
     implementation("com.google.code.gson:gson:2.8.6")
