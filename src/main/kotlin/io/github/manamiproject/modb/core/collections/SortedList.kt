@@ -76,6 +76,8 @@ internal class SortedList<T>(
         return returnValue
     }
 
+    override fun toString(): String = list.toString()
+
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is SortedList<*>) return false
         if (other === this) return true

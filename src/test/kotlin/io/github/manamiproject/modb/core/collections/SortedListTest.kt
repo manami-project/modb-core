@@ -280,6 +280,25 @@ internal class SortedListTest {
         )
     }
 
+    @Test
+    fun `toString() lists elements`() {
+        // given
+        val list = SortedList(
+                list = mutableListOf(
+                        "A",
+                        "B",
+                        "C"
+                ),
+                comparator = STRING_COMPARATOR
+        )
+
+        // when
+        val result = list.toString()
+
+        // then
+        assertThat(result).isEqualTo("[A, B, C]")
+    }
+
     @Nested
     inner class EqualityTests {
 
