@@ -1,6 +1,8 @@
 package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
+import io.github.manamiproject.modb.core.models.Anime.Status.FINISHED
+import io.github.manamiproject.modb.core.models.Anime.Type.Special
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
 import org.assertj.core.api.Assertions.assertThat
@@ -1556,6 +1558,69 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isEqualTo(UNDEFINED)
+        }
+    }
+
+    @Nested
+    inner class ToStringTests {
+
+        @Test
+        fun `create formatted string listing all properties`() {
+            // given
+            val anime = Anime(
+                    _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                    type = Special,
+                    episodes = 1,
+                    status = FINISHED,
+                    animeSeason = AnimeSeason(
+                            season = SUMMER,
+                            _year = 2009
+                    ),
+                    picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                    thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg")
+            ).apply {
+                addSources(listOf(URL("https://myanimelist.net/anime/6351")))
+                addSynonyms(
+                        listOf(
+                                "Clannad ~After Story~: Another World, Kyou Chapter",
+                                "Clannad: After Story OVA",
+                                "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                        )
+                )
+                addRelations(listOf(URL("https://myanimelist.net/anime/2167")))
+                addTags(
+                        listOf(
+                                "comedy",
+                                "drama",
+                                "romance",
+                                "school",
+                                "slice of life",
+                                "supernatural"
+                        )
+                )
+            }
+
+            // when
+            val result = anime.toString()
+
+            // then
+            assertThat(result).isEqualTo(
+                """
+                    Anime(
+                      sources = [https://myanimelist.net/anime/6351]
+                      title = Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen
+                      type = Special
+                      episodes = 1
+                      status = FINISHED
+                      animeSeason = AnimeSeason(season=SUMMER, _year=2009)
+                      picture = https://cdn.myanimelist.net/images/anime/10/19621.jpg
+                      thumbnail = https://cdn.myanimelist.net/images/anime/10/19621t.jpg
+                      synonyms = [Clannad ~After Story~: Another World, Kyou Chapter, Clannad: After Story OVA, クラナド　アフターストーリー　もうひとつの世界　杏編]
+                      relations = [https://myanimelist.net/anime/2167]
+                      tags = [comedy, drama, romance, school, slice of life, supernatural]
+                    )
+                """.trimIndent()
+            )
         }
     }
 }

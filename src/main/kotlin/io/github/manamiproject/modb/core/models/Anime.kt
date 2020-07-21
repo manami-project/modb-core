@@ -208,6 +208,24 @@ data class Anime(
         return editedTitle
     }
 
+    override fun toString(): String {
+        return """
+            Anime(
+              sources = $_sources
+              title = $_title
+              type = $type
+              episodes = $episodes
+              status = $status
+              animeSeason = $animeSeason
+              picture = $picture
+              thumbnail = $thumbnail
+              synonyms = $_synonyms
+              relations = $_relatedAnime
+              tags = $_tags
+            )
+        """.trimIndent()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Anime) return false
         if (other === this) return true
