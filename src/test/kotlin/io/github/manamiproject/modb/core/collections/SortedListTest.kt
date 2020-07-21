@@ -2,6 +2,7 @@ package io.github.manamiproject.modb.core.collections
 
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class SortedListTest {
@@ -277,5 +278,87 @@ internal class SortedListTest {
                 "Chihayafuru",
                 "Natsume Yuujinchou Roku"
         )
+    }
+
+    @Nested
+    inner class EqualityTests {
+
+        @Test
+        fun `two lists are not equal having the same elements, but a different comparator and therefore a different order`() {
+            // given
+            val list1 = SortedList(
+                    list = mutableListOf("A", "B", "C"),
+                    comparator = STRING_COMPARATOR
+            )
+
+            val list2 = SortedList(
+                    list = mutableListOf("C", "B", "A"),
+                    comparator = Comparator { o1, o2 -> o1.compareTo(o2) * -1 }
+            )
+
+            // when
+            val result = list1 == list2
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(list1).isNotEqualTo(list2)
+        }
+
+        @Test
+        fun `two lists are equal having the same elements and the same comparator`() {
+            // given
+            val list1 = SortedList(
+                    list = mutableListOf("A", "B", "C"),
+                    comparator = STRING_COMPARATOR
+            )
+
+            val list2 = SortedList(
+                    list = mutableListOf("C", "B", "A"),
+                    comparator = STRING_COMPARATOR
+            )
+
+            // when
+            val result = list1 == list2
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(list1).isEqualTo(list2)
+        }
+
+        @Test
+        fun `two lists are not equal having different generics`() {
+            // given
+            val list1 = SortedList(
+                    list = mutableListOf("A", "B", "C"),
+                    comparator = STRING_COMPARATOR
+            )
+
+            val list2 = SortedList(
+                    list = mutableListOf(1, 2, 3),
+                    comparator = Comparator { o1, o2 -> o1.compareTo(o2) }
+            )
+
+            // when
+            val result = list1 == list2
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(list1).isNotEqualTo(list2)
+        }
+
+        @Test
+        fun `two lists are not equal having different object type`() {
+            // given
+            val list1 = SortedList(
+                    list = mutableListOf("A", "B", "C"),
+                    comparator = STRING_COMPARATOR
+            )
+
+            // when
+            val result = list1.equals(1)
+
+            // then
+            assertThat(result).isFalse()
+        }
     }
 }

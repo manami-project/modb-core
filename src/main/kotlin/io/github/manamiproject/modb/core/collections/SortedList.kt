@@ -76,6 +76,17 @@ internal class SortedList<T>(
         return returnValue
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is SortedList<*>) return false
+        if (other === this) return true
+
+        return other.toList() == list.toList()
+    }
+
+    override fun hashCode(): Int {
+        return list.toList().hashCode()
+    }
+
     companion object {
         internal val URL_COMPARATOR = Comparator<URL> { o1, o2 -> o1.toString().compareTo(o2.toString()) }
         internal val STRING_COMPARATOR = Comparator<String> { o1, o2 -> o1.compareTo(o2) }

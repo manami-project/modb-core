@@ -210,6 +210,7 @@ data class Anime(
 
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Anime) return false
+        if (other === this) return true
 
         return _title == other.title
                 && type == other.type

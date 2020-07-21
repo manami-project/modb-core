@@ -712,6 +712,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
         }
 
         @Test
@@ -736,6 +737,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
         }
 
         @Test
@@ -755,6 +757,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
         }
 
         @Test
@@ -779,6 +782,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
         }
 
         @Test
@@ -798,6 +802,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
         }
 
         @Test
@@ -823,6 +828,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
         }
 
         @Test
@@ -847,6 +853,7 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
         }
 
         @Test
@@ -869,6 +876,22 @@ internal class AnimeKtTest {
 
             // when
             val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if the other object is of a different type`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                    _title =  title
+            ).addTags(mutableListOf("slice of life"))
+
+            // when
+            val result = a.equals(1)
 
             // then
             assertThat(result).isFalse()
