@@ -11,8 +11,16 @@ import java.net.URL
 internal object HeaderCreator {
 
     fun createHeadersFor(url: URL, browser: Browser = Firefox): Map<String, String> {
+        val host =  url.host.let {
+            if (!it.startsWith("www.") && it != "localhost") {
+                "www.$it"
+            } else {
+                it
+            }
+        }
+
         val headers = mutableMapOf<String, String>(
-                Pair("Host", url.host),
+                Pair("Host", host),
                 Pair("Connection", "keep-alive"),
                 Pair("Upgrade-Insecure-Requests", "1"),
                 Pair("Pragma", "no-cache"),
