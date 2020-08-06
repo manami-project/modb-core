@@ -8,15 +8,6 @@ import java.net.URL
 internal class HeaderCreatorTest {
 
     @Test
-    fun `add www prefix to host header if it's not present unless it's not localhost to prevent ERR_TOO_MANY_REDIRECTS`() {
-        //when
-        val result = HeaderCreator.createHeadersFor(URL("http://myanimelist.net/anime/1535"))
-
-        // then
-        assertThat(result["host"]).isEqualTo("www.myanimelist.net")
-    }
-
-    @Test
     fun `check header for firefox`() {
         //when
         val result = HeaderCreator.createHeadersFor(URL("http://localhost:8080"), Firefox)
