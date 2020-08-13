@@ -55,6 +55,18 @@ interface MetaDataProviderConfig {
     fun buildDataDownloadUrl(id: String = EMPTY): URL = buildAnimeLinkUrl(id)
 
     /**
+     * Extracts the [AnimeId] from a given [URL].
+     * @since 2.1.0
+     * @param url Anime link url. Could've been previously created using [buildAnimeLinkUrl]
+     * @return The ID for the anime.
+     * @throws IllegalArgumentException if the given URL does not contain the hostname.
+     */
+    fun extractAnimeId(url: URL): AnimeId {
+        require(url.toString().contains(hostname())) { "URL doesn't contain hostname [${hostname()}]" }
+        return url.toString().replace(buildAnimeLinkUrl(EMPTY).toString(), EMPTY)
+    }
+
+    /**
      * File suffix for the file in which the raw data is saved. No leading dot. **Example:** `html`
      * @since 1.0.0
      * @return File suffix without a leading dot
