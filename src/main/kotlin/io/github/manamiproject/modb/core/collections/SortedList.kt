@@ -3,7 +3,13 @@ package io.github.manamiproject.modb.core.collections
 import java.net.URL
 import java.util.function.Predicate
 
-internal class SortedList<T>(
+/**
+ * This [List] automatically sorts itself on any modifying invocation.
+ * @since 2.1.0
+ * @param list Initial list of elements. **Default:** empty list
+ * @param comparator Comparator used to sort the elements
+ */
+class SortedList<T>(
         private val list: MutableList<T> = mutableListOf(),
         private val comparator: Comparator<T>
 ) : MutableList<T> by list {
@@ -90,7 +96,16 @@ internal class SortedList<T>(
     }
 
     companion object {
-        internal val URL_COMPARATOR = Comparator<URL> { o1, o2 -> o1.toString().compareTo(o2.toString()) }
-        internal val STRING_COMPARATOR = Comparator<String> { o1, o2 -> o1.compareTo(o2) }
+        /**
+         * Comparator for [URL]s
+         * @since 2.1.0
+         */
+        val URL_COMPARATOR = Comparator<URL> { o1, o2 -> o1.toString().compareTo(o2.toString()) }
+
+        /**
+         * Comparator for [String]s
+         * @since 2.1.0
+         */
+        val STRING_COMPARATOR = Comparator<String> { o1, o2 -> o1.compareTo(o2) }
     }
 }
