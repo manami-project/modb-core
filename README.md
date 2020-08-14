@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("io.github.manamiproject:modb-core:$version")
+    implementation("io.github.manamiproject:modb-core:$version")
 }
 ```
 
