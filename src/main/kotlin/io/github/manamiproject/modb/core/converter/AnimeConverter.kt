@@ -11,8 +11,8 @@ interface AnimeConverter {
     /**
      * Converts a [String] into an [Anime].
      * @since 1.0.0
-     * @param source Raw content
+     * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */
-    fun convert(source: String): Anime
+    fun convert(rawContent: String): Anime
 }

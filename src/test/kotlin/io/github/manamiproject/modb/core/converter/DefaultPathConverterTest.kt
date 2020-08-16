@@ -42,8 +42,8 @@ internal class DefaultPathConverterTest {
             val expectedAnime =  Anime("Expected Anime")
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
-                override fun convert(source: String): Anime {
-                    return if (source == "Correct file") {
+                override fun convert(rawContent: String): Anime {
+                    return if (rawContent == "Correct file") {
                         expectedAnime
                     } else {
                         shouldNotBeInvoked()
@@ -71,9 +71,9 @@ internal class DefaultPathConverterTest {
             }
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
-                override fun convert(source: String): Anime {
-                    return if (source.startsWith("accept")) {
-                        Anime(source)
+                override fun convert(rawContent: String): Anime {
+                    return if (rawContent.startsWith("accept")) {
+                        Anime(rawContent)
                     } else {
                         shouldNotBeInvoked()
                     }
