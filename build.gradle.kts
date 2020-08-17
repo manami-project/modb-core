@@ -22,7 +22,7 @@ dependencies {
 
     implementation(platform(kotlin("bom")))
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("com.beust:klaxon:5.2")
+    implementation("com.beust:klaxon:5.4")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.8.0")
 
