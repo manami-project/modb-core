@@ -17,16 +17,15 @@ version = project.findProperty("releaseVersion") as String? ?: ""
 val projectName = "modb-core"
 
 dependencies {
-    api("org.slf4j:slf4j-api:1.7.30")
     api(kotlin("stdlib-jdk8"))
+    api("org.slf4j:slf4j-api:1.7.30")
 
-    implementation(platform(kotlin("bom")))
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("com.beust:klaxon:5.4")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.8.1")
 
-    testImplementation("io.github.manamiproject:modb-test:1.0.1")
+    testImplementation("io.github.manamiproject:modb-test:1.0.2")
 }
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
