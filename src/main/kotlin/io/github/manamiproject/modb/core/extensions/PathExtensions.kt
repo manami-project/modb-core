@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.extensions
 
+import io.github.manamiproject.modb.core.config.FileSuffix
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
@@ -40,7 +41,7 @@ fun Path.changeSuffix(suffix: String): RegularFile {
     val directory = this.parent
     val fileName = this.fileName.toString()
 
-    val fileNameWithoutSuffix = if (fileName.startsWith(".")) {
+    val fileNameWithoutSuffix = if (fileName.startsWith('.')) {
         fileName
     } else {
         fileName.split('.').first()
@@ -188,3 +189,30 @@ fun Path.newInputStream(vararg options: OpenOption): InputStream = Files.newInpu
  * @see Files.newOutputStream
  */
 fun Path.newOutputStream(vararg options: OpenOption): OutputStream = Files.newOutputStream(this, *options)
+
+/**
+ * Will return the name of either a [RegularFile] or a [Directory].
+ * @since 2.2.0
+ * @return The file name as a [String]
+ */
+fun Path.fileName() = this.fileName.toString()
+
+/**
+ * + Returns the suffix of a file name in form of `{name}.{suffix}`.
+ * + Returns the full file name if there is no dot followed by a suffix.
+ * + Returns the full name of a hidden file. A hidden file referring to a file name starting with a dot.
+ * **Example:** `.gitignore`
+ *
+ * Behaves the same for a directory.
+ * @since 2.2.0
+ * @return Either the file suffix or the full file name
+ */
+fun Path.fileSuffix(): FileSuffix {
+    val fileName = this.fileName.toString()
+
+    return if (fileName.startsWith('.')) {
+        fileName
+    } else {
+        fileName.substringAfter('.')
+    }
+}

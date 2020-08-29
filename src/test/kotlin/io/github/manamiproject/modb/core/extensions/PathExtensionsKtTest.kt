@@ -857,4 +857,155 @@ line feed [LF]""")
             }
         }
     }
+
+    @Nested
+    inner class FileNameTests {
+
+        @Test
+        fun `correctly return the file name`() {
+            tempDirectory {
+                // given
+                val expectedName = "test.json"
+                val file = tempDir.resolve(expectedName)
+                Files.createFile(file)
+
+                // when
+                val result = file.fileName()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+
+        @Test
+        fun `correctly return the file name of a hidden file`() {
+            tempDirectory {
+                // given
+                val expectedName = ".gitignore"
+                val file = tempDir.resolve(expectedName)
+                Files.createFile(file)
+
+                // when
+                val result = file.fileName()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+
+        @Test
+        fun `correctly return name even if the given path is a directory`() {
+            tempDirectory {
+                // given
+                val expectedName = "subdir"
+                val dir = tempDir.resolve(expectedName)
+                Files.createDirectory(dir)
+
+                // when
+                val result = dir.fileName()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+    }
+
+    @Nested
+    inner class FileSuffixTests {
+
+        @Test
+        fun `correctly return the file suffix`() {
+            tempDirectory {
+                // given
+                val file = tempDir.resolve("test.json")
+                Files.createFile(file)
+
+                // when
+                val result = file.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo("json")
+            }
+        }
+
+        @Test
+        fun `return full name if the file is a hidden file`() {
+            tempDirectory {
+                // given
+                val expectedName = ".gitignore"
+                val file = tempDir.resolve(expectedName)
+                Files.createFile(file)
+
+                // when
+                val result = file.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+
+        @Test
+        fun `return full name if there is no dot followed by a file suffix`() {
+            tempDirectory {
+                // given
+                val expectedName = "test"
+                val file = tempDir.resolve(expectedName)
+                Files.createFile(file)
+
+                // when
+                val result = file.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+
+        @Test
+        fun `correctly return the file suffix even if the given path is a directory`() {
+            tempDirectory {
+                // given
+                val expectedName = "subdir.more"
+                val dir = tempDir.resolve(expectedName)
+                Files.createDirectory(dir)
+
+                // when
+                val result = dir.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo("more")
+            }
+        }
+
+        @Test
+        fun `return full name if there is no dot followed by a file suffix even if the given path is a directory`() {
+            tempDirectory {
+                // given
+                val expectedName = "subdir"
+                val dir = tempDir.resolve(expectedName)
+                Files.createDirectory(dir)
+
+                // when
+                val result = dir.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+
+        @Test
+        fun `return full name if the given path is a hidden directory`() {
+            tempDirectory {
+                // given
+                val expectedName = ".git"
+                val dir = tempDir.resolve(expectedName)
+                Files.createDirectory(dir)
+
+                // when
+                val result = dir.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo(expectedName)
+            }
+        }
+    }
 }

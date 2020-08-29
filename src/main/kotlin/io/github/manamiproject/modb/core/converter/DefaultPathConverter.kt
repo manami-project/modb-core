@@ -30,7 +30,7 @@ class DefaultPathConverter(
     private fun convertAllFilesInADirectory(path: Directory): List<Anime> {
         return path.list()
             .filter { it.regularFileExists() }
-            .filter { it.fileName.toString().endsWith(fileSuffix) }
+            .filter { it.fileSuffix() == fileSuffix }
             .map { convert(it).first() }
             .toList()
     }
