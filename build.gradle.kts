@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.10"
     id("com.jfrog.bintray") version "1.8.5"
     `maven-publish`
     `java-library`
@@ -20,6 +20,7 @@ dependencies {
     api(kotlin("stdlib-jdk8"))
     api("org.slf4j:slf4j-api:1.7.30")
 
+    implementation(platform(kotlin("bom")))
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("com.beust:klaxon:5.4")
     implementation("com.google.code.gson:gson:2.8.6")
