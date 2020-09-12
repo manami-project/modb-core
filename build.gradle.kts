@@ -26,7 +26,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:4.8.1")
 
-    testImplementation("io.github.manamiproject:modb-test:1.0.2")
+    testImplementation("io.github.manamiproject:modb-test:1.0.3")
 }
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
