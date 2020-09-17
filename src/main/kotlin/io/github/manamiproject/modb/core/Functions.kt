@@ -1,8 +1,6 @@
 package io.github.manamiproject.modb.core
 
-import io.github.manamiproject.modb.core.extensions.regularFileExists
 import java.io.BufferedReader
-import java.nio.file.Paths
 
 /**
  * During development: Reads the content of a file from _src/main/resources_ into a [String].
@@ -22,13 +20,10 @@ import java.nio.file.Paths
  *
  * @since 2.3.0
  * @return Content of a file as [String]
- * @throws IllegalStateException If the given path does not exist or is not a file.
+ * @throws IllegalStateException If the given path does not exist.
  */
 fun loadResource(path: String): String {
-    val resource = ClassLoader.getSystemResource(path) ?: throw IllegalStateException("Given path [$path] does not exist")
-    val file = Paths.get(resource.toURI())
-
-    check(file.regularFileExists()) { "Given path [$path] is not a file." }
+    require(path.isNotBlank()) { "Given path must not be blank" }
 
     return ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()
             ?.use(BufferedReader::readText)
