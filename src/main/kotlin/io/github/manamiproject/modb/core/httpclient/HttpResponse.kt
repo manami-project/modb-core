@@ -3,12 +3,12 @@ package io.github.manamiproject.modb.core.httpclient
 /**
  * @since 1.0.0
  */
-typealias HttpResponseCode = Int
+public typealias HttpResponseCode = Int
 
 /**
  * @since 1.0.0
  */
-typealias ResponseBody = String
+public typealias ResponseBody = String
 
 /**
  * Data representing a HTTP response.
@@ -17,7 +17,7 @@ typealias ResponseBody = String
  * @property body Raw response body
  * @property _headers All HTTP header sent by the server
  */
-data class HttpResponse(
+public data class HttpResponse(
         val code: HttpResponseCode,
         val body: ResponseBody,
         private val _headers: MutableMap<String, List<String>> = mutableMapOf()
@@ -38,7 +38,7 @@ data class HttpResponse(
      * @since 1.0.0
      * @return `true` if the response code is 200
      */
-    fun isOk(): Boolean = code == 200
+    public fun isOk(): Boolean = code == 200
 
     private fun lowerCaseHeaders() {
         val lowerCaseKeyMap = _headers.map {

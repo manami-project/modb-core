@@ -7,7 +7,7 @@ import java.io.OutputStream
  * @since 1.0.0
  * @return The same [OutputStream] which has been used to write the [String]
  */
-fun OutputStream.write(body: String): OutputStream {
+public fun OutputStream.write(body: String): OutputStream {
     this.write(body.toByteArray())
     this.flush()
     return this

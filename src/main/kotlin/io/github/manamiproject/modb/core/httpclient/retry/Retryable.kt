@@ -21,7 +21,7 @@ import java.lang.Thread.*
  * @param config Configuration which individualizes the retry behavior
  * @throws FailedAfterRetryException if the request has been retried the [RetryBehavior.maxAttempts] number of times, but failed anyway.
  */
-class Retryable(private val config: RetryBehavior) {
+public class Retryable(private val config: RetryBehavior) {
 
     /**
      * Executes a request and retries it if necessary.
@@ -29,7 +29,7 @@ class Retryable(private val config: RetryBehavior) {
      * @param request Lambda which performs a HTTP request returning a [HttpResponse]
      * @return The actual [HttpResponse] of the request if the request was successful
      */
-    fun execute(request: () -> HttpResponse): HttpResponse {
+    public fun execute(request: () -> HttpResponse): HttpResponse {
         var response = request.invoke()
         var attempt = 0
 
@@ -49,7 +49,7 @@ class Retryable(private val config: RetryBehavior) {
         return response
     }
 
-    companion object {
+    public companion object {
         private val log by LoggerDelegate()
     }
 }

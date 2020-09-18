@@ -14,7 +14,7 @@ import java.net.URL
  * Handles serialization and deserialization of objects to/from JSON.
  * @since 1.0.0
  */
-object Json {
+public object Json {
 
     private val gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
 
@@ -24,7 +24,7 @@ object Json {
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
      */
-    inline fun <reified T> parseJson(json: String): T? {
+    public inline fun <reified T> parseJson(json: String): T? {
         return Klaxon()
                 .converter(AnimeKlaxonConverter())
                 .parse<T>(json)
@@ -36,7 +36,7 @@ object Json {
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
-    inline fun <reified T> parseJson(json: InputStream): T? {
+    public inline fun <reified T> parseJson(json: InputStream): T? {
         return Klaxon()
                 .converter(AnimeKlaxonConverter())
                 .parse<T>(json)
@@ -48,7 +48,7 @@ object Json {
      * @param obj Any object that is supposed to be serialized to JSON.
      * @return Given object serialized in JSON as [String]
      */
-    fun toJson(obj: Any): String = gson.toJson(obj)
+    public fun toJson(obj: Any): String = gson.toJson(obj)
 }
 
 

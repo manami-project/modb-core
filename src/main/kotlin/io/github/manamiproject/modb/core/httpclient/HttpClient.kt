@@ -9,7 +9,7 @@ import java.net.URL
  * Defines a HTTP client.
  * @since 1.0.0
  */
-interface HttpClient {
+public interface HttpClient {
 
     /**
      * Performs a HTTP POST request with a [RequestBody]
@@ -23,7 +23,7 @@ interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    fun post(url: URL, requestBody: RequestBody, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public fun post(url: URL, requestBody: RequestBody, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Performs a HTTP GET request.
@@ -36,7 +36,7 @@ interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    fun get(url: URL, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public fun get(url: URL, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
@@ -48,5 +48,5 @@ interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse
+    public fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse
 }

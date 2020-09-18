@@ -8,7 +8,7 @@ import io.github.manamiproject.modb.core.models.Anime
  * Downloads raw content containing data which describes an anime
  * @since 1.0.0
  */
-interface Downloader {
+public interface Downloader {
 
     /**
      * Downloads raw data for a specific anime which then can be converted into an [Anime] using an [AnimeConverter]
@@ -18,5 +18,5 @@ interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
-    fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
+    public fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
 }

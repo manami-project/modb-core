@@ -312,7 +312,7 @@ internal class SortedListTest {
 
             val list2 = SortedList(
                     list = mutableListOf("C", "B", "A"),
-                    comparator = Comparator { o1, o2 -> o1.compareTo(o2) * -1 }
+                    comparator = { o1, o2 -> o1.compareTo(o2) * -1 }
             )
 
             // when
@@ -354,7 +354,7 @@ internal class SortedListTest {
 
             val list2 = SortedList(
                     list = mutableListOf(1, 2, 3),
-                    comparator = Comparator { o1, o2 -> o1.compareTo(o2) }
+                    comparator = { o1, o2 -> o1.compareTo(o2) }
             )
 
             // when

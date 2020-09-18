@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.collections
 
+import java.util.Comparator
 import java.net.URL
 import java.util.function.Predicate
 
@@ -9,7 +10,7 @@ import java.util.function.Predicate
  * @param list Initial list of elements. **Default:** empty list
  * @param comparator Comparator used to sort the elements
  */
-class SortedList<T>(
+public class SortedList<T>(
         private val list: MutableList<T> = mutableListOf(),
         private val comparator: Comparator<T>
 ) : MutableList<T> by list {
@@ -95,17 +96,17 @@ class SortedList<T>(
         return list.toList().hashCode()
     }
 
-    companion object {
+    public companion object {
         /**
          * Comparator for [URL]s
          * @since 2.1.0
          */
-        val URL_COMPARATOR = Comparator<URL> { o1, o2 -> o1.toString().compareTo(o2.toString()) }
+        public val URL_COMPARATOR: Comparator<URL> = Comparator { o1, o2 -> o1.toString().compareTo(o2.toString()) }
 
         /**
          * Comparator for [String]s
          * @since 2.1.0
          */
-        val STRING_COMPARATOR = Comparator<String> { o1, o2 -> o1.compareTo(o2) }
+        public val STRING_COMPARATOR: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }
     }
 }

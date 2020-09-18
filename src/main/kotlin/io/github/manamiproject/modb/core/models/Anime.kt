@@ -13,7 +13,7 @@ import java.net.URL
 /**
  * @since 1.0.0
  */
-typealias Episodes = Int
+public typealias Episodes = Int
 
 /**
  * @since 1.0.0
@@ -27,7 +27,7 @@ typealias Episodes = Int
  * @param duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
  * @throws IllegalArgumentException if _title is blank
  */
-data class Anime(
+public data class Anime(
     private var _title: String,
     val type: Type = TV,
     val episodes: Episodes = 0,
@@ -88,7 +88,7 @@ data class Anime(
      * @param synonyms List of synonyms
      * @return Same instance
      */
-    fun addSynonyms(synonyms: List<String>): Anime {
+    public fun addSynonyms(synonyms: List<String>): Anime {
         synonyms.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
@@ -105,7 +105,7 @@ data class Anime(
      * @param sources List of sources
      * @return Same instance
      */
-    fun addSources(sources: List<URL>): Anime {
+    public fun addSources(sources: List<URL>): Anime {
         sources.asSequence()
             .filterNot { _sources.contains(it) }
             .forEach { _sources.add(it) }
@@ -121,7 +121,7 @@ data class Anime(
      * @param relatedAnime List of related anime
      * @return Same instance
      */
-    fun addRelations(relatedAnime: List<URL>): Anime {
+    public fun addRelations(relatedAnime: List<URL>): Anime {
         relatedAnime.asSequence()
             .filter { !_relatedAnime.contains(it) && !_sources.contains(it) }
             .forEach { _relatedAnime.add(it) }
@@ -135,7 +135,7 @@ data class Anime(
      * @param tags List of tags
      * @return Same instance
      */
-    fun addTags(tags: List<String>): Anime {
+    public fun addTags(tags: List<String>): Anime {
         tags.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
@@ -152,7 +152,7 @@ data class Anime(
      * @param condition If the this condition applied to a related anime url matches, then the [URL] will be removed from [relatedAnime]
      * @return Same instance
      */
-    fun removeRelationIf(condition: (URL) -> Boolean): Anime {
+    public fun removeRelationIf(condition: (URL) -> Boolean): Anime {
         _relatedAnime.removeIf { condition.invoke(it) }
         return this
     }
@@ -168,7 +168,7 @@ data class Anime(
      * @param anime
      * @return Same instance
      */
-    fun mergeWith(anime: Anime): Anime {
+    public fun mergeWith(anime: Anime): Anime {
         addSynonyms(listOf(anime.title))
         addSynonyms(anime.synonyms)
         addSources(anime.sources)
@@ -271,7 +271,7 @@ data class Anime(
      * Distribution type of an anime.
      * @since 1.0.0
      */
-    enum class Type {
+    public enum class Type {
         TV,
         Movie,
         /** Original Video Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_video_animation) */
@@ -285,7 +285,7 @@ data class Anime(
      * Distribution status of an anime.
      * @since 1.0.0
      */
-    enum class Status {
+    public enum class Status {
         /** Finished airing or has been released completely. */
         FINISHED,
         /** Currently airing or releasing. */

@@ -12,7 +12,7 @@ import kotlin.streams.toList
  * @param animeConverter Converter for the raw content
  * @param fileSuffix File suffix to determine which files to include
  */
-class DefaultPathConverter(
+public class DefaultPathConverter(
     private val animeConverter: AnimeConverter,
     private val fileSuffix: FileSuffix
 ) : PathConverter {

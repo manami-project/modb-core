@@ -7,4 +7,4 @@ import io.github.manamiproject.modb.core.config.AnimeId
  * @since 1.0.0
  * @return Converted anime id
  */
-fun Int.toAnimeId(): AnimeId = this.toString()
+public fun Int.toAnimeId(): AnimeId = this.toString()

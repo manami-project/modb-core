@@ -22,7 +22,7 @@ import java.io.BufferedReader
  * @return Content of a file as [String]
  * @throws IllegalStateException If the given path does not exist.
  */
-fun loadResource(path: String): String {
+public fun loadResource(path: String): String {
     require(path.isNotBlank()) { "Given path must not be blank" }
 
     return ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()

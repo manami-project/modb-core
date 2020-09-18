@@ -4,13 +4,13 @@ package io.github.manamiproject.modb.core.extensions
  * Constant for empty [String]
  * @since 1.0.0
  */
-const val EMPTY = ""
+public const val EMPTY: String = ""
 
 /**
  * File suffix of lock files indicating that a file is currently being written.
  * @since 1.0.0
  */
-const val LOCK_FILE_SUFFIX = "lck"
+public const val LOCK_FILE_SUFFIX: String = "lck"
 
 /**
  * Writes a [String] into a [RegularFile]. If the file already exists it will be overwritten.
@@ -21,7 +21,7 @@ const val LOCK_FILE_SUFFIX = "lck"
  * **Default** is `false`.
  * @throws IllegalStateException if the given [String] is blank
  */
-fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false) {
+public fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false) {
     check(this.isNotBlank()) { "Trying to write file [$file], but string was blank" }
 
     val lockFile = file.changeSuffix(LOCK_FILE_SUFFIX)

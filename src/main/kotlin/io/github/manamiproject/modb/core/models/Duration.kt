@@ -6,7 +6,7 @@ import java.util.*
 /**
  * @since 1.0.0
  */
-typealias Seconds = Int
+public typealias Seconds = Int
 
 /**
  * Duration of an anime.
@@ -14,7 +14,7 @@ typealias Seconds = Int
  * @param value The duration
  * @param unit Indicates whether the [value] refers to seconds, minutes or hours.
  */
-data class Duration(
+public data class Duration(
     private val value: Int,
     private val unit: TimeUnit
 ) {
@@ -36,7 +36,7 @@ data class Duration(
      * @since 1.0.0
      * @return Value in seconds followed by `seconds`
      */
-    override fun toString() = "$duration seconds"
+    override fun toString(): String = "$duration seconds"
 
     override fun equals(other: Any?): Boolean {
         if (other !is Duration) {
@@ -46,12 +46,12 @@ data class Duration(
         return duration == other.duration
     }
 
-    override fun hashCode() = Objects.hash(duration)
+    override fun hashCode(): Int = Objects.hash(duration)
 
     /**
      * @since 1.0.0
      */
-    enum class TimeUnit {
+    public enum class TimeUnit {
         HOURS,
         MINUTES,
         SECONDS

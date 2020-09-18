@@ -5,4 +5,4 @@ package io.github.manamiproject.modb.core.httpclient.retry
  * @since 1.0.0
  * @param message Individual message
  */
-class FailedAfterRetryException(message: String) : RuntimeException(message)
+public class FailedAfterRetryException(message: String) : RuntimeException(message)

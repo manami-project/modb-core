@@ -12,7 +12,7 @@ import java.util.*
  * @throws IllegalStateException If the given numbers are equal
  * @return A random number withing the given bounds.
  */
-fun random(number1: Int, number2: Int): Long {
+public fun random(number1: Int, number2: Int): Long {
     require(number1 != number2) { "Numbers cannot be equal." }
 
     val min = if (number1 < number2) number1 else number2
@@ -27,7 +27,7 @@ fun random(number1: Int, number2: Int): Long {
  * @param config Config of a meta data provider.
  * @param func Function to be executed if the current context is not the test context.
  */
-fun excludeFromTestContext(config: MetaDataProviderConfig, func: () -> Unit) {
+public fun excludeFromTestContext(config: MetaDataProviderConfig, func: () -> Unit) {
     if (!config.isTestContext()) {
         func.invoke()
     }

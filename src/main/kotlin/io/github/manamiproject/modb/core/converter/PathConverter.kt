@@ -7,7 +7,7 @@ import java.nio.file.Path
  * Converts files and direcoories into a single [Anime] or a [List] of [Anime]s
  * @since 1.0.0
  */
-interface PathConverter {
+public interface PathConverter {
 
     /**
      * Converts a file into a single [Anime] (wrapped in a [List]) or a directory into a [List] of [Anime]s.
@@ -16,5 +16,5 @@ interface PathConverter {
      * @return Converted [Anime]
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory
      */
-    fun convert(path: Path): List<Anime>
+    public fun convert(path: Path): List<Anime>
 }

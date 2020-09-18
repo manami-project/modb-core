@@ -13,13 +13,13 @@ import java.util.stream.Stream
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a directory.
  * @since 1.0.0
  */
-typealias Directory = Path
+public typealias Directory = Path
 
 /**
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a file.
  * @since 1.0.0
  */
-typealias RegularFile = Path
+public typealias RegularFile = Path
 
 /**
  * Creates a new [Path] instance with the file's suffix changed. A file is not created by this. If you want to create it
@@ -33,7 +33,7 @@ typealias RegularFile = Path
  * @param suffix Can be either a suffix with a leading dot (**example:** `.json`) or without a leading dot (**example:** `json`)
  * @return The modified [RegularFile] object
  */
-fun Path.changeSuffix(suffix: String): RegularFile {
+public fun Path.changeSuffix(suffix: String): RegularFile {
     if (this.directoryExists()) {
         return this
     }
@@ -67,7 +67,7 @@ fun Path.changeSuffix(suffix: String): RegularFile {
  * @since 1.0.0
  * @see Files.exists
  */
-fun Path.exists(vararg linkOption: LinkOption): Boolean = Files.exists(this, *linkOption)
+public fun Path.exists(vararg linkOption: LinkOption): Boolean = Files.exists(this, *linkOption)
 
 /**
  * Negated version of [exists]
@@ -75,28 +75,28 @@ fun Path.exists(vararg linkOption: LinkOption): Boolean = Files.exists(this, *li
  * @param linkOption Indicating how symbolic links are handled
  * @return `true` if the given doesn't exist
  */
-fun Path.notExists(vararg linkOption: LinkOption): Boolean = !Files.exists(this, *linkOption)
+public fun Path.notExists(vararg linkOption: LinkOption): Boolean = !Files.exists(this, *linkOption)
 
 /**
  * Convenience wrapper for [Files.createFile]
  * @since 1.0.0
  * @see Files.createFile
  */
-fun Path.createFile(vararg fileAttributes: FileAttribute<*>): Path = Files.createFile(this, *fileAttributes)
+public fun Path.createFile(vararg fileAttributes: FileAttribute<*>): Path = Files.createFile(this, *fileAttributes)
 
 /**
  * Convenience wrapper for [Files.createDirectory]
  * @since 1.0.0
  * @see Files.createDirectory
  */
-fun Path.createDirectory(vararg fileAttributes: FileAttribute<*>): Path = Files.createDirectory(this, *fileAttributes)
+public fun Path.createDirectory(vararg fileAttributes: FileAttribute<*>): Path = Files.createDirectory(this, *fileAttributes)
 
 /**
  * Convenience wrapper for [Files.deleteIfExists]
  * @since 1.0.0
  * @see Files.deleteIfExists
  */
-fun Path.deleteIfExists(): Boolean = Files.deleteIfExists(this)
+public fun Path.deleteIfExists(): Boolean = Files.deleteIfExists(this)
 
 /**
  * Checks whether the given [Path] is a regular file and exists.
@@ -104,7 +104,7 @@ fun Path.deleteIfExists(): Boolean = Files.deleteIfExists(this)
  * @param linkOption Indicating how symbolic links are handled
  * @returns `false` if one of the checks does not match.
  */
-fun Path.regularFileExists(vararg linkOption: LinkOption): Boolean = this.exists(*linkOption) && Files.isRegularFile(this, *linkOption)
+public fun Path.regularFileExists(vararg linkOption: LinkOption): Boolean = this.exists(*linkOption) && Files.isRegularFile(this, *linkOption)
 
 /**
  * Checks whether the given [Path] is a directory and exists.
@@ -112,21 +112,21 @@ fun Path.regularFileExists(vararg linkOption: LinkOption): Boolean = this.exists
  * @param linkOption Indicating how symbolic links are handled
  * @returns `false` if one of the checks does not match.
  */
-fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.exists(*linkOption) && Files.isDirectory(this, *linkOption)
+public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.exists(*linkOption) && Files.isDirectory(this, *linkOption)
 
 /**
  * Convenience wrapper for [Files.list]
  * @since 1.0.0
  * @see Files.list
  */
-fun Path.list(): Stream<Path> = Files.list(this)
+public fun Path.list(): Stream<Path> = Files.list(this)
 
 /**
  * Convenience wrapper for [Files.readAllLines]
  * @since 1.0.0
  * @see Files.readAllLines
  */
-fun Path.readAllLines(charset: Charset = UTF_8): List<String> = Files.readAllLines(this, charset)
+public fun Path.readAllLines(charset: Charset = UTF_8): List<String> = Files.readAllLines(this, charset)
 
 /**
  * Read the content of a file to a [String]
@@ -135,7 +135,7 @@ fun Path.readAllLines(charset: Charset = UTF_8): List<String> = Files.readAllLin
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-fun Path.readFile(charset: Charset = UTF_8): String {
+public fun Path.readFile(charset: Charset = UTF_8): String {
     return if (this.regularFileExists()) {
         this.readAllLines(charset).joinToString("\n")
     } else {
@@ -152,7 +152,7 @@ fun Path.readFile(charset: Charset = UTF_8): String {
  * @return The target as [Path] object
  * @throws FileAlreadyExistsException if the target already exists
  */
-fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
+public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
     val processedTarget = when {
         this.regularFileExists() && target.directoryExists() -> target.resolve(this.fileName)
         this.directoryExists() && target.directoryExists() -> target.resolve(this.fileName)
@@ -167,35 +167,35 @@ fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
  * @since 1.0.0
  * @see Files.write
  */
-fun Path.write(content: String, charset: Charset = UTF_8): RegularFile = Files.write(this, content.toByteArray(charset))
+public fun Path.write(content: String, charset: Charset = UTF_8): RegularFile = Files.write(this, content.toByteArray(charset))
 
 /**
  * Convenience wrapper for [Files.createDirectories]
  * @since 1.0.0
  * @see Files.createDirectories
  */
-fun Path.createDirectories(vararg attributes: FileAttribute<*>): Path = Files.createDirectories(this, *attributes)
+public fun Path.createDirectories(vararg attributes: FileAttribute<*>): Path = Files.createDirectories(this, *attributes)
 
 /**
  * Convenience wrapper for [Files.newInputStream]
  * @since 1.0.0
  * @see Files.newInputStream
  */
-fun Path.newInputStream(vararg options: OpenOption): InputStream = Files.newInputStream(this, *options)
+public fun Path.newInputStream(vararg options: OpenOption): InputStream = Files.newInputStream(this, *options)
 
 /**
  * Convenience wrapper for [Files.newOutputStream]
  * @since 1.0.0
  * @see Files.newOutputStream
  */
-fun Path.newOutputStream(vararg options: OpenOption): OutputStream = Files.newOutputStream(this, *options)
+public fun Path.newOutputStream(vararg options: OpenOption): OutputStream = Files.newOutputStream(this, *options)
 
 /**
  * Will return the name of either a [RegularFile] or a [Directory].
  * @since 2.2.0
  * @return The file name as a [String]
  */
-fun Path.fileName() = this.fileName.toString()
+public fun Path.fileName(): String = this.fileName.toString()
 
 /**
  * + Returns the suffix of a file name in form of `{name}.{suffix}`.
@@ -207,7 +207,7 @@ fun Path.fileName() = this.fileName.toString()
  * @since 2.2.0
  * @return Either the file suffix or the full file name
  */
-fun Path.fileSuffix(): FileSuffix {
+public fun Path.fileSuffix(): FileSuffix {
     val fileName = this.fileName.toString()
 
     return if (fileName.startsWith('.')) {

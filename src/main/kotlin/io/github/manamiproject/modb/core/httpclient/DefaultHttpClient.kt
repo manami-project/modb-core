@@ -21,7 +21,7 @@ import java.net.URL
  * @since 1.0.0
  * @param proxy **Default** is [NO_PROXY]
  */
-class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
+public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
 
     private val client = OkHttpClient.Builder()
         .proxy(proxy)
@@ -84,7 +84,7 @@ class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
         }
     }
 
-    companion object {
+    public companion object {
         private val log by LoggerDelegate()
     }
 }

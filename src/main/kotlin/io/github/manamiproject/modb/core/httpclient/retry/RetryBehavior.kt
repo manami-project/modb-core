@@ -6,7 +6,7 @@ import io.github.manamiproject.modb.core.httpclient.HttpResponseCode
 /**
  * @since 1.0.0
  */
-typealias Milliseconds = Long
+public typealias Milliseconds = Long
 
 /**
  * Configuration to individualize the behavior of a [Retryable].
@@ -16,7 +16,7 @@ typealias Milliseconds = Long
  * @param waitDuration Number milliseconds to wait before the retry is actually executed.
  * @param retryOnResponsePredicate Defines in which case a retry should be performed. The predicate has to return `true` in order to perform a retry.
  */
-data class RetryBehavior(
+public data class RetryBehavior(
     val maxAttempts: Int = 3,
     val waitDuration: () -> Milliseconds = { 0L },
     val retryOnResponsePredicate: (HttpResponse) -> Boolean
@@ -37,7 +37,7 @@ data class RetryBehavior(
      * @param executeBeforeRetry Function to execute before performing the retry if the [HttpResponse] contains the given [responseCode]
      * @return `true` if the entry was added successfully or `or` if an entry for the given [responseCode] already exists.
      */
-    fun addExecuteBeforeRetryPredicate(responseCode: HttpResponseCode, executeBeforeRetry: () -> Unit): Boolean {
+    public fun addExecuteBeforeRetryPredicate(responseCode: HttpResponseCode, executeBeforeRetry: () -> Unit): Boolean {
         return if (responseCodeBehavior.containsKey(responseCode)) {
             false
         } else {

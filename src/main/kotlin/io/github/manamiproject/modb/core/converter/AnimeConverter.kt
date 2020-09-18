@@ -6,7 +6,7 @@ import io.github.manamiproject.modb.core.models.Anime
  * Converts raw content in form of a [String] into an [Anime]
  * @since 1.0.0
  */
-interface AnimeConverter {
+public interface AnimeConverter {
 
     /**
      * Converts a [String] into an [Anime].
@@ -14,5 +14,5 @@ interface AnimeConverter {
      * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */
-    fun convert(rawContent: String): Anime
+    public fun convert(rawContent: String): Anime
 }

@@ -7,7 +7,7 @@ import java.security.SecureRandom
  * @since 1.0.0
  * @return The randomized list
  */
-fun <T> List<T>.createShuffledList(): List<T> {
+public fun <T> List<T>.createShuffledList(): List<T> {
     if (this.isEmpty() || this.size == 1) {
         return this
     }
@@ -33,7 +33,7 @@ fun <T> List<T>.createShuffledList(): List<T> {
  * @since 1.0.0
  * @return `true` if both lists are completely identical.
  */
-fun <T> List<T>.containsExactlyInTheSameOrder(otherList: List<T>): Boolean {
+public fun <T> List<T>.containsExactlyInTheSameOrder(otherList: List<T>): Boolean {
     if (this.size != otherList.size) return false
 
     this.forEachIndexed { index, value ->
@@ -51,7 +51,7 @@ fun <T> List<T>.containsExactlyInTheSameOrder(otherList: List<T>): Boolean {
  * @return A random element from the given list.
  * @throws IllegalStateException if the list is empty
  */
-fun <T> List<T>.pickRandom(): T {
+public fun <T> List<T>.pickRandom(): T {
     return when (this.size) {
         0 -> throw IllegalStateException("Cannot pick random element from empty list.")
         1 -> this.first()

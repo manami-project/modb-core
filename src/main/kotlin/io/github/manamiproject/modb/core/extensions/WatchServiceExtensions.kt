@@ -9,7 +9,7 @@ import java.nio.file.WatchService
  * @since 1.0.0
  * @return Either a [WatchKey] or `null`
  */
-fun WatchService.takeOrNull(): WatchKey? {
+public fun WatchService.takeOrNull(): WatchKey? {
     return try {
         this.take()
     } catch (e: ClosedWatchServiceException) {

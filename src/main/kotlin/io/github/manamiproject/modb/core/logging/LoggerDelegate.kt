@@ -15,8 +15,8 @@ import kotlin.reflect.KProperty
  * ```
  * @since 1.0.0
  */
-class LoggerDelegate {
-    operator fun getValue(thisRef: Any, property: KProperty<*>): Logger {
+public class LoggerDelegate {
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Logger {
         return LoggerFactory.getLogger(thisRef::class.java)
     }
 }

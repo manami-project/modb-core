@@ -6,7 +6,7 @@ import io.github.manamiproject.modb.core.logging.LoggerDelegate
  * Stores [RetryBehavior] using an identifier so that they can be shared easily.
  * @since 1.0.0
  */
-object RetryableRegistry {
+public object RetryableRegistry {
 
     private val log by LoggerDelegate()
     private val retries = mutableMapOf<String, Retryable>()
@@ -18,7 +18,7 @@ object RetryableRegistry {
      * @param retryBehaviorConfig Config which is stored in the registry and used to create [Retryable]s
      * @return `true` if the regstration was successfully or `false` nothing has been saved, because an entry with the given [name] already exists
      */
-    fun register(name: String, retryBehaviorConfig: RetryBehavior): Boolean {
+    public fun register(name: String, retryBehaviorConfig: RetryBehavior): Boolean {
         return if (retries.containsKey(name)) {
             log.warn("RetryBehaviorConfig named [{}] already exists in repository", name)
             false
@@ -35,7 +35,7 @@ object RetryableRegistry {
      * @return `true` if the entry with the given [name] has been removed or `false` if nothing has been removed, because an entry with
      * the given [name] doesn't exist.
      */
-    fun deregister(name: String): Boolean {
+    public fun deregister(name: String): Boolean {
         return if (retries.containsKey(name)) {
             retries.remove(name)
             log.info("RetryBehaviorConfig named [{}] successfully removed.", name)
@@ -52,11 +52,11 @@ object RetryableRegistry {
      * @param name Identifier under which a [RetryBehavior] has been registered
      * @return A [Retryable] which uses the [RetryBehavior]
      */
-    fun fetch(name: String): Retryable? = retries[name]
+    public fun fetch(name: String): Retryable? = retries[name]
 
     /**
      * Removes all registered entries.
      * @since 1.0.0
      */
-    fun clear() = retries.clear()
+    public fun clear(): Unit = retries.clear()
 }
