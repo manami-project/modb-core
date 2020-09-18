@@ -84,7 +84,7 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
         }
     }
 
-    public companion object {
+    private companion object {
         private val log by LoggerDelegate()
     }
 }

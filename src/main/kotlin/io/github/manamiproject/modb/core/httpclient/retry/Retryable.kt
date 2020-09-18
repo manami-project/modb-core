@@ -49,7 +49,7 @@ public class Retryable(private val config: RetryBehavior) {
         return response
     }
 
-    public companion object {
+    private companion object {
         private val log by LoggerDelegate()
     }
 }
