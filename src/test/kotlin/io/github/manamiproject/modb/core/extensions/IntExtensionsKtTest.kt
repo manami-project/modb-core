@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.extensions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class IntExtensionsKtTest {
+internal class IntExtensionsKtTest {
 
     @Test
     fun `converts an Int to an AnimeId which is a typealias for String`() {
