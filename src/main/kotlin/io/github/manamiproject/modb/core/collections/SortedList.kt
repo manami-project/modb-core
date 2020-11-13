@@ -1,7 +1,7 @@
 package io.github.manamiproject.modb.core.collections
 
+import java.net.URI
 import java.util.Comparator
-import java.net.URL
 import java.util.function.Predicate
 
 /**
@@ -97,11 +97,12 @@ public class SortedList<T>(
     }
 
     public companion object {
+
         /**
-         * Comparator for [URL]s
-         * @since 2.1.0
+         * Comparator for [URI]s
+         * @since 3.0.0
          */
-        public val URL_COMPARATOR: Comparator<URL> = Comparator { o1, o2 -> o1.toString().compareTo(o2.toString()) }
+        public val URI_COMPARATOR: Comparator<URI> = Comparator { o1, o2 -> o1.toString().compareTo(o2.toString()) }
 
         /**
          * Comparator for [String]s

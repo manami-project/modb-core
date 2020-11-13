@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.net.URL
+import java.net.URI
 
 internal class MetaDataProviderConfigKtTest {
 
@@ -25,7 +25,7 @@ internal class MetaDataProviderConfigKtTest {
     }
 
     @Test
-    fun `default anime url link is hostname -slash- anime -slash- id`() {
+    fun `default anime uri link is hostname -slash- anime -slash- id`() {
         // given
         val testConfig = object: MetaDataProviderConfig {
             override fun hostname(): Hostname = "example.org"
@@ -35,14 +35,14 @@ internal class MetaDataProviderConfigKtTest {
         val id = "4hf57"
 
         // when
-        val result = testConfig.buildAnimeLinkUrl(id)
+        val result = testConfig.buildAnimeLink(id)
 
         // then
-        assertThat(result).isEqualTo(URL("https://example.org/anime/4hf57"))
+        assertThat(result).isEqualTo(URI("https://example.org/anime/4hf57"))
     }
 
     @Test
-    fun `buildDataDownloadUrl creates the same url as buildAnimeLinkUrl`() {
+    fun `buildDataDownloadLink creates the same uri as buildAnimeLink`() {
         // given
         val testConfig = object: MetaDataProviderConfig {
             override fun hostname(): Hostname = "example.org"
@@ -52,31 +52,31 @@ internal class MetaDataProviderConfigKtTest {
         val id = "4hf57"
 
         // when
-        val result = testConfig.buildDataDownloadUrl(id)
+        val result = testConfig.buildDataDownloadLink(id)
 
         // then
-        assertThat(result).isEqualTo(testConfig.buildAnimeLinkUrl(id))
+        assertThat(result).isEqualTo(testConfig.buildAnimeLink(id))
     }
 
     @Nested
     inner class ExtractAnimeIdTests {
 
         @Test
-        fun `throws exception if the url does not contain the hostname of the config`() {
+        fun `throws exception if the uri does not contain the hostname of the config`() {
             // given
             val config = object: MetaDataProviderConfig {
                 override fun hostname(): Hostname = "example.org"
-                override fun buildAnimeLinkUrl(id: AnimeId): URL = URL("https://${hostname()}/some/other/path/$id")
+                override fun buildAnimeLink(id: AnimeId): URI = URI("https://${hostname()}/some/other/path/$id")
                 override fun fileSuffix(): FileSuffix = shouldNotBeInvoked()
             }
 
             // when
             val result = assertThrows<IllegalArgumentException> {
-                config.extractAnimeId(URL("https://myanimelist.net/anime/1535"))
+                config.extractAnimeId(URI("https://myanimelist.net/anime/1535"))
             }
 
             // then
-            assertThat(result).hasMessage("URL doesn't contain hostname [example.org]")
+            assertThat(result).hasMessage("URI doesn't contain hostname [example.org]")
         }
 
         @Test
@@ -84,15 +84,15 @@ internal class MetaDataProviderConfigKtTest {
             // given
             val config = object: MetaDataProviderConfig {
                 override fun hostname(): Hostname = "example.org"
-                override fun buildAnimeLinkUrl(id: AnimeId): URL = URL("https://${hostname()}/some/other/path/$id")
+                override fun buildAnimeLink(id: AnimeId): URI = URI("https://${hostname()}/some/other/path/$id")
                 override fun fileSuffix(): FileSuffix = shouldNotBeInvoked()
             }
 
             val id = "3j4--21f"
-            val url = config.buildAnimeLinkUrl(id)
+            val uri = config.buildAnimeLink(id)
 
             // when
-            val result = config.extractAnimeId(url)
+            val result = config.extractAnimeId(uri)
 
             // then
             assertThat(result).isEqualTo(id)

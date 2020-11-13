@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.net.URL
+import java.net.URI
 
 internal class AnimeKtTest {
 
@@ -566,7 +566,7 @@ internal class AnimeKtTest {
         @Test
         fun `cannot add duplicated source link`() {
             // given
-            val source = URL("https://myanimelist.net/anime/1535")
+            val source = URI("https://myanimelist.net/anime/1535")
             val anime = Anime(
                 _title =  "Death Note"
             ).addSources(mutableListOf(source))
@@ -583,10 +583,10 @@ internal class AnimeKtTest {
             // given
             val anime = Anime("Death Note")
 
-            val four = URL("https://myanimelist.net/anime/1535")
-            val two = URL("https://anilist.co/anime/1535")
-            val three = URL("https://kitsu.io/anime/1376")
-            val one = URL("https://anidb.net/anime/4563")
+            val four = URI("https://myanimelist.net/anime/1535")
+            val two = URI("https://anilist.co/anime/1535")
+            val three = URI("https://kitsu.io/anime/1376")
+            val one = URI("https://anidb.net/anime/4563")
 
             // when
             anime.addSources(listOf(four, two, three, one))
@@ -596,9 +596,9 @@ internal class AnimeKtTest {
         }
 
         @Test
-        fun `remove related anime if the same url has been added to sources`() {
+        fun `remove related anime if the same uri has been added to sources`() {
             // given
-            val source = URL("https://myanimelist.net/anime/1535")
+            val source = URI("https://myanimelist.net/anime/1535")
             val anime = Anime(
                     _title =  "Death Note"
             ).addRelations(mutableListOf(source))
@@ -618,7 +618,7 @@ internal class AnimeKtTest {
         @Test
         fun `add related anime`() {
             // given
-            val relatedAnime = URL("https://myanimelist.net/anime/2994")
+            val relatedAnime = URI("https://myanimelist.net/anime/2994")
             val anime = Anime(
                 _title =  "Death Note"
             )
@@ -633,7 +633,7 @@ internal class AnimeKtTest {
         @Test
         fun `cannot add duplicated link for related anime`() {
             // given
-            val relatedAnime = URL("https://myanimelist.net/anime/2994")
+            val relatedAnime = URI("https://myanimelist.net/anime/2994")
             val anime = Anime(
                 _title =  "Death Note"
             ).addRelations(mutableListOf(relatedAnime))
@@ -650,10 +650,10 @@ internal class AnimeKtTest {
             // given
             val anime = Anime("Death Note")
 
-            val four = URL("https://myanimelist.net/anime/2994")
-            val two = URL("https://anidb.net/anime/8146")
-            val three = URL("https://anidb.net/anime/8147")
-            val one = URL("http://anilist.co/anime/2994")
+            val four = URI("https://myanimelist.net/anime/2994")
+            val two = URI("https://anidb.net/anime/8146")
+            val three = URI("https://anidb.net/anime/8147")
+            val one = URI("http://anilist.co/anime/2994")
 
             // when
             anime.addRelations(listOf(four, two, three, one))
@@ -665,7 +665,7 @@ internal class AnimeKtTest {
         @Test
         fun `cannot add a related anime if the links is already part of the sources`() {
             // given
-            val link = URL("https://myanimelist.net/anime/1535")
+            val link = URI("https://myanimelist.net/anime/1535")
             val anime = Anime(
                 _title =  "Death Note"
             ).addSources(mutableListOf(link))
@@ -680,7 +680,7 @@ internal class AnimeKtTest {
         @Test
         fun `remove related anime`() {
             // given
-            val relatedAnime = URL("https://myanimelist.net/anime/2994")
+            val relatedAnime = URI("https://myanimelist.net/anime/2994")
             val anime = Anime(
                 _title =  "Death Note"
             ).addRelations(mutableListOf(relatedAnime))
@@ -702,12 +702,12 @@ internal class AnimeKtTest {
             val title =  "Death Note"
             val a = Anime(
                 _title = title
-            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
+            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
 
 
             val b = Anime(
                 _title = title
-            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
+            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
 
             // when
             val result = a == b
@@ -723,14 +723,14 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addSources(mutableListOf(URL("https://myanimelist.net/anime/1535")))
+            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
 
             val b = Anime(
                 _title =  title
             ).addSources(
                     mutableListOf(
-                            URL("https://myanimelist.net/anime/1535"),
-                            URL("https://anidb.net/anime/4563")
+                        URI("https://myanimelist.net/anime/1535"),
+                        URI("https://anidb.net/anime/4563")
                     )
             )
 
@@ -748,11 +748,11 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
+            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
 
             val b = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
+            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
 
             // when
             val result = a == b
@@ -768,14 +768,14 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URL("https://myanimelist.net/anime/2994")))
+            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
 
             val b = Anime(
                 _title =  title
             ).addRelations(
                     mutableListOf(
-                            URL("https://myanimelist.net/anime/2994"),
-                            URL("http://anilist.co/anime/2994")
+                        URI("https://myanimelist.net/anime/2994"),
+                        URI("http://anilist.co/anime/2994")
                     )
             )
 
@@ -929,12 +929,11 @@ internal class AnimeKtTest {
                 _title =  "Death Note"
             ).addSources(
                     mutableListOf(
-                            URL("https://myanimelist.net/anime/1535"
-                            )
+                        URI("https://myanimelist.net/anime/1535")
                     )
             ).addRelations(
                     mutableListOf(
-                            URL("https://myanimelist.net/anime/2994")
+                        URI("https://myanimelist.net/anime/2994")
                     )
             )
 
@@ -942,12 +941,12 @@ internal class AnimeKtTest {
                 _title =  "Death Note"
             ).addSources(
                     mutableListOf(
-                            URL("https://anidb.net/anime/4563")
+                        URI("https://anidb.net/anime/4563")
                     )
             ).addRelations(
                     mutableListOf(
-                            URL("https://anidb.net/anime/8146"),
-                            URL("https://anidb.net/anime/8147")
+                        URI("https://anidb.net/anime/8146"),
+                        URI("https://anidb.net/anime/8147")
                     )
             )
 
@@ -956,13 +955,13 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result.sources).containsExactly(
-                URL("https://anidb.net/anime/4563"),
-                URL("https://myanimelist.net/anime/1535")
+                URI("https://anidb.net/anime/4563"),
+                URI("https://myanimelist.net/anime/1535")
             )
             assertThat(result.relatedAnime).containsExactly(
-                URL("https://anidb.net/anime/8146"),
-                URL("https://anidb.net/anime/8147"),
-                URL("https://myanimelist.net/anime/2994")
+                URI("https://anidb.net/anime/8146"),
+                URI("https://anidb.net/anime/8147"),
+                URI("https://myanimelist.net/anime/2994")
             )
         }
 
@@ -1022,19 +1021,19 @@ internal class AnimeKtTest {
             val anime = Anime(
                 _title =  "Death Note"
             ).addSources(
-                    mutableListOf(URL("https://myanimelist.net/anime/1535"))
+                    mutableListOf(URI("https://myanimelist.net/anime/1535"))
             ).addRelations(
-                    mutableListOf(URL("https://myanimelist.net/anime/2994"))
+                    mutableListOf(URI("https://myanimelist.net/anime/2994"))
             )
 
             val other = Anime(
                 _title =  "Death Note"
             ).addSources(
-                    mutableListOf(URL("https://anidb.net/anime/4563"))
+                    mutableListOf(URI("https://anidb.net/anime/4563"))
             ).addRelations(
                     mutableListOf(
-                            URL("https://anidb.net/anime/8146"),
-                            URL("https://anidb.net/anime/8147")
+                        URI("https://anidb.net/anime/8146"),
+                        URI("https://anidb.net/anime/8147")
                     )
             )
 
@@ -1043,13 +1042,13 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result.sources).containsExactly(
-                URL("https://anidb.net/anime/4563"),
-                URL("https://myanimelist.net/anime/1535")
+                URI("https://anidb.net/anime/4563"),
+                URI("https://myanimelist.net/anime/1535")
             )
             assertThat(result.relatedAnime).containsExactly(
-                URL("https://anidb.net/anime/8146"),
-                URL("https://anidb.net/anime/8147"),
-                URL("https://myanimelist.net/anime/2994")
+                URI("https://anidb.net/anime/8146"),
+                URI("https://anidb.net/anime/8147"),
+                URI("https://myanimelist.net/anime/2994")
             )
         }
 
@@ -1576,10 +1575,10 @@ internal class AnimeKtTest {
                             season = SUMMER,
                             _year = 2009
                     ),
-                    picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-                    thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg")
+                    picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                    thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg")
             ).apply {
-                addSources(listOf(URL("https://myanimelist.net/anime/6351")))
+                addSources(listOf(URI("https://myanimelist.net/anime/6351")))
                 addSynonyms(
                         listOf(
                                 "Clannad ~After Story~: Another World, Kyou Chapter",
@@ -1587,7 +1586,7 @@ internal class AnimeKtTest {
                                 "クラナド　アフターストーリー　もうひとつの世界　杏編"
                         )
                 )
-                addRelations(listOf(URL("https://myanimelist.net/anime/2167")))
+                addRelations(listOf(URI("https://myanimelist.net/anime/2167")))
                 addTags(
                         listOf(
                                 "comedy",

@@ -8,7 +8,7 @@ import io.github.manamiproject.modb.core.models.Anime.Type
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit as DurationUnit
 import java.io.InputStream
-import java.net.URL
+import java.net.URI
 
 /**
  * Handles serialization and deserialization of objects to/from JSON.
@@ -69,15 +69,15 @@ internal class AnimeKlaxonConverter : Converter {
                 _year = (jv.obj?.get("animeSeason") as JsonObject).int("_year") ?: 0,
                 season = Season.of((jv.obj?.get("animeSeason") as JsonObject).string("season")!!)
             ),
-            thumbnail = URL(jv.objString("thumbnail")),
-            picture = URL(jv.objString("picture")),
+            thumbnail = URI(jv.objString("thumbnail")),
+            picture = URI(jv.objString("picture")),
             duration = Duration(
                 value = (jv.obj?.get("duration") as JsonObject).int("value")!!,
                 unit = DurationUnit.valueOf((jv.obj?.get("duration") as JsonObject).string("unit")!!)
             )
         ).addSynonyms((jv.obj?.get("_synonyms") as JsonArray<*>).value.map { it as String }.toMutableList())
-         .addSources((jv.obj?.get("_sources") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList())
-         .addRelations((jv.obj?.get("_relatedAnime") as JsonArray<*>).value.map { it as String }.map { URL(it) }.toMutableList())
+         .addSources((jv.obj?.get("_sources") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
+         .addRelations((jv.obj?.get("_relatedAnime") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
          .addTags((jv.obj?.get("_tags") as JsonArray<*>).value.map { it as String }.toMutableList())
     }
 }

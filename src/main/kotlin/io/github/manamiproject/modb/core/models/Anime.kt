@@ -2,18 +2,30 @@ package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.URL_COMPARATOR
+import io.github.manamiproject.modb.core.collections.SortedList.Companion.URI_COMPARATOR
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.models.Anime.Status.UNKNOWN
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
-import java.net.URL
+import java.net.URI
+
 
 /**
  * @since 1.0.0
  */
 public typealias Episodes = Int
+
+/**
+ * @since 3.0.0
+ */
+public typealias Tag = String
+
+/**
+ * @since 3.0.0
+ */
+public typealias Title = String
+
 
 /**
  * @since 1.0.0
@@ -22,19 +34,19 @@ public typealias Episodes = Int
  * @param episodes Number of episodes. **Default** is `0`
  * @param status Publishing status. **Default** is [UNKNOWN]
  * @param animeSeason In which season did the anime premiere
- * @param picture URL to a (large) poster/cover
- * @param thumbnail URL to a thumbnail poster/cover
+ * @param picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
+ * @param thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
  * @param duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
  * @throws IllegalArgumentException if _title is blank
  */
 public data class Anime(
-    private var _title: String,
+    private var _title: Title,
     val type: Type = TV,
     val episodes: Episodes = 0,
     val status: Status = UNKNOWN,
     val animeSeason: AnimeSeason = AnimeSeason(),
-    val picture: URL = URL("https://cdn.myanimelist.net/images/qm_50.gif"),
-    val thumbnail: URL = URL("https://cdn.myanimelist.net/images/qm_50.gif"),
+    val picture: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
+    val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val duration: Duration = Duration(0, SECONDS)
 ) {
 
@@ -42,40 +54,40 @@ public data class Anime(
      * Main title.
      * @since 1.0.0
      */
-    val title: String
+    val title: Title
         get() = _title
 
     /**
      * Duplicate-free list of related anime. Sorted ascending.
      * @since 1.0.0
      */
-    val sources: List<URL>
+    val sources: List<URI>
         get() = _sources
-    private var _sources: SortedList<URL> = SortedList(comparator = URL_COMPARATOR)
+    private var _sources: SortedList<URI> = SortedList(comparator = URI_COMPARATOR)
 
     /**
      * Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
      * @since 1.0.0
      */
-    val synonyms: List<String>
+    val synonyms: List<Title>
         get() = _synonyms
-    private var _synonyms: SortedList<String> = SortedList(comparator = STRING_COMPARATOR)
+    private var _synonyms: SortedList<Title> = SortedList(comparator = STRING_COMPARATOR)
 
     /**
      * Duplicate-free list of related anime. Sorted ascending.
      * @since 1.0.0
      */
-    val relatedAnime: List<URL>
+    val relatedAnime: List<URI>
         get() = _relatedAnime
-    private var _relatedAnime: SortedList<URL> = SortedList(comparator = URL_COMPARATOR)
+    private var _relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR)
 
     /**
      * Duplicate-free list of tags. Sorted ascending. All tags are lower case.
      * @since 1.0.0
      */
-    val tags: List<String>
+    val tags: List<Tag>
         get() = _tags
-    private var _tags: SortedList<String> = SortedList(comparator = STRING_COMPARATOR)
+    private var _tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR)
 
     init {
         require(_title.isNotBlank()) { "Title cannot be blank." }
@@ -88,7 +100,7 @@ public data class Anime(
      * @param synonyms List of synonyms
      * @return Same instance
      */
-    public fun addSynonyms(synonyms: List<String>): Anime {
+    public fun addSynonyms(synonyms: List<Title>): Anime {
         synonyms.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
@@ -105,7 +117,7 @@ public data class Anime(
      * @param sources List of sources
      * @return Same instance
      */
-    public fun addSources(sources: List<URL>): Anime {
+    public fun addSources(sources: List<URI>): Anime {
         sources.asSequence()
             .filterNot { _sources.contains(it) }
             .forEach { _sources.add(it) }
@@ -121,7 +133,7 @@ public data class Anime(
      * @param relatedAnime List of related anime
      * @return Same instance
      */
-    public fun addRelations(relatedAnime: List<URL>): Anime {
+    public fun addRelations(relatedAnime: List<URI>): Anime {
         relatedAnime.asSequence()
             .filter { !_relatedAnime.contains(it) && !_sources.contains(it) }
             .forEach { _relatedAnime.add(it) }
@@ -135,7 +147,7 @@ public data class Anime(
      * @param tags List of tags
      * @return Same instance
      */
-    public fun addTags(tags: List<String>): Anime {
+    public fun addTags(tags: List<Tag>): Anime {
         tags.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
@@ -147,12 +159,12 @@ public data class Anime(
     }
 
     /**
-     * Removes an [URL] from [relatedAnime] if the given condition matches.
+     * Removes an [URI] from [relatedAnime] if the given condition matches.
      * @since 1.0.0
-     * @param condition If the this condition applied to a related anime url matches, then the [URL] will be removed from [relatedAnime]
+     * @param condition If the this condition applied to a related anime uri matches, then the [URI] will be removed from [relatedAnime]
      * @return Same instance
      */
-    public fun removeRelationIf(condition: (URL) -> Boolean): Anime {
+    public fun removeRelationIf(condition: (URI) -> Boolean): Anime {
         _relatedAnime.removeIf { condition.invoke(it) }
         return this
     }
@@ -186,7 +198,7 @@ public data class Anime(
         return this
     }
 
-    private fun cleanupTitle(original: String): String {
+    private fun cleanupTitle(original: Title): Title {
         var editedTitle = original
 
         REPLACEMENTS.forEach { replacement ->

@@ -12,7 +12,7 @@ import io.github.manamiproject.modb.test.loadTestResource
 import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.net.URL
+import java.net.URI
 
 internal class JsonKtTest {
 
@@ -28,12 +28,12 @@ internal class JsonKtTest {
                 season = SUMMER,
                 _year = 2009
             ),
-            picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-            thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+            picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+            thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
         ).addSources(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/6351")
+                        URI("https://myanimelist.net/anime/6351")
                 )
         ).addSynonyms(
                 mutableListOf(
@@ -43,7 +43,7 @@ internal class JsonKtTest {
                 )
         ).addRelations(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/2167")
+                        URI("https://myanimelist.net/anime/2167")
                 )
         ).addTags(
                 mutableListOf(
@@ -75,12 +75,12 @@ internal class JsonKtTest {
                 season = SUMMER,
                 _year = 2009
             ),
-            picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-            thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+            picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+            thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
         ).addSources(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/6351")
+                        URI("https://myanimelist.net/anime/6351")
                 )
         ).addSynonyms(
                 mutableListOf(
@@ -90,7 +90,7 @@ internal class JsonKtTest {
                 )
         ).addRelations(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/2167")
+                        URI("https://myanimelist.net/anime/2167")
                 )
         ).addTags(
                 mutableListOf(
@@ -120,8 +120,8 @@ internal class JsonKtTest {
                 season = SUMMER,
                 _year = 2009
             ),
-            picture = URL("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-            thumbnail = URL("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+            picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+            thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
         ).addSynonyms(
                 mutableListOf(
@@ -131,11 +131,11 @@ internal class JsonKtTest {
                 )
         ).addSources(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/6351")
+                        URI("https://myanimelist.net/anime/6351")
                 )
         ).addRelations(
                 mutableListOf(
-                        URL("https://myanimelist.net/anime/2167")
+                        URI("https://myanimelist.net/anime/2167")
                 )
         ).addTags(
                 mutableListOf(
