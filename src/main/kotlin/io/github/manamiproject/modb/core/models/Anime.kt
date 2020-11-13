@@ -28,7 +28,7 @@ public typealias Title = String
 
 
 /**
- * @since 1.0.0
+ * @since 3.0.0
  * @param _title Main title. Must not be blank.
  * @param type Distribution type. **Default** is [TV]
  * @param episodes Number of episodes. **Default** is `0`
@@ -59,7 +59,7 @@ public data class Anime(
 
     /**
      * Duplicate-free list of related anime. Sorted ascending.
-     * @since 1.0.0
+     * @since 3.0.0
      */
     val sources: List<URI>
         get() = _sources
@@ -75,7 +75,7 @@ public data class Anime(
 
     /**
      * Duplicate-free list of related anime. Sorted ascending.
-     * @since 1.0.0
+     * @since 3.0.0
      */
     val relatedAnime: List<URI>
         get() = _relatedAnime
@@ -113,7 +113,7 @@ public data class Anime(
 
     /**
      * Add additional sources to the existing list. This will **not** override [sources].
-     * @since 1.0.0
+     * @since 3.0.0
      * @param sources List of sources
      * @return Same instance
      */
@@ -129,7 +129,7 @@ public data class Anime(
 
     /**
      * Add additional related anime to the existing list. This will **not** override [relatedAnime].
-     * @since 1.0.0
+     * @since 3.0.0
      * @param relatedAnime List of related anime
      * @return Same instance
      */
@@ -160,7 +160,7 @@ public data class Anime(
 
     /**
      * Removes an [URI] from [relatedAnime] if the given condition matches.
-     * @since 1.0.0
+     * @since 3.0.0
      * @param condition If the this condition applied to a related anime uri matches, then the [URI] will be removed from [relatedAnime]
      * @return Same instance
      */

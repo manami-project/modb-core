@@ -40,6 +40,7 @@ public interface MetaDataProviderConfig {
 
     /**
      * Builds the [URI] which is a direct link to an anime on the mata data provider's website
+     * @since 3.0.0
      * @param id Id of the anime on the meta data provider's website
      * @return Direct link to the anime on the website of the meta data provider
      */
@@ -48,7 +49,7 @@ public interface MetaDataProviderConfig {
     /**
      * Builds the [URI] which is used to download data.
      * This can be the same as the [URI] created in [buildAnimeLink] or in case of GraphQL, for example, a totally different [URI].
-     * @since 1.0.0
+     * @since 3.0.0
      * @param id Identifier within the [URI]. **Default** is an empty [String]
      * @return [URI] from which anime data can be downloaded.
      */
@@ -56,7 +57,7 @@ public interface MetaDataProviderConfig {
 
     /**
      * Extracts the [AnimeId] from a given [URI].
-     * @since 2.1.0
+     * @since 3.0.0
      * @param uri Anime link uri. Could've been previously created using [buildAnimeLink]
      * @return The ID for the anime.
      * @throws IllegalArgumentException if the given [URI] does not contain the hostname.
