@@ -10,7 +10,7 @@ internal class HttpResponseKtTest {
     @Test
     fun `response headers are converted to lower case keys`() {
         // given
-        val responseHeaders = mutableMapOf<String, List<String>>().apply {
+        val responseHeaders = mutableMapOf<String, Collection<String>>().apply {
             put("COOKIE", emptyList())
             put("X-CSRF-TOKEN", emptyList())
         }

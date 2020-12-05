@@ -20,13 +20,13 @@ public typealias ResponseBody = String
 public data class HttpResponse(
         val code: HttpResponseCode,
         val body: ResponseBody,
-        private val _headers: MutableMap<String, List<String>> = mutableMapOf()
+        private val _headers: MutableMap<String, Collection<String>> = mutableMapOf()
 ) {
     /**
      * All HTTP header sent by the server in lower case.
      * @since 1.0.0
      */
-    val headers: Map<String, List<String>>
+    val headers: Map<String, Collection<String>>
         get() = _headers
 
     init {

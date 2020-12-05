@@ -28,7 +28,7 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
         .retryOnConnectionFailure(true)
         .build()
 
-    override fun post(url: URL, requestBody: RequestBody, headers: Map<String, List<String>>, retryWith: String): HttpResponse {
+    override fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.toLowerCase() }.map { it.key to it.value.joinToString(",") })
@@ -50,7 +50,7 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
         }
     }
 
-    override fun get(url: URL, headers: Map<String, List<String>>, retryWith: String): HttpResponse {
+    override fun get(url: URL, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.toLowerCase() }.map { it.key to it.value.joinToString(",") })

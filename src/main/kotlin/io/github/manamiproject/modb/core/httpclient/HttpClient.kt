@@ -23,7 +23,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    public fun post(url: URL, requestBody: RequestBody, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Performs a HTTP GET request.
@@ -36,7 +36,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    public fun get(url: URL, headers: Map<String, List<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public fun get(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
