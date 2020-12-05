@@ -144,37 +144,39 @@ internal class JsonKtTest {
                 )
         )
 
-        val expectedJson = "{\n" +
-                "  \"_sources\": [\n" +
-                "    \"https://myanimelist.net/anime/6351\"\n" +
-                "  ],\n" +
-                "  \"_synonyms\": [\n" +
-                "    \"Clannad ~After Story~: Another World, Kyou Chapter\",\n" +
-                "    \"Clannad: After Story OVA\",\n" +
-                "    \"クラナド　アフターストーリー　もうひとつの世界　杏編\"\n" +
-                "  ],\n" +
-                "  \"_relatedAnime\": [\n" +
-                "    \"https://myanimelist.net/anime/2167\"\n" +
-                "  ],\n" +
-                "  \"_tags\": [\n" +
-                "    \"comedy\",\n"+
-                "    \"romance\"\n"+
-                "  ],\n" +
-                "  \"_title\": \"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen\",\n" +
-                "  \"type\": \"TV\",\n" +
-                "  \"episodes\": 24,\n" +
-                "  \"status\": \"FINISHED\",\n" +
-                "  \"animeSeason\": {\n" +
-                "    \"season\": \"SUMMER\",\n" +
-                "    \"_year\": 2009\n" +
-                "  },\n" +
-                "  \"picture\": \"https://cdn.myanimelist.net/images/anime/10/19621.jpg\",\n" +
-                "  \"thumbnail\": \"https://cdn.myanimelist.net/images/anime/10/19621t.jpg\",\n" +
-                "  \"duration\": {\n" +
-                "    \"value\": 24,\n" +
-                "    \"unit\": \"MINUTES\"\n" +
-                "  }\n" +
-                "}"
+        val expectedJson = """
+            {
+              "_title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+              "sources": [
+                "https://myanimelist.net/anime/6351"
+              ],
+              "synonyms": [
+                "Clannad ~After Story~: Another World, Kyou Chapter",
+                "Clannad: After Story OVA",
+                "クラナド　アフターストーリー　もうひとつの世界　杏編"
+              ],
+              "type": "TV",
+              "episodes": 24,
+              "status": "FINISHED",
+              "animeSeason": {
+                "season": "SUMMER",
+                "_year": 2009
+              },
+              "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+              "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+              "duration": {
+                "value": 24,
+                "unit": "MINUTES"
+              },
+              "relatedAnime": [
+                "https://myanimelist.net/anime/2167"
+              ],
+              "tags": [
+                "comedy",
+                "romance"
+              ]
+            }
+        """.trimIndent()
 
         // when
         val result = Json.toJson(anime)
@@ -202,26 +204,28 @@ internal class JsonKtTest {
         // given
         val anime = Anime("Death Note")
 
-        val expectedJson = "{\n" +
-                "  \"_sources\": [],\n" +
-                "  \"_synonyms\": [],\n" +
-                "  \"_relatedAnime\": [],\n" +
-                "  \"_tags\": [],\n" +
-                "  \"_title\": \"Death Note\",\n" +
-                "  \"type\": \"TV\",\n" +
-                "  \"episodes\": 0,\n" +
-                "  \"status\": \"UNKNOWN\",\n" +
-                "  \"animeSeason\": {\n" +
-                "    \"season\": \"UNDEFINED\",\n" +
-                "    \"_year\": 0\n" +
-                "  },\n" +
-                "  \"picture\": \"https://cdn.myanimelist.net/images/qm_50.gif\",\n" +
-                "  \"thumbnail\": \"https://cdn.myanimelist.net/images/qm_50.gif\",\n" +
-                "  \"duration\": {\n" +
-                "    \"value\": 0,\n" +
-                "    \"unit\": \"SECONDS\"\n" +
-                "  }\n" +
-                "}"
+        val expectedJson = """
+            {
+              "_title": "Death Note",
+              "sources": [],
+              "synonyms": [],
+              "type": "TV",
+              "episodes": 0,
+              "status": "UNKNOWN",
+              "animeSeason": {
+                "season": "UNDEFINED",
+                "_year": 0
+              },
+              "picture": "https://cdn.myanimelist.net/images/qm_50.gif",
+              "thumbnail": "https://cdn.myanimelist.net/images/qm_50.gif",
+              "duration": {
+                "value": 0,
+                "unit": "SECONDS"
+              },
+              "relatedAnime": [],
+              "tags": []
+            }
+        """.trimIndent()
 
         // when
         val result = Json.toJson(anime)

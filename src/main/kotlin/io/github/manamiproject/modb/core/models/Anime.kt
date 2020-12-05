@@ -28,8 +28,10 @@ public typealias Title = String
 
 
 /**
- * @since 3.0.0
+ * @since 3.1.0
  * @param _title Main title. Must not be blank.
+ * @param sources Duplicate-free list of related anime. Sorted ascending.
+ * @param synonyms Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
  * @param type Distribution type. **Default** is [TV]
  * @param episodes Number of episodes. **Default** is `0`
  * @param status Publishing status. **Default** is [UNKNOWN]
@@ -37,17 +39,23 @@ public typealias Title = String
  * @param picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
  * @param thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
  * @param duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
+ * @param relatedAnime Duplicate-free list of related anime. Sorted ascending.
+ * @param tags Duplicate-free list of tags. Sorted ascending. All tags are lower case.
  * @throws IllegalArgumentException if _title is blank
  */
 public data class Anime(
     private var _title: Title,
+    val sources: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
+    val synonyms: SortedList<Title> = SortedList(comparator = STRING_COMPARATOR),
     val type: Type = TV,
     val episodes: Episodes = 0,
     val status: Status = UNKNOWN,
     val animeSeason: AnimeSeason = AnimeSeason(),
     val picture: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
-    val duration: Duration = Duration(0, SECONDS)
+    val duration: Duration = Duration(0, SECONDS),
+    val relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
+    val tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR), // TODO: adjust constructor tests
 ) {
 
     /**
@@ -57,41 +65,25 @@ public data class Anime(
     val title: Title
         get() = _title
 
-    /**
-     * Duplicate-free list of related anime. Sorted ascending.
-     * @since 3.0.0
-     */
-    val sources: List<URI>
-        get() = _sources
-    private var _sources: SortedList<URI> = SortedList(comparator = URI_COMPARATOR)
-
-    /**
-     * Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
-     * @since 1.0.0
-     */
-    val synonyms: List<Title>
-        get() = _synonyms
-    private var _synonyms: SortedList<Title> = SortedList(comparator = STRING_COMPARATOR)
-
-    /**
-     * Duplicate-free list of related anime. Sorted ascending.
-     * @since 3.0.0
-     */
-    val relatedAnime: List<URI>
-        get() = _relatedAnime
-    private var _relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR)
-
-    /**
-     * Duplicate-free list of tags. Sorted ascending. All tags are lower case.
-     * @since 1.0.0
-     */
-    val tags: List<Tag>
-        get() = _tags
-    private var _tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR)
-
     init {
         require(_title.isNotBlank()) { "Title cannot be blank." }
         _title = cleanupTitle(_title)
+
+        val uncheckedSources: Collection<URI> = sources.toList()
+        sources.clear()
+        addSources(uncheckedSources)
+
+        val uncheckedSynonyms: Collection<Title> = synonyms.toList()
+        synonyms.clear()
+        addSynonyms(uncheckedSynonyms)
+
+        val uncheckedRelatedAnime: Collection<URI> = relatedAnime.toList()
+        relatedAnime.clear()
+        addRelations(uncheckedRelatedAnime)
+
+        val uncheckedTags: Collection<Tag> = tags.toList()
+        tags.clear()
+        addTags(uncheckedTags)
     }
 
     /**
@@ -100,13 +92,13 @@ public data class Anime(
      * @param synonyms List of synonyms
      * @return Same instance
      */
-    public fun addSynonyms(synonyms: List<Title>): Anime {
+    public fun addSynonyms(synonyms: Collection<Title>): Anime {
         synonyms.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
             .filter { it != _title }
-            .filter { !_synonyms.contains(it) }
-            .forEach { _synonyms.add(it) }
+            .filter { !this.synonyms.contains(it) }
+            .forEach { this.synonyms.add(it) }
 
         return this
     }
@@ -117,10 +109,10 @@ public data class Anime(
      * @param sources List of sources
      * @return Same instance
      */
-    public fun addSources(sources: List<URI>): Anime {
+    public fun addSources(sources: Collection<URI>): Anime {
         sources.asSequence()
-            .filterNot { _sources.contains(it) }
-            .forEach { _sources.add(it) }
+            .filterNot { this.sources.contains(it) }
+            .forEach { this.sources.add(it) }
 
         removeRelationIf { sources.contains(it) }
 
@@ -133,10 +125,10 @@ public data class Anime(
      * @param relatedAnime List of related anime
      * @return Same instance
      */
-    public fun addRelations(relatedAnime: List<URI>): Anime {
+    public fun addRelations(relatedAnime: Collection<URI>): Anime {
         relatedAnime.asSequence()
-            .filter { !_relatedAnime.contains(it) && !_sources.contains(it) }
-            .forEach { _relatedAnime.add(it) }
+            .filter { !this.relatedAnime.contains(it) && !sources.contains(it) }
+            .forEach { this.relatedAnime.add(it) }
 
         return this
     }
@@ -147,13 +139,13 @@ public data class Anime(
      * @param tags List of tags
      * @return Same instance
      */
-    public fun addTags(tags: List<Tag>): Anime {
+    public fun addTags(tags: Collection<Tag>): Anime {
         tags.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
             .map { it.toLowerCase() }
-            .filter { !_tags.contains(it) }
-            .forEach { _tags.add(it) }
+            .filter { !this.tags.contains(it) }
+            .forEach { this.tags.add(it) }
 
         return this
     }
@@ -165,7 +157,7 @@ public data class Anime(
      * @return Same instance
      */
     public fun removeRelationIf(condition: (URI) -> Boolean): Anime {
-        _relatedAnime.removeIf { condition.invoke(it) }
+        relatedAnime.removeIf { condition.invoke(it) }
         return this
     }
 
@@ -184,7 +176,7 @@ public data class Anime(
         addSynonyms(listOf(anime.title))
         addSynonyms(anime.synonyms)
         addSources(anime.sources)
-        addRelations(anime._relatedAnime)
+        addRelations(anime.relatedAnime)
         addTags(anime.tags)
 
         if (animeSeason.season == UNDEFINED && anime.animeSeason.season != UNDEFINED) {
@@ -223,53 +215,20 @@ public data class Anime(
     override fun toString(): String {
         return """
             Anime(
-              sources = $_sources
+              sources = $sources
               title = $_title
+              synonyms = $synonyms
               type = $type
               episodes = $episodes
               status = $status
               animeSeason = $animeSeason
               picture = $picture
               thumbnail = $thumbnail
-              synonyms = $_synonyms
-              relations = $_relatedAnime
-              tags = $_tags
+              duration = $duration
+              relations = $relatedAnime
+              tags = $tags
             )
         """.trimIndent()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other == null || other !is Anime) return false
-        if (other === this) return true
-
-        return _title == other.title
-                && type == other.type
-                && episodes == other.episodes
-                && status == other.status
-                && animeSeason == other.animeSeason
-                && picture == other.picture
-                && thumbnail == other.thumbnail
-                && duration == other.duration
-                && _sources.toList() == other.sources.toList()
-                && _synonyms.toList() == other.synonyms.toList()
-                && _relatedAnime.toList() == other.relatedAnime.toList()
-                && _tags.toList() == other.tags.toList()
-    }
-
-    override fun hashCode(): Int {
-        var result = _title.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + episodes
-        result = 31 * result + status.hashCode()
-        result = 31 * result + animeSeason.hashCode()
-        result = 31 * result + picture.hashCode()
-        result = 31 * result + thumbnail.hashCode()
-        result = 31 * result + duration.hashCode()
-        result = 31 * result + _sources.hashCode()
-        result = 31 * result + _synonyms.hashCode()
-        result = 31 * result + _relatedAnime.hashCode()
-        result = 31 * result + _tags.hashCode()
-        return result
     }
 
     private companion object {
