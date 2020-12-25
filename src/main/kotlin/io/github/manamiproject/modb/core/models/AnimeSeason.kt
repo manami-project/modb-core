@@ -17,48 +17,41 @@ private const val YEAR_OF_THE_FIRST_ANIME: Year = 1907
  * Defines the season in which an anime premiered or has been published.
  * @since 1.0.0
  * @property season **Default** is [UNDEFINED]
- * @property _year Year in the format `YYYY`. Requires a value between [YEAR_OF_THE_FIRST_ANIME] and the current year + 5. Otherwise an exception is thrown.
+ * @property year Year in the format `YYYY`. Requires a value between [YEAR_OF_THE_FIRST_ANIME] and the current year + 5. Otherwise an exception is thrown.
  * **Default** is `0` indicating unknown year.
  */
 public data class AnimeSeason(
-    var season: Season = UNDEFINED,
-    private var _year: Year = 0
+    val season: Season = UNDEFINED,
+    val year: Year = UNKNOWN_YEAR,
 ) {
-    /**
-     * Year in the format `YYYY`. Requires a value between [YEAR_OF_THE_FIRST_ANIME] and the current year + 5. Otherwise an exception is thrown.
-     * Value can also be `0` indicating unknown year.
-     * @since 1.0.0
-     */
-    var year : Year
-        get() = _year
-        set(value) {
-            validateYear(value)
-            _year = value
-        }
 
     init {
-        validateYear(_year)
+        validateYear(year)
     }
 
     /**
      * @since 1.0.0
      * @return `true` if the year is unknown which means that it's `0`
      */
-    public fun isYearOfPremiereUnknown(): Boolean = _year == 0
+    public fun isYearOfPremiereUnknown(): Boolean = year == UNKNOWN_YEAR
 
     /**
      * @since 1.0.0
      * @return `true` if the year is known which means that it's `0`
      */
-    public fun isYearOfPremiereKnown(): Boolean = _year != 0
+    public fun isYearOfPremiereKnown(): Boolean = year != UNKNOWN_YEAR
 
     private fun validateYear(value: Year) {
         val isYearAfterVeryFirstAnimeRelease = value >= YEAR_OF_THE_FIRST_ANIME
         val isYearNotTooFarInTheFuture = value <= LocalDate.now().year + 5
         val isYearWithinRange = isYearAfterVeryFirstAnimeRelease && isYearNotTooFarInTheFuture
-        val isYearUnknown = value == 0
+        val isYearUnknown = value == UNKNOWN_YEAR
 
         require(isYearUnknown || isYearWithinRange) { "Year of premiere [$value] is not valid" }
+    }
+
+    public companion object {
+        public const val UNKNOWN_YEAR: Year = 0
     }
 
     /**

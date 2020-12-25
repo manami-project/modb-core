@@ -105,7 +105,7 @@ internal class AnimeSeasonKtTest {
                 // when
                 val result = assertThrows<IllegalArgumentException> {
                     AnimeSeason(
-                        _year = 1899
+                        year = 1899
                     )
                 }
 
@@ -117,7 +117,7 @@ internal class AnimeSeasonKtTest {
             fun `year can be from 1907 on, because that is the year of the first anime in japan`() {
                 // when
                 val result = AnimeSeason(
-                    _year = 1907
+                    year = 1907
                 )
 
                 // then
@@ -133,7 +133,7 @@ internal class AnimeSeasonKtTest {
                 // when
                 val result = assertThrows<IllegalArgumentException> {
                     AnimeSeason(
-                        _year = year
+                        year = year
                     )
                 }
 
@@ -148,85 +148,11 @@ internal class AnimeSeasonKtTest {
 
                 // when
                 val result = AnimeSeason(
-                    _year = year
+                    year = year
                 )
 
                 // then
                 assertThat(result.year).isEqualTo(year)
-            }
-
-            @Test
-            fun `default year is 0 and means that no particular year is known`() {
-                // given
-                val animeSeason = AnimeSeason()
-
-                // when
-                val isYearOfPremiereUnknown = animeSeason.isYearOfPremiereUnknown()
-                val isYearOfPremiereKnown = animeSeason.isYearOfPremiereKnown()
-
-                // then
-                assertThat(animeSeason.year).isZero()
-                assertThat(isYearOfPremiereUnknown).isTrue()
-                assertThat(isYearOfPremiereKnown).isFalse()
-            }
-        }
-
-        @Nested
-        inner class SetterTests {
-
-            @Test
-            fun `year cannot be before 1900`() {
-                // given
-                val animeSeason = AnimeSeason()
-
-                // when
-                val result = assertThrows<IllegalArgumentException> {
-                    animeSeason.year = 1899
-                }
-
-                // then
-                assertThat(result).hasMessage("Year of premiere [1899] is not valid")
-            }
-
-            @Test
-            fun `year can be from 1907 on, because that is the year of the first anime in japan`() {
-                // given
-                val animeSeason = AnimeSeason()
-
-                // when
-                animeSeason.year = 1907
-
-                // then
-                assertThat(animeSeason.isYearOfPremiereUnknown()).isFalse()
-                assertThat(animeSeason.isYearOfPremiereKnown()).isTrue()
-            }
-
-            @Test
-            fun `year cannot be more than 6 years from now`() {
-                // given
-                val animeSeason = AnimeSeason()
-                val year = LocalDate.now().year + 6
-
-                // when
-                val result = assertThrows<IllegalArgumentException> {
-                    animeSeason.year = year
-                }
-
-                // then
-                assertThat(result).hasMessage("Year of premiere [$year] is not valid")
-            }
-
-            @Test
-            fun `year can be up to five years from now`() {
-                // given
-                val animeSeason = AnimeSeason()
-                val year = LocalDate.now().year + 5
-
-                // when
-                animeSeason.year = year
-
-                // then
-                assertThat(animeSeason.year).isEqualTo(year)
             }
 
             @Test

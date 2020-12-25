@@ -26,33 +26,21 @@ internal class JsonKtTest {
             status = FINISHED,
             animeSeason = AnimeSeason(
                 season = SUMMER,
-                _year = 2009
+                year = 2009
             ),
             picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
-        ).addSources(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/6351")
-                )
-        ).addSynonyms(
-                mutableListOf(
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                )
-        ).addRelations(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/2167")
-                )
-        ).addTags(
-                mutableListOf(
-                        "comedy",
-                        "romance"
-                )
-        )
-
-
+        ).addSources(URI("https://myanimelist.net/anime/6351"))
+            .addRelations(URI("https://myanimelist.net/anime/2167"))
+            .addSynonyms(
+                "Clannad ~After Story~: Another World, Kyou Chapter",
+                "Clannad: After Story OVA",
+                "クラナド　アフターストーリー　もうひとつの世界　杏編",
+            ).addTags(
+                    "comedy",
+                    "romance",
+            )
 
         val inputStream = testResource("json_tests/anime_all_properties_set.json").newInputStream()
 
@@ -73,31 +61,22 @@ internal class JsonKtTest {
             status = FINISHED,
             animeSeason = AnimeSeason(
                 season = SUMMER,
-                _year = 2009
+                year = 2009
             ),
             picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
-        ).addSources(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/6351")
-                )
-        ).addSynonyms(
-                mutableListOf(
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                )
-        ).addRelations(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/2167")
-                )
-        ).addTags(
-                mutableListOf(
-                        "comedy",
-                        "romance"
-                )
-        )
+        ).addSources(URI("https://myanimelist.net/anime/6351"))
+            .addRelations(URI("https://myanimelist.net/anime/2167"))
+            .addSynonyms(
+                "Clannad ~After Story~: Another World, Kyou Chapter",
+                "Clannad: After Story OVA",
+                "クラナド　アフターストーリー　もうひとつの世界　杏編",
+            )
+            .addTags(
+                "comedy",
+                "romance",
+            )
 
         val json = loadTestResource("json_tests/anime_all_properties_set.json")
 
@@ -118,31 +97,22 @@ internal class JsonKtTest {
             status = FINISHED,
             animeSeason = AnimeSeason(
                 season = SUMMER,
-                _year = 2009
+                year = 2009
             ),
             picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
             thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
             duration = Duration(24, MINUTES)
-        ).addSynonyms(
-                mutableListOf(
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                )
-        ).addSources(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/6351")
-                )
-        ).addRelations(
-                mutableListOf(
-                        URI("https://myanimelist.net/anime/2167")
-                )
-        ).addTags(
-                mutableListOf(
-                        "comedy",
-                        "romance"
-                )
-        )
+        ).addSources(URI("https://myanimelist.net/anime/6351"))
+            .addRelations(URI("https://myanimelist.net/anime/2167"))
+            .addSynonyms(
+                "Clannad ~After Story~: Another World, Kyou Chapter",
+                "Clannad: After Story OVA",
+                "クラナド　アフターストーリー　もうひとつの世界　杏編",
+            )
+            .addTags(
+                "comedy",
+                "romance",
+            )
 
         val expectedJson = """
             {
@@ -160,7 +130,7 @@ internal class JsonKtTest {
               "status": "FINISHED",
               "animeSeason": {
                 "season": "SUMMER",
-                "_year": 2009
+                "year": 2009
               },
               "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
               "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
@@ -214,7 +184,7 @@ internal class JsonKtTest {
               "status": "UNKNOWN",
               "animeSeason": {
                 "season": "UNDEFINED",
-                "_year": 0
+                "year": 0
               },
               "picture": "https://cdn.myanimelist.net/images/qm_50.gif",
               "thumbnail": "https://cdn.myanimelist.net/images/qm_50.gif",

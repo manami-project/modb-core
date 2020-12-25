@@ -66,7 +66,7 @@ internal class AnimeKlaxonConverter : Converter {
             type = Type.valueOf(jv.objString("type")),
             status = Status.valueOf(jv.objString("status")),
             animeSeason = AnimeSeason(
-                _year = (jv.obj?.get("animeSeason") as JsonObject).int("_year") ?: 0,
+                year = (jv.obj?.get("animeSeason") as JsonObject).int("year") ?: 0,
                 season = Season.of((jv.obj?.get("animeSeason") as JsonObject).string("season")!!)
             ),
             thumbnail = URI(jv.objString("thumbnail")),

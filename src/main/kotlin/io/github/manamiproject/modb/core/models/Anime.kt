@@ -32,7 +32,7 @@ public typealias Title = String
  * @property synonyms Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
  * @property type Distribution type. **Default** is [TV]
  * @property episodes Number of episodes. **Default** is `0`
- * @property status Publishing status. **Default** is [UNKNOWN]
+ * @property status Publishing status. **Default** is [Status.UNKNOWN]
  * @property animeSeason In which season did the anime premiere
  * @property picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
  * @property thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
@@ -208,28 +208,62 @@ public data class Anime(
      * + All sources of the given [Anime] will be added to the [sources] of this instance.
      * + All related anime of the given [Anime] will be added to the [relatedAnime] of this instance.
      * + All tags of the given [Anime] will be added to the [tags] of this instance.
+     * + In case the number of episodes of this instance is 0, the value of the given [Anime] will be applied.
+     * + In case the status of this instance is [Status.UNKNOWN], the value of the given [Anime] will be applied.
+     * + In case the duration of this instance is [Duration.UNKNOWN], the value of the given [Anime] will be applied.
      * + In case the season of this instance's [animeSeason] is [UNDEFINED], the season of the given [Anime] will be applied.
-     * + In case the year of this instance's [animeSeason] is unknown, the year if the given [Anime] will be applied.
+     * + In case the year of this instance's [animeSeason] is [AnimeSeason.UNKNOWN_YEAR], the year if the given [Anime] will be applied.
      * @since 1.0.0
-     * @param anime
+     * @param anime [Anime] which is being merged into the this instance
      * @return Same instance
      */
     public fun mergeWith(anime: Anime): Anime {
-        addSynonyms(listOf(anime.title))
-        addSynonyms(anime.synonyms)
-        addSources(anime.sources)
-        addRelations(anime.relatedAnime)
-        addTags(anime.tags)
-
-        if (animeSeason.season == UNDEFINED && anime.animeSeason.season != UNDEFINED) {
-            animeSeason.season = anime.animeSeason.season
+        val mergedEpisodes = if (episodes == 0 && anime.episodes != 0) {
+            anime.episodes
+        } else {
+            episodes
         }
 
-        if (animeSeason.isYearOfPremiereUnknown() && anime.animeSeason.isYearOfPremiereKnown()) {
-            animeSeason.year = anime.animeSeason.year
+        val mergedStatus = if (status == Status.UNKNOWN && anime.status != Status.UNKNOWN) {
+            anime.status
+        } else {
+            status
         }
 
-        return this
+        val mergedDuration = if (duration == Duration.UNKNOWN && anime.duration != Duration.UNKNOWN) {
+            anime.duration
+        } else {
+            duration
+        }
+
+        val mergedSeason = if (animeSeason.season == UNDEFINED && anime.animeSeason.season != UNDEFINED) {
+            anime.animeSeason.season
+        } else {
+            animeSeason.season
+        }
+
+        val mergedYear = if (animeSeason.isYearOfPremiereUnknown() && anime.animeSeason.isYearOfPremiereKnown()) {
+            anime.animeSeason.year
+        } else {
+            animeSeason.year
+        }
+
+        return Anime(
+            _title = title,
+            type = type,
+            episodes = mergedEpisodes,
+            status = mergedStatus,
+            picture = picture,
+            thumbnail = thumbnail,
+            duration = mergedDuration,
+            animeSeason = AnimeSeason(
+                season = mergedSeason,
+                year = mergedYear,
+            ),
+        ).addSources(*sources.toTypedArray(), *anime.sources.toTypedArray())
+        .addSynonyms(*synonyms.toTypedArray(), anime.title, *anime.synonyms.toTypedArray())
+        .addRelations(*relatedAnime.toTypedArray(), *anime.relatedAnime.toTypedArray())
+        .addTags(*tags.toTypedArray(), *anime.tags.toTypedArray())
     }
 
     private fun cleanupTitle(original: Title): Title {

@@ -4,8 +4,9 @@ import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.URI_COMPARATOR
 import io.github.manamiproject.modb.core.extensions.EMPTY
-import io.github.manamiproject.modb.core.models.Anime.Status.FINISHED
+import io.github.manamiproject.modb.core.models.Anime.Status.*
 import io.github.manamiproject.modb.core.models.Anime.Type.Special
+import io.github.manamiproject.modb.core.models.AnimeSeason.Companion.UNKNOWN_YEAR
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
 import org.assertj.core.api.Assertions.assertThat
@@ -1212,12 +1213,12 @@ internal class AnimeKtTest {
             val title =  "Death Note"
             val a = Anime(
                 _title = title
-            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
+            ).addSources(URI("https://myanimelist.net/anime/1535"))
 
 
             val b = Anime(
                 _title = title
-            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
+            ).addSources(URI("https://myanimelist.net/anime/1535"))
 
             // when
             val result = a == b
@@ -1233,15 +1234,13 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addSources(mutableListOf(URI("https://myanimelist.net/anime/1535")))
+            ).addSources(URI("https://myanimelist.net/anime/1535"))
 
             val b = Anime(
                 _title =  title
             ).addSources(
-                    mutableListOf(
-                        URI("https://myanimelist.net/anime/1535"),
-                        URI("https://anidb.net/anime/4563")
-                    )
+                URI("https://myanimelist.net/anime/1535"),
+                URI("https://anidb.net/anime/4563")
             )
 
             // when
@@ -1258,11 +1257,11 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
+            ).addRelations(URI("https://myanimelist.net/anime/2994"))
 
             val b = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
+            ).addRelations(URI("https://myanimelist.net/anime/2994"))
 
             // when
             val result = a == b
@@ -1278,15 +1277,13 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addRelations(mutableListOf(URI("https://myanimelist.net/anime/2994")))
+            ).addRelations(URI("https://myanimelist.net/anime/2994"))
 
             val b = Anime(
                 _title =  title
             ).addRelations(
-                    mutableListOf(
-                        URI("https://myanimelist.net/anime/2994"),
-                        URI("http://anilist.co/anime/2994")
-                    )
+                URI("https://myanimelist.net/anime/2994"),
+                URI("http://anilist.co/anime/2994")
             )
 
             // when
@@ -1303,11 +1300,11 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addSynonyms(mutableListOf("Caderno da Morte"))
+            ).addSynonyms("Caderno da Morte")
 
             val b = Anime(
                 _title =  title
-            ).addSynonyms(mutableListOf("Caderno da Morte"))
+            ).addSynonyms("Caderno da Morte")
 
             // when
             val result = a == b
@@ -1323,16 +1320,14 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                 _title =  title
-            ).addSynonyms(mutableListOf("Caderno da Morte"))
+            ).addSynonyms("Caderno da Morte")
 
 
             val b = Anime(
                 _title =  title
             ).addSynonyms(
-                    mutableListOf(
-                            "Caderno da Morte",
-                            "Quaderno della Morte"
-                    )
+                "Caderno da Morte",
+                "Quaderno della Morte",
             )
 
             // when
@@ -1349,15 +1344,13 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                     _title =  title
-            ).addTags(mutableListOf("comedy", "slice of life"))
+            ).addTags("comedy", "slice of life")
 
             val b = Anime(
                     _title =  title
             ).addTags(
-                    mutableListOf(
-                            "slice of life",
-                            "comedy"
-                    )
+                "slice of life",
+                "comedy",
             )
 
             // when
@@ -1374,16 +1367,14 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                     _title =  title
-            ).addTags(mutableListOf("slice of life"))
+            ).addTags("slice of life")
 
 
             val b = Anime(
                     _title =  title
             ).addTags(
-                    mutableListOf(
-                            "slice of life",
-                            "comedy"
-                    )
+                "slice of life",
+                "comedy",
             )
 
             // when
@@ -1400,7 +1391,7 @@ internal class AnimeKtTest {
             val title  =  "Death Note"
             val a = Anime(
                     _title =  title
-            ).addTags(mutableListOf("slice of life"))
+            ).addTags("slice of life")
 
             // when
             val result = a.equals(1)
@@ -1414,15 +1405,149 @@ internal class AnimeKtTest {
     inner class MergeTests {
 
         @Test
+        fun `use this number of episodes` () {
+            // given
+            val anime = Anime("this", episodes = 12)
+            val other = Anime("other", episodes = 13)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.episodes).isEqualTo(12)
+        }
+
+        @Test
+        fun `use other's number of episodes if this number of episodes is 0` () {
+            // given
+            val anime = Anime("this", episodes = 0)
+            val other = Anime("other", episodes = 13)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.episodes).isEqualTo(13)
+        }
+
+        @Test
+        fun `use this status` () {
+            // given
+            val anime = Anime("this", status = FINISHED)
+            val other = Anime("other", status = CURRENTLY)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.status).isEqualTo(FINISHED)
+        }
+
+        @Test
+        fun `use other's status if this status is UNKNOWN` () {
+            // given
+            val anime = Anime("this", status = UNKNOWN)
+            val other = Anime("other", status = CURRENTLY)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.status).isEqualTo(CURRENTLY)
+        }
+
+        @Test
+        fun `use this duration` () {
+            // given
+            val anime = Anime("this", duration = Duration(120, MINUTES))
+            val other = Anime("other", duration = Duration(125, MINUTES))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.duration).isEqualTo(Duration(120, MINUTES))
+        }
+
+        @Test
+        fun `use other's duration if this duration is UNKNOWN` () {
+            // given
+            val anime = Anime("this", duration = Duration.UNKNOWN)
+            val other = Anime("other", duration = Duration(125, MINUTES))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.duration).isEqualTo(Duration(125, MINUTES))
+        }
+
+        @Test
+        fun `use this season` () {
+            // given
+            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = 2010))
+            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.animeSeason.season).isEqualTo(FALL)
+            assertThat(result.animeSeason.year).isEqualTo(2010)
+        }
+
+        @Test
+        fun `use other's season if this season is UNDEFINED` () {
+            // given
+            val anime = Anime("this", animeSeason = AnimeSeason(season = UNDEFINED, year = 2010))
+            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.animeSeason.season).isEqualTo(WINTER)
+            assertThat(result.animeSeason.year).isEqualTo(2010)
+        }
+
+        @Test
+        fun `use this year` () {
+            // given
+            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = 2010))
+            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.animeSeason.season).isEqualTo(FALL)
+            assertThat(result.animeSeason.year).isEqualTo(2010)
+        }
+
+        @Test
+        fun `use other's year if this year is UNKNOWN` () {
+            // given
+            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = UNKNOWN_YEAR))
+            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.animeSeason.season).isEqualTo(FALL)
+            assertThat(result.animeSeason.year).isEqualTo(2011)
+        }
+
+        @Test
         fun `add title and synonyms of the other anime to this anime's synonyms`() {
             // given
             val anime = Anime(
                 _title =  "Death Note"
-            ).addSynonyms(mutableListOf("Caderno da Morte"))
+            ).addSynonyms("Caderno da Morte")
 
             val other = Anime(
                 _title =  "DEATH NOTE"
-            ).addSynonyms(mutableListOf("Caderno da Morte", "Quaderno della Morte"))
+            ).addSynonyms("Caderno da Morte", "Quaderno della Morte")
 
             // when
             val result = anime.mergeWith(other)
@@ -1437,27 +1562,15 @@ internal class AnimeKtTest {
             // given
             val anime = Anime(
                 _title =  "Death Note"
-            ).addSources(
-                    mutableListOf(
-                        URI("https://myanimelist.net/anime/1535")
-                    )
-            ).addRelations(
-                    mutableListOf(
-                        URI("https://myanimelist.net/anime/2994")
-                    )
-            )
+            ).addSources(URI("https://myanimelist.net/anime/1535"))
+                .addRelations(URI("https://myanimelist.net/anime/2994"))
 
             val other = Anime(
                 _title =  "Death Note"
-            ).addSources(
-                    mutableListOf(
-                        URI("https://anidb.net/anime/4563")
-                    )
-            ).addRelations(
-                    mutableListOf(
+            ).addSources(URI("https://anidb.net/anime/4563"))
+                .addRelations(
                         URI("https://anidb.net/anime/8146"),
-                        URI("https://anidb.net/anime/8147")
-                    )
+                        URI("https://anidb.net/anime/8147"),
             )
 
             // when
@@ -1466,12 +1579,12 @@ internal class AnimeKtTest {
             // then
             assertThat(result.sources).containsExactly(
                 URI("https://anidb.net/anime/4563"),
-                URI("https://myanimelist.net/anime/1535")
+                URI("https://myanimelist.net/anime/1535"),
             )
             assertThat(result.relatedAnime).containsExactly(
                 URI("https://anidb.net/anime/8146"),
                 URI("https://anidb.net/anime/8147"),
-                URI("https://myanimelist.net/anime/2994")
+                URI("https://myanimelist.net/anime/2994"),
             )
         }
 
@@ -1480,11 +1593,11 @@ internal class AnimeKtTest {
             // given
             val anime = Anime(
                 _title =  "Death Note"
-            ).addTags(mutableListOf("Psychological", "Thriller", "Shounen"))
+            ).addTags("Psychological", "Thriller", "Shounen")
 
             val other = Anime(
                 _title =  "Death Note"
-            ).addTags(mutableListOf("Mystery", "Police", "Psychological", "Supernatural", "Thriller"))
+            ).addTags("Mystery", "Police", "Psychological", "Supernatural", "Thriller")
 
             // when
             val result = anime.mergeWith(other)
@@ -1496,146 +1609,8 @@ internal class AnimeKtTest {
                 "psychological",
                 "shounen",
                 "supernatural",
-                "thriller"
+                "thriller",
             )
-        }
-
-        @Test
-        fun `other direction - add title and synonyms of the other anime to this anime's synonyms`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note"
-            ).addSynonyms(mutableListOf("Caderno da Morte"))
-
-
-            val other = Anime(
-                _title =  "DEATH NOTE"
-            ).addSynonyms(
-                    mutableListOf(
-                            "Caderno da Morte",
-                            "Quaderno della Morte"
-                    )
-            )
-
-            // when
-            val result = other.mergeWith(anime)
-
-            // then
-            assertThat(result.title).isEqualTo(other.title)
-            assertThat(result.synonyms).containsExactly("Caderno da Morte", "Death Note", "Quaderno della Morte")
-        }
-
-        @Test
-        fun `other direction - merge related anime and source links`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note"
-            ).addSources(
-                    mutableListOf(URI("https://myanimelist.net/anime/1535"))
-            ).addRelations(
-                    mutableListOf(URI("https://myanimelist.net/anime/2994"))
-            )
-
-            val other = Anime(
-                _title =  "Death Note"
-            ).addSources(
-                    mutableListOf(URI("https://anidb.net/anime/4563"))
-            ).addRelations(
-                    mutableListOf(
-                        URI("https://anidb.net/anime/8146"),
-                        URI("https://anidb.net/anime/8147")
-                    )
-            )
-
-            // when
-            val result = other.mergeWith(anime)
-
-            // then
-            assertThat(result.sources).containsExactly(
-                URI("https://anidb.net/anime/4563"),
-                URI("https://myanimelist.net/anime/1535")
-            )
-            assertThat(result.relatedAnime).containsExactly(
-                URI("https://anidb.net/anime/8146"),
-                URI("https://anidb.net/anime/8147"),
-                URI("https://myanimelist.net/anime/2994")
-            )
-        }
-
-        @Test
-        fun `adopt season of other if anime's season is undefined`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(season = UNDEFINED)
-            )
-            val other = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(season = SPRING)
-            )
-
-            // when
-            val result = anime.mergeWith(other)
-
-            // then
-            assertThat(result.animeSeason.season).isEqualTo(SPRING)
-        }
-
-        @Test
-        fun `keep anime's season other's season is different`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(season = SPRING)
-            )
-            val other = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(season = SUMMER)
-            )
-
-            // when
-            val result = anime.mergeWith(other)
-
-            // then
-            assertThat(result.animeSeason.season).isEqualTo(SPRING)
-        }
-
-        @Test
-        fun `adopt year of other if anime's year is unknown`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(_year = 0)
-            )
-            val other = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(_year = 2020)
-            )
-
-            // when
-            val result = anime.mergeWith(other)
-
-            // then
-            assertThat(result.animeSeason.year).isEqualTo(2020)
-        }
-
-        @Test
-        fun `keep anime's year other's year is different`() {
-            // given
-            val anime = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(_year = 2020)
-            )
-            val other = Anime(
-                _title =  "Death Note",
-                animeSeason = AnimeSeason(_year = 2019)
-            )
-
-            // when
-            val result = anime.mergeWith(other)
-
-            // then
-            assertThat(result.animeSeason.year).isEqualTo(2020)
         }
     }
 
@@ -2278,7 +2253,7 @@ internal class AnimeKtTest {
                     status = FINISHED,
                     animeSeason = AnimeSeason(
                             season = SUMMER,
-                            _year = 2009
+                            year = 2009
                     ),
                     picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
                     thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
@@ -2318,7 +2293,7 @@ internal class AnimeKtTest {
                       type = Special
                       episodes = 1
                       status = FINISHED
-                      animeSeason = AnimeSeason(season=SUMMER, _year=2009)
+                      animeSeason = AnimeSeason(season=SUMMER, year=2009)
                       picture = https://cdn.myanimelist.net/images/anime/10/19621.jpg
                       thumbnail = https://cdn.myanimelist.net/images/anime/10/19621t.jpg
                       duration = 120 seconds
