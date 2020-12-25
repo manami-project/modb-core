@@ -7,8 +7,7 @@ import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime.Status.FINISHED
 import io.github.manamiproject.modb.core.models.Anime.Type.Special
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
-import io.github.manamiproject.modb.core.models.Duration.TimeUnit.MINUTES
-import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
+import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -2122,6 +2121,56 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result.duration).isEqualTo(expectedDuration)
+        }
+
+        @Test
+        fun `setting a duration of 10 seconds`() {
+            // when
+            val result = Duration(10, SECONDS)
+
+            // then
+            assertThat(result.duration).isEqualTo(10)
+            assertThat(result.toString()).isEqualTo("10 seconds")
+        }
+
+        @Test
+        fun `duration of a minute is equal to a duration of 60 seconds`() {
+            // given
+            val durationInSeconds = Duration(60, SECONDS)
+
+            // when
+            val result = Duration(1, MINUTES)
+
+            // then
+            assertThat(result).isEqualTo(durationInSeconds)
+            assertThat(result.duration).isEqualTo(60)
+            assertThat(result.toString()).isEqualTo("60 seconds")
+        }
+
+        @Test
+        fun `duration of an hour is equal to a duration of 60 minutes`() {
+            // given
+            val durationInMinutes = Duration(60, MINUTES)
+
+            // when
+            val result = Duration(1, HOURS)
+
+            // then
+            assertThat(result).isEqualTo(durationInMinutes)
+            assertThat(result.duration).isEqualTo(3600)
+            assertThat(result.toString()).isEqualTo("3600 seconds")
+        }
+
+        @Test
+        fun `returns false on equals check if other object is not of the same type`() {
+            // given
+            val duration = Duration(60, MINUTES)
+
+            // when
+            val result = duration.equals(EMPTY)
+
+            // then
+            assertThat(result).isFalse()
         }
     }
 
