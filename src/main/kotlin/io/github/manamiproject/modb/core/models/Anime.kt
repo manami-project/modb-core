@@ -90,7 +90,7 @@ public data class Anime(
      * Add additional synonyms to the existing list. Duplicates are being ignored.
      * Comparison for this is case sensitive. This will **not** override [synonyms].
      * The value which is present in [title] cannot be added.
-     * @since 3.0.2
+     * @since 3.1.0
      * @param synonym Synonyms to be added
      * @return Same instance
      */
@@ -118,7 +118,7 @@ public data class Anime(
     /**
      * Add additional sources to the existing list. This will **not** override [sources].
      * Duplicates are being ignored.
-     * @since 3.0.2
+     * @since 3.1.0
      * @param source Sources to be added
      * @return Same instance
      */
@@ -144,7 +144,7 @@ public data class Anime(
     /**
      * Add additional related anime to the existing list. This will **not** override [relatedAnime].
      * Duplicates are being ignored.
-     * @since 3.0.2
+     * @since 3.1.0
      * @param relatedAnime List of related anime
      * @return Same instance
      */
@@ -168,7 +168,7 @@ public data class Anime(
     /**
      * Add additional tags to the existing list. This will **not** override [tags].
      * Duplicates are being ignored.
-     * @since 3.0.2
+     * @since 3.1.0
      * @param tag List of tags
      * @return Same instance
      */
