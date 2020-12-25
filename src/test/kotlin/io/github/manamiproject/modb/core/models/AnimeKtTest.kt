@@ -2329,4 +2329,31 @@ internal class AnimeKtTest {
             )
         }
     }
+
+    @Nested
+    inner class EpisodesTests {
+
+        @Test
+        fun `default value is 0`() {
+            // when
+            val result = Anime("test")
+
+            // then
+            assertThat(result.episodes).isZero()
+        }
+
+        @Test
+        fun `throws exception if number of episodes is negative`() {
+            // when
+            val result = assertThrows<IllegalArgumentException> {
+                Anime(
+                    _title = "test",
+                    episodes = -1,
+                )
+            }
+
+            // then
+            assertThat(result).hasMessage("Episodes cannot have a negative value.")
+        }
+    }
 }

@@ -4,10 +4,8 @@ import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
 import io.github.manamiproject.modb.core.collections.SortedList.Companion.URI_COMPARATOR
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
-import io.github.manamiproject.modb.core.models.Anime.Status.UNKNOWN
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
-import io.github.manamiproject.modb.core.models.Duration.TimeUnit.SECONDS
 import java.net.URI
 
 
@@ -29,18 +27,18 @@ public typealias Title = String
 
 /**
  * @since 3.1.0
- * @param _title Main title. Must not be blank.
- * @param sources Duplicate-free list of related anime. Sorted ascending.
- * @param synonyms Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
- * @param type Distribution type. **Default** is [TV]
- * @param episodes Number of episodes. **Default** is `0`
- * @param status Publishing status. **Default** is [UNKNOWN]
- * @param animeSeason In which season did the anime premiere
- * @param picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
- * @param thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
- * @param duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
- * @param relatedAnime Duplicate-free list of related anime. Sorted ascending.
- * @param tags Duplicate-free list of tags. Sorted ascending. All tags are lower case.
+ * @property _title Main title. Must not be blank.
+ * @property sources Duplicate-free list of related anime. Sorted ascending.
+ * @property synonyms Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
+ * @property type Distribution type. **Default** is [TV]
+ * @property episodes Number of episodes. **Default** is `0`
+ * @property status Publishing status. **Default** is [UNKNOWN]
+ * @property animeSeason In which season did the anime premiere
+ * @property picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
+ * @property thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
+ * @property duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
+ * @property relatedAnime Duplicate-free list of related anime. Sorted ascending.
+ * @property tags Duplicate-free list of tags. Sorted ascending. All tags are lower case.
  * @throws IllegalArgumentException if _title is blank
  */
 public data class Anime(
@@ -49,11 +47,11 @@ public data class Anime(
     val synonyms: SortedList<Title> = SortedList(comparator = STRING_COMPARATOR),
     val type: Type = TV,
     val episodes: Episodes = 0,
-    val status: Status = UNKNOWN,
+    val status: Status = Status.UNKNOWN,
     val animeSeason: AnimeSeason = AnimeSeason(),
     val picture: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
-    val duration: Duration = Duration(0, SECONDS),
+    val duration: Duration = Duration.UNKNOWN,
     val relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
     val tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR),
 ) {
@@ -68,6 +66,8 @@ public data class Anime(
     init {
         require(_title.isNotBlank()) { "Title cannot be blank." }
         _title = cleanupTitle(_title)
+
+        require(episodes >= 0) { "Episodes cannot have a negative value." }
 
         val uncheckedSources: Collection<URI> = sources.toList()
         sources.clear()

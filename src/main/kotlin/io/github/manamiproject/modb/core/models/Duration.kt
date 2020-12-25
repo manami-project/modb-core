@@ -11,8 +11,8 @@ public typealias Seconds = Int
 /**
  * Duration of an anime.
  * @since 1.0.0
- * @param value The duration
- * @param unit Indicates whether the [value] refers to seconds, minutes or hours.
+ * @property value The duration
+ * @property unit Indicates whether the [value] refers to seconds, minutes or hours.
  */
 public data class Duration(
     private val value: Int,
@@ -55,5 +55,9 @@ public data class Duration(
         HOURS,
         MINUTES,
         SECONDS
+    }
+
+    public companion object {
+        public val UNKNOWN: Duration = Duration(0, SECONDS)
     }
 }
