@@ -55,7 +55,7 @@ public data class Anime(
     val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val duration: Duration = Duration(0, SECONDS),
     val relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
-    val tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR), // TODO: adjust constructor tests
+    val tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR),
 ) {
 
     /**
