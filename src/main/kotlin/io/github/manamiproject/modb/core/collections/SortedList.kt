@@ -1,19 +1,24 @@
 package io.github.manamiproject.modb.core.collections
 
-import java.net.URI
 import java.util.Comparator
 import java.util.function.Predicate
 
 /**
  * This [List] automatically sorts itself on any modifying invocation.
  * @since 2.1.0
- * @param list Initial list of elements. **Default:** empty list
- * @param comparator Comparator used to sort the elements
+ * @property list Initial list of elements. **Default:** empty list
+ * @property comparator Comparator used to sort the elements. **Default:** Simple call of `compareTo`
  */
-public class SortedList<T>(
+public class SortedList<T: Comparable<T>>(
         private val list: MutableList<T> = mutableListOf(),
-        private val comparator: Comparator<T>
+        private val comparator: Comparator<T> = Comparator { o1, o2 -> o1.compareTo(o2) }
 ) : MutableList<T> by list {
+
+    /**
+     * @param values Initial values
+     * @since 3.1.0
+     */
+    public constructor(vararg values: T) : this(values.toMutableList())
 
     init {
         list.sortWith(comparator)
@@ -94,20 +99,5 @@ public class SortedList<T>(
 
     override fun hashCode(): Int {
         return list.toList().hashCode()
-    }
-
-    public companion object {
-
-        /**
-         * Comparator for [URI]s
-         * @since 3.0.0
-         */
-        public val URI_COMPARATOR: Comparator<URI> = Comparator { o1, o2 -> o1.toString().compareTo(o2.toString()) }
-
-        /**
-         * Comparator for [String]s
-         * @since 2.1.0
-         */
-        public val STRING_COMPARATOR: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }
     }
 }

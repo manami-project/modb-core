@@ -1,6 +1,5 @@
 package io.github.manamiproject.modb.core.collections
 
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -8,19 +7,18 @@ import org.junit.jupiter.api.Test
 internal class SortedListTest {
 
     @Test
-    fun `sort list if the list is initially added by using the constructor`() {
+    fun `sort list if the list is initially added by using the constructor passing a mutable list`() {
         // given
         val list = mutableListOf(
                 "Zankyou no Terror",
                 "Gintama",
                 "Natsume Yuujinchou Roku",
-                "Ashita no Joe 2"
+                "Ashita no Joe 2",
         )
 
         // when
         val result = SortedList(
                 list = list,
-                comparator = STRING_COMPARATOR
         )
 
         // then
@@ -28,7 +26,51 @@ internal class SortedListTest {
                 "Ashita no Joe 2",
                 "Gintama",
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
+        )
+    }
+
+    @Test
+    fun `sort list if the list is initially added by using the constructor`() {
+        // when
+        val result = SortedList(
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
+        )
+
+        // then
+        assertThat(result.toList()).containsExactly(
+            "Ashita no Joe 2",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
+            "Zankyou no Terror",
+        )
+    }
+
+    @Test
+    fun `sort list descending if the list is initially added by using the constructor passing a mutable list and a specific comparator`() {
+        // given
+        val list = mutableListOf(
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
+        )
+
+        // when
+        val result = SortedList(
+            list = list,
+            comparator = { o1, o2 -> o2.compareTo(o1) }
+        )
+
+        // then
+        assertThat(result.toList()).containsExactly(
+            "Zankyou no Terror",
+            "Natsume Yuujinchou Roku",
+            "Gintama",
+            "Ashita no Joe 2",
         )
     }
 
@@ -36,12 +78,9 @@ internal class SortedListTest {
     fun `sort list when adding an element`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Natsume Yuujinchou Roku"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
         )
 
         // when
@@ -60,12 +99,9 @@ internal class SortedListTest {
     fun `ignore selected index when using add with index and sort list`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Natsume Yuujinchou Roku"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
         )
 
         // when
@@ -84,12 +120,9 @@ internal class SortedListTest {
     fun `sort list when adding a list of elements`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Natsume Yuujinchou Roku"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
         )
 
         // when
@@ -109,12 +142,9 @@ internal class SortedListTest {
     fun `ignore selected index when using addAll with index and sort list`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Natsume Yuujinchou Roku"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
         )
 
         // when
@@ -134,12 +164,9 @@ internal class SortedListTest {
     fun `guarantee sorted list when removing an element`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Natsume Yuujinchou Roku"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Natsume Yuujinchou Roku",
         )
 
         // when
@@ -156,14 +183,11 @@ internal class SortedListTest {
     fun `guarantee sorted list when removing a list of elements`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Chihayafuru",
-                        "Natsume Yuujinchou Roku",
-                        "Ashita no Joe 2"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Chihayafuru",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
         )
 
         // when
@@ -181,14 +205,11 @@ internal class SortedListTest {
     fun `guarantee sorted list when removing an element at a specific position`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Chihayafuru",
-                        "Natsume Yuujinchou Roku",
-                        "Ashita no Joe 2"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Chihayafuru",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
         )
 
         // when
@@ -207,14 +228,11 @@ internal class SortedListTest {
     fun `guarantee sorted list when removing an element using a predicate`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Chihayafuru",
-                        "Natsume Yuujinchou Roku",
-                        "Ashita no Joe 2"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Chihayafuru",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
         )
 
         // when
@@ -233,14 +251,11 @@ internal class SortedListTest {
     fun `replace entry on specific position and sort list`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Chihayafuru",
-                        "Natsume Yuujinchou Roku",
-                        "Ashita no Joe 2"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Chihayafuru",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
         )
 
         // when
@@ -260,14 +275,11 @@ internal class SortedListTest {
     fun `guarantee sorted list when using retainAll`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "Zankyou no Terror",
-                        "Gintama",
-                        "Chihayafuru",
-                        "Natsume Yuujinchou Roku",
-                        "Ashita no Joe 2"
-                ),
-                comparator = STRING_COMPARATOR
+            "Zankyou no Terror",
+            "Gintama",
+            "Chihayafuru",
+            "Natsume Yuujinchou Roku",
+            "Ashita no Joe 2",
         )
 
         // when
@@ -284,12 +296,9 @@ internal class SortedListTest {
     fun `toString() lists elements`() {
         // given
         val list = SortedList(
-                list = mutableListOf(
-                        "A",
-                        "B",
-                        "C"
-                ),
-                comparator = STRING_COMPARATOR
+            "A",
+            "B",
+            "C",
         )
 
         // when
@@ -307,7 +316,7 @@ internal class SortedListTest {
             // given
             val list1 = SortedList(
                     list = mutableListOf("A", "B", "C"),
-                    comparator = STRING_COMPARATOR
+                    comparator = { o1, o2 -> o1.compareTo(o2) }
             )
 
             val list2 = SortedList(
@@ -327,13 +336,15 @@ internal class SortedListTest {
         fun `two lists are equal having the same elements and the same comparator`() {
             // given
             val list1 = SortedList(
-                    list = mutableListOf("A", "B", "C"),
-                    comparator = STRING_COMPARATOR
+                "A",
+                "B",
+                "C",
             )
 
             val list2 = SortedList(
-                    list = mutableListOf("C", "B", "A"),
-                    comparator = STRING_COMPARATOR
+                "C",
+                "B",
+                "A",
             )
 
             // when
@@ -348,8 +359,9 @@ internal class SortedListTest {
         fun `two lists are not equal having different generics`() {
             // given
             val list1 = SortedList(
-                    list = mutableListOf("A", "B", "C"),
-                    comparator = STRING_COMPARATOR
+                "A",
+                "B",
+                "C",
             )
 
             val list2 = SortedList(
@@ -358,7 +370,7 @@ internal class SortedListTest {
             )
 
             // when
-            val result = list1 == list2
+            val result = list1.equals(list2)
 
             // then
             assertThat(result).isFalse()
@@ -369,8 +381,9 @@ internal class SortedListTest {
         fun `two lists are not equal having different object type`() {
             // given
             val list1 = SortedList(
-                    list = mutableListOf("A", "B", "C"),
-                    comparator = STRING_COMPARATOR
+                "A",
+                "B",
+                "C",
             )
 
             // when

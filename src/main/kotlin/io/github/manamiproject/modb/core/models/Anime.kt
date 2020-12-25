@@ -1,8 +1,6 @@
 package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.collections.SortedList
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.URI_COMPARATOR
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
@@ -43,8 +41,8 @@ public typealias Title = String
  */
 public data class Anime(
     private var _title: Title,
-    val sources: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
-    val synonyms: SortedList<Title> = SortedList(comparator = STRING_COMPARATOR),
+    val sources: SortedList<URI> = SortedList(),
+    val synonyms: SortedList<Title> = SortedList(),
     val type: Type = TV,
     val episodes: Episodes = 0,
     val status: Status = Status.UNKNOWN,
@@ -52,8 +50,8 @@ public data class Anime(
     val picture: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val duration: Duration = Duration.UNKNOWN,
-    val relatedAnime: SortedList<URI> = SortedList(comparator = URI_COMPARATOR),
-    val tags: SortedList<Tag> = SortedList(comparator = STRING_COMPARATOR),
+    val relatedAnime: SortedList<URI> = SortedList(),
+    val tags: SortedList<Tag> = SortedList(),
 ) {
 
     /**

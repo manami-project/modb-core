@@ -1,8 +1,6 @@
 package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.collections.SortedList
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.STRING_COMPARATOR
-import io.github.manamiproject.modb.core.collections.SortedList.Companion.URI_COMPARATOR
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime.Status.*
 import io.github.manamiproject.modb.core.models.Anime.Type.Special
@@ -129,7 +127,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  title,
-                    synonyms = SortedList(mutableListOf(title), STRING_COMPARATOR),
+                    synonyms = SortedList(title),
                 )
 
                 // then
@@ -141,7 +139,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = SortedList(mutableListOf("         "), STRING_COMPARATOR),
+                    synonyms = SortedList("         "),
                 )
 
                 // then
@@ -156,7 +154,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = SortedList(mutableListOf(synonym), STRING_COMPARATOR),
+                    synonyms = SortedList(synonym),
                 )
 
                 // then
@@ -171,7 +169,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = SortedList(mutableListOf(synonym, synonym), STRING_COMPARATOR),
+                    synonyms = SortedList(synonym, synonym),
                 )
 
                 // then
@@ -190,13 +188,10 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Death Note",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            four,
-                            two,
-                            three,
-                            one
-                        ),
-                        comparator= STRING_COMPARATOR
+                        four,
+                        two,
+                        three,
+                        one,
                     ),
                 )
 
@@ -212,7 +207,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = title,
-                    synonyms = SortedList(mutableListOf(title.toUpperCase()), STRING_COMPARATOR),
+                    synonyms = SortedList(title.toUpperCase()),
                 )
 
                 // then
@@ -228,11 +223,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = title,
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            title.toLowerCase(),
-                            title.toUpperCase()
-                        ),
-                        comparator= STRING_COMPARATOR
+                        title.toLowerCase(),
+                        title.toUpperCase(),
                     ),
                 )
 
@@ -250,11 +242,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            " $expectedTitleOne",
-                            " $expectedTitleTwo"
-                        ),
-                        comparator= STRING_COMPARATOR
+                        " $expectedTitleOne",
+                        " $expectedTitleTwo",
                     ),
                 )
 
@@ -272,11 +261,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            "$expectedTitleOne ",
-                            "$expectedTitleTwo "
-                        ),
-                        comparator= STRING_COMPARATOR
+                        "$expectedTitleOne ",
+                        "$expectedTitleTwo ",
                     ),
                 )
 
@@ -294,11 +280,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            "Death        Note",
-                            "Made      in        Abyss"
-                        ),
-                        comparator= STRING_COMPARATOR
+                        "Death        Note",
+                        "Made      in        Abyss",
                     ),
                 )
 
@@ -316,11 +299,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            "Death\tNote",
-                            "Made\tin\tAbyss"
-                        ),
-                        comparator= STRING_COMPARATOR
+                        "Death\tNote",
+                        "Made\tin\tAbyss",
                     ),
                 )
 
@@ -338,11 +318,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            "Death\nNote",
-                            "Made\nin\nAbyss"
-                        ),
-                        comparator= STRING_COMPARATOR
+                        "Death\nNote",
+                        "Made\nin\nAbyss",
                     ),
                 )
 
@@ -360,11 +337,8 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Title",
                     synonyms = SortedList(
-                        list = mutableListOf(
-                            "Death\r\nNote",
-                            "Made\r\nin\r\nAbyss"
-                        ),
-                        comparator= STRING_COMPARATOR
+                        "Death\r\nNote",
+                        "Made\r\nin\r\nAbyss",
                     ),
                 )
 
@@ -773,7 +747,7 @@ internal class AnimeKtTest {
                 // when
                 val anime = Anime(
                     _title =  "Death Note",
-                    sources = SortedList(mutableListOf(source), URI_COMPARATOR)
+                    sources = SortedList(source)
                 )
 
                 // then
@@ -788,7 +762,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = SortedList(mutableListOf(source, source), URI_COMPARATOR),
+                    sources = SortedList(source, source),
                 )
 
                 // then
@@ -806,7 +780,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    sources = SortedList(mutableListOf(four, two, three, one), URI_COMPARATOR),
+                    sources = SortedList(four, two, three, one),
                 )
 
                 // then
@@ -821,8 +795,8 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = SortedList(mutableListOf(source), URI_COMPARATOR),
-                    sources = SortedList(mutableListOf(source), URI_COMPARATOR),
+                    relatedAnime = SortedList(source),
+                    sources = SortedList(source),
                 )
 
                 // then
@@ -980,7 +954,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = SortedList(mutableListOf(relatedAnime), URI_COMPARATOR),
+                    relatedAnime = SortedList(relatedAnime),
                 )
 
                 // then
@@ -995,7 +969,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = SortedList(mutableListOf(relatedAnime, relatedAnime), URI_COMPARATOR),
+                    relatedAnime = SortedList(relatedAnime, relatedAnime),
                 )
 
                 // then
@@ -1013,7 +987,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = SortedList(mutableListOf(four, two, three, one), URI_COMPARATOR),
+                    relatedAnime = SortedList(four, two, three, one),
                 )
 
                 // then
@@ -1028,8 +1002,8 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = SortedList(mutableListOf(link), URI_COMPARATOR),
-                    relatedAnime = SortedList(mutableListOf(link), URI_COMPARATOR),
+                    sources = SortedList(link),
+                    relatedAnime = SortedList(link),
                 )
 
                 // then
@@ -1628,7 +1602,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf(tag), STRING_COMPARATOR)
+                    tags = SortedList(tag)
                 )
 
                 // then
@@ -1644,7 +1618,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf(" $expectedTag"), STRING_COMPARATOR)
+                    tags = SortedList(" $expectedTag")
                 )
 
                 // then
@@ -1659,7 +1633,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("$expectedTag "), STRING_COMPARATOR)
+                    tags = SortedList("$expectedTag ")
                 )
 
                 // then
@@ -1674,7 +1648,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("slice     of      life"), STRING_COMPARATOR)
+                    tags = SortedList("slice     of      life")
                 )
 
                 // then
@@ -1689,7 +1663,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("slice\tof\tlife"), STRING_COMPARATOR)
+                    tags = SortedList("slice\tof\tlife")
                 )
 
                 // then
@@ -1704,7 +1678,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("slice\nof\nlife"), STRING_COMPARATOR)
+                    tags = SortedList("slice\nof\nlife")
                 )
 
                 // then
@@ -1719,7 +1693,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("slice\r\nof\r\nlife"), STRING_COMPARATOR)
+                    tags = SortedList("slice\r\nof\r\nlife")
                 )
 
                 // then
@@ -1731,7 +1705,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf(EMPTY), STRING_COMPARATOR)
+                    tags = SortedList(EMPTY)
                 )
 
                 // then
@@ -1743,7 +1717,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf("     "), STRING_COMPARATOR)
+                    tags = SortedList("     ")
                 )
 
                 // then
@@ -1759,7 +1733,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf(tag2, tag1), STRING_COMPARATOR)
+                    tags = SortedList(tag2, tag1)
                 )
 
                 // then
@@ -1775,7 +1749,7 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = SortedList(mutableListOf(tag2, tag1, tag1, tag2), STRING_COMPARATOR)
+                    tags = SortedList(tag2, tag1, tag1, tag2)
                 )
 
                 // then
