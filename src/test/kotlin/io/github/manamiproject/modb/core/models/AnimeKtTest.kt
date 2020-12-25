@@ -425,7 +425,7 @@ internal class AnimeKtTest {
 
                 val anime = Anime(
                     _title = "Death Note"
-                ).addSynonyms(mutableListOf(two))
+                ).addSynonyms(listOf(two))
 
                 // when
                 anime.addSynonyms(listOf(two, one))
@@ -568,6 +568,195 @@ internal class AnimeKtTest {
                 assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
         }
+
+        @Nested
+        inner class AddSynonymsVarargTests {
+
+            @Test
+            fun `must not add a synonym if it equals the title`() {
+                // given
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms("Death Note")
+
+                // then
+                assertThat(anime.synonyms).isEmpty()
+            }
+
+            @Test
+            fun `must not add blank synonym`() {
+                // given
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms("         ")
+
+                // then
+                assertThat(anime.synonyms).isEmpty()
+            }
+
+            @Test
+            fun `successfully add a synonym`() {
+                // given
+                val one = "Caderno da Morte"
+                val two = "DN"
+                val three = "Quaderno della Morte"
+                val four = "Sveska Smrti"
+
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms(four, two, three, one)
+
+                // then
+                assertThat(anime.synonyms).containsExactly(one, two, three, four)
+            }
+
+            @Test
+            fun `must not add a duplicated synonym`() {
+                // given
+                val one = "Caderno da Morte"
+                val two = "DN"
+
+                val anime = Anime(
+                    _title = "Death Note"
+                ).addSynonyms(two)
+
+                // when
+                anime.addSynonyms(two, one)
+
+                // then
+                assertThat(anime.synonyms).containsExactly(one, two)
+            }
+
+            @Test
+            fun `list of synonyms is sorted ascending`() {
+                // given
+                val one = "Caderno da Morte"
+                val two =  "DN"
+                val three =  "Quaderno della Morte"
+                val four = "Sveska Smrti"
+
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms(four, two, three, one)
+
+                // then
+                assertThat(anime.synonyms).containsExactly(one, two, three, four)
+            }
+
+            @Test
+            fun `synonym comparison to title is not case sensitive`() {
+                // given
+                val title  =  "Death Note"
+                val anime = Anime(title)
+
+                // when
+                anime.addSynonyms(title.toUpperCase())
+
+                // then
+                assertThat(anime.synonyms).containsExactly(title.toUpperCase())
+            }
+
+            @Test
+            fun `synonym comparison is not case sensitive`() {
+                // given
+                val title  =  "Death Note"
+                val anime = Anime(title)
+
+                // when
+                anime.addSynonyms(title.toLowerCase(), title.toUpperCase())
+
+                // then
+                assertThat(anime.synonyms).containsExactly(title.toUpperCase(), title.toLowerCase())
+            }
+
+            @Test
+            fun `remove leading whitespace from synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms(" $expectedTitleOne", " $expectedTitleTwo")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `remove tailing whitespace from synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms("$expectedTitleOne ", "$expectedTitleTwo ")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `replace multiple whitespaces with a single whitespace in synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms("Death        Note", "Made      in        Abyss")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `replace tab character with whitespace in synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms("Death\tNote", "Made\tin\tAbyss")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `replace line feed character with whitespace in synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms("Death\nNote", "Made\nin\nAbyss")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `replace carriage return line feed character with whitespace in synonyms`() {
+                // given
+                val expectedTitleOne = "Death Note"
+                val expectedTitleTwo = "Made in Abyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms("Death\r\nNote", "Made\r\nin\r\nAbyss")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+        }
     }
 
     @Nested
@@ -666,7 +855,7 @@ internal class AnimeKtTest {
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                     _title =  "Death Note"
-                ).addSources(mutableListOf(source))
+                ).addSources(listOf(source))
 
                 // when
                 anime.addSources(listOf(source))
@@ -698,10 +887,77 @@ internal class AnimeKtTest {
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                         _title =  "Death Note"
-                ).addRelations(mutableListOf(source))
+                ).addRelations(listOf(source))
 
                 // when
                 anime.addSources(listOf(source))
+
+                // then
+                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.relatedAnime).isEmpty()
+            }
+        }
+
+        @Nested
+        inner class AddSourcesVarargTests {
+
+            @Test
+            fun `add source`() {
+                // given
+                val source = URI("https://myanimelist.net/anime/1535")
+                val anime = Anime(
+                    _title =  "Death Note"
+                )
+
+                // when
+                anime.addSources(source)
+
+                // then
+                assertThat(anime.sources).containsExactly(source)
+            }
+
+            @Test
+            fun `cannot add duplicated source link`() {
+                // given
+                val source = URI("https://myanimelist.net/anime/1535")
+                val anime = Anime(
+                    _title =  "Death Note"
+                ).addSources(source)
+
+                // when
+                anime.addSources(source)
+
+                // then
+                assertThat(anime.sources).containsExactly(source)
+            }
+
+            @Test
+            fun `list of source links is sorted ascending`() {
+                // given
+                val anime = Anime("Death Note")
+
+                val four = URI("https://myanimelist.net/anime/1535")
+                val two = URI("https://anilist.co/anime/1535")
+                val three = URI("https://kitsu.io/anime/1376")
+                val one = URI("https://anidb.net/anime/4563")
+
+                // when
+                anime.addSources(four, two, three, one)
+
+                // then
+                assertThat(anime.sources).containsExactly(one, two, three, four)
+            }
+
+            @Test
+            fun `remove related anime if the same uri has been added to sources`() {
+                // given
+                val source = URI("https://myanimelist.net/anime/1535")
+                val anime = Anime(
+                    _title =  "Death Note"
+                ).addRelations(source)
+
+                // when
+                anime.addSources(source)
 
                 // then
                 assertThat(anime.sources).containsExactly(source)
@@ -805,7 +1061,7 @@ internal class AnimeKtTest {
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
                     _title =  "Death Note"
-                ).addRelations(mutableListOf(relatedAnime))
+                ).addRelations(listOf(relatedAnime))
 
                 // when
                 anime.addRelations(listOf(relatedAnime))
@@ -837,10 +1093,76 @@ internal class AnimeKtTest {
                 val link = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                     _title =  "Death Note"
-                ).addSources(mutableListOf(link))
+                ).addSources(listOf(link))
 
                 // when
                 anime.addRelations(listOf(link))
+
+                // then
+                assertThat(anime.relatedAnime).isEmpty()
+            }
+        }
+
+        @Nested
+        inner class AddRelatedAnimeVarargTests {
+
+            @Test
+            fun `add related anime`() {
+                // given
+                val relatedAnime = URI("https://myanimelist.net/anime/2994")
+                val anime = Anime(
+                    _title =  "Death Note"
+                )
+
+                // when
+                anime.addRelations(relatedAnime)
+
+                // then
+                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+            }
+
+            @Test
+            fun `cannot add duplicated link for related anime`() {
+                // given
+                val relatedAnime = URI("https://myanimelist.net/anime/2994")
+                val anime = Anime(
+                    _title =  "Death Note"
+                ).addRelations(relatedAnime)
+
+                // when
+                anime.addRelations(relatedAnime)
+
+                // then
+                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+            }
+
+            @Test
+            fun `list of related anime is sorted ascending`() {
+                // given
+                val anime = Anime("Death Note")
+
+                val four = URI("https://myanimelist.net/anime/2994")
+                val two = URI("https://anidb.net/anime/8146")
+                val three = URI("https://anidb.net/anime/8147")
+                val one = URI("http://anilist.co/anime/2994")
+
+                // when
+                anime.addRelations(four, two, three, one)
+
+                // then
+                assertThat(anime.relatedAnime).containsExactly(one, two, three, four)
+            }
+
+            @Test
+            fun `cannot add a related anime if the links is already part of the sources`() {
+                // given
+                val link = URI("https://myanimelist.net/anime/1535")
+                val anime = Anime(
+                    _title =  "Death Note"
+                ).addSources(link)
+
+                // when
+                anime.addRelations(link)
 
                 // then
                 assertThat(anime.relatedAnime).isEmpty()
@@ -856,7 +1178,7 @@ internal class AnimeKtTest {
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
                     _title =  "Death Note"
-                ).addRelations(mutableListOf(relatedAnime))
+                ).addRelations(listOf(relatedAnime))
 
                 // when
                 anime.removeRelationIf { it.toString() == "https://myanimelist.net/anime/2994" }
@@ -871,7 +1193,7 @@ internal class AnimeKtTest {
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
                     _title =  "Death Note"
-                ).addRelations(mutableListOf(relatedAnime))
+                ).addRelations(listOf(relatedAnime))
 
                 // when
                 anime.removeRelationIf { it.toString().contains("anidb.net") }
@@ -1564,7 +1886,7 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(mutableListOf("slice\nof\nlife"))
+                anime.addTags(listOf("slice\nof\nlife"))
 
                 // then
                 assertThat(anime.tags.first()).isEqualTo(expectedTag)
@@ -1630,6 +1952,155 @@ internal class AnimeKtTest {
 
                 // when
                 anime.addTags(listOf(tag2, tag1, tag1, tag2))
+
+                // then
+                assertThat(anime.tags).hasSize(2)
+                assertThat(anime.tags).containsExactly(tag1, tag2)
+            }
+        }
+
+        @Nested
+        inner class AddTagsVarargTests {
+
+            @Test
+            fun `tags added are set to lower case`() {
+                // given
+                val tag = "EXAMPLE"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags(tag)
+
+                // then
+                assertThat(anime.tags.first()).isNotEqualTo(tag)
+                assertThat(anime.tags.first()).isEqualTo(tag.toLowerCase())
+            }
+
+            @Test
+            fun `remove leading whitespace from title`() {
+                // given
+                val expectedTag = "example"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags(" $expectedTag")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `remove tailing whitespace from title`() {
+                // given
+                val expectedTag = "example"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("$expectedTag ")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `replace multiple whitespaces with a single whitespace in title`() {
+                // given
+                val expectedTag = "slice of life"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("slice     of      life")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `replace tab character with whitespace in title`() {
+                // given
+                val expectedTag = "slice of life"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("slice\tof\tlife")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `replace line feed character with whitespace in title`() {
+                // given
+                val expectedTag = "slice of life"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("slice\nof\nlife")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `replace carriage return line feed with whitespace in title`() {
+                // given
+                val expectedTag = "slice of life"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("slice\r\nof\r\nlife")
+
+                // then
+                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+            }
+
+            @Test
+            fun `don't add tag if it's an empty string`() {
+                // given
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags(EMPTY)
+
+                // then
+                assertThat(anime.tags).isEmpty()
+            }
+
+            @Test
+            fun `don't add tag if it's a blank string`() {
+                // given
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags("     ")
+
+                // then
+                assertThat(anime.tags).isEmpty()
+            }
+
+            @Test
+            fun `tags are sorted ascending`() {
+                // given
+                val tag1 = "a tag"
+                val tag2 = "before the other"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags(tag2, tag1)
+
+                // then
+                assertThat(anime.tags).containsExactly(tag1, tag2)
+            }
+
+            @Test
+            fun `tags is a distinct list`() {
+                // given
+                val tag1 = "a tag"
+                val tag2 = "before the other"
+                val anime = Anime("Test")
+
+                // when
+                anime.addTags(tag2, tag1, tag1, tag2)
 
                 // then
                 assertThat(anime.tags).hasSize(2)

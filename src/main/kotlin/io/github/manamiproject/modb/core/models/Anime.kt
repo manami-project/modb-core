@@ -87,7 +87,19 @@ public data class Anime(
     }
 
     /**
-     * Add additional synonyms to the existing list. This will **not** override [synonyms].
+     * Add additional synonyms to the existing list. Duplicates are being ignored.
+     * Comparison for this is case sensitive. This will **not** override [synonyms].
+     * The value which is present in [title] cannot be added.
+     * @since 3.0.2
+     * @param synonym Synonyms to be added
+     * @return Same instance
+     */
+    public fun addSynonyms(vararg synonym: Title): Anime = addSynonyms(synonym.toList())
+
+    /**
+     * Add additional synonyms to the existing list. Duplicates are being ignored.
+     * Comparison for this is case sensitive. This will **not** override [synonyms].
+     * The value which is present in [title] cannot be added.
      * @since 1.0.0
      * @param synonyms List of synonyms
      * @return Same instance
@@ -105,6 +117,16 @@ public data class Anime(
 
     /**
      * Add additional sources to the existing list. This will **not** override [sources].
+     * Duplicates are being ignored.
+     * @since 3.0.2
+     * @param source Sources to be added
+     * @return Same instance
+     */
+    public fun addSources(vararg source: URI): Anime = addSources(source.toList())
+
+    /**
+     * Add additional sources to the existing list. This will **not** override [sources].
+     * Duplicates are being ignored.
      * @since 3.0.0
      * @param sources List of sources
      * @return Same instance
@@ -121,6 +143,16 @@ public data class Anime(
 
     /**
      * Add additional related anime to the existing list. This will **not** override [relatedAnime].
+     * Duplicates are being ignored.
+     * @since 3.0.2
+     * @param relatedAnime List of related anime
+     * @return Same instance
+     */
+    public fun addRelations(vararg relatedAnime: URI): Anime = addRelations(relatedAnime.toList())
+
+    /**
+     * Add additional related anime to the existing list. This will **not** override [relatedAnime].
+     * Duplicates are being ignored.
      * @since 3.0.0
      * @param relatedAnime List of related anime
      * @return Same instance
@@ -135,6 +167,16 @@ public data class Anime(
 
     /**
      * Add additional tags to the existing list. This will **not** override [tags].
+     * Duplicates are being ignored.
+     * @since 3.0.2
+     * @param tag List of tags
+     * @return Same instance
+     */
+    public fun addTags(vararg tag: Tag): Anime = addTags(tag.toList())
+
+    /**
+     * Add additional tags to the existing list. This will **not** override [tags].
+     * Duplicates are being ignored.
      * @since 1.0.0
      * @param tags List of tags
      * @return Same instance
