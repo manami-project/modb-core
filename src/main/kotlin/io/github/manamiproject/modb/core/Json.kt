@@ -75,9 +75,9 @@ internal class AnimeKlaxonConverter : Converter {
                 value = (jv.obj?.get("duration") as JsonObject).int("value")!!,
                 unit = DurationUnit.valueOf((jv.obj?.get("duration") as JsonObject).string("unit")!!)
             )
-        ).addSynonyms((jv.obj?.get("_synonyms") as JsonArray<*>).value.map { it as String }.toMutableList())
-         .addSources((jv.obj?.get("_sources") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
-         .addRelations((jv.obj?.get("_relatedAnime") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
-         .addTags((jv.obj?.get("_tags") as JsonArray<*>).value.map { it as String }.toMutableList())
+        ).addSynonyms((jv.obj?.get("synonyms") as JsonArray<*>).value.map { it as String }.toMutableList())
+         .addSources((jv.obj?.get("sources") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
+         .addRelations((jv.obj?.get("relatedAnime") as JsonArray<*>).value.map { it as String }.map { URI(it) }.toMutableList())
+         .addTags((jv.obj?.get("tags") as JsonArray<*>).value.map { it as String }.toMutableList())
     }
 }
