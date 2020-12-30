@@ -213,7 +213,7 @@ public data class Anime(
      * + In case the year of this instance's [animeSeason] is [AnimeSeason.UNKNOWN_YEAR], the year if the given [Anime] will be applied.
      * @since 1.0.0
      * @param anime [Anime] which is being merged into the this instance
-     * @return Same instance
+     * @return New instance of the merged anime
      */
     public fun mergeWith(anime: Anime): Anime {
         val mergedEpisodes = if (episodes == 0 && anime.episodes != 0) {
