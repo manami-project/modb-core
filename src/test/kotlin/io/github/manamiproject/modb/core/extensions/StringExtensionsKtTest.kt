@@ -5,6 +5,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
+import org.junit.jupiter.api.condition.OS.MAC
 import java.lang.Thread.sleep
 import java.nio.file.FileSystems
 import java.nio.file.Path
@@ -98,6 +101,7 @@ internal class StringExtensionsKtTest {
         }
 
         @Test
+        @DisabledOnOs(MAC)
         fun `successfully write string using lock file`() {
             tempDirectory {
                 // given
