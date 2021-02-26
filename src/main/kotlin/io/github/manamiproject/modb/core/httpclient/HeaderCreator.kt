@@ -8,7 +8,7 @@ import java.net.URL
  * https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox
  * https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome
  */
-internal object HeaderCreator {
+public object HeaderCreator {
 
     private val firefoxUserAgents = listOf(
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0",
@@ -28,9 +28,9 @@ internal object HeaderCreator {
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
         )
 
-    val userAgents = firefoxUserAgents + chromeUserAgents
+    public val userAgents: List<String> = firefoxUserAgents + chromeUserAgents
 
-    fun createHeadersFor(url: URL, browser: Browser = Firefox): Map<String, String> {
+    internal fun createHeadersFor(url: URL, browser: Browser = Firefox): Map<String, String> {
         val headers = mutableMapOf<String, String>(
                 Pair("Host", url.host),
                 Pair("Connection", "keep-alive"),
