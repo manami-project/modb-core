@@ -213,6 +213,6 @@ public fun Path.fileSuffix(): FileSuffix {
     return if (fileName.startsWith('.')) {
         fileName
     } else {
-        fileName.substringAfter('.')
+        fileName.substringAfterLast('.')
     }
 }

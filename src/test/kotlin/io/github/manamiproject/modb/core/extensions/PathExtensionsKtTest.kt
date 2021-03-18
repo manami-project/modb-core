@@ -1007,5 +1007,20 @@ line feed [LF]""")
                 assertThat(result).isEqualTo(expectedName)
             }
         }
+
+        @Test
+        fun `return correct suffix from a file having a dot within the name`() {
+            tempDirectory {
+                // given
+                val dir = tempDir.resolve("a_name_with_version_2.x.xml")
+                Files.createDirectory(dir)
+
+                // when
+                val result = dir.fileSuffix()
+
+                // then
+                assertThat(result).isEqualTo("xml")
+            }
+        }
     }
 }
