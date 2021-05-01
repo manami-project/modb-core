@@ -44,17 +44,3 @@ public fun <T> List<T>.containsExactlyInTheSameOrder(otherList: List<T>): Boolea
 
     return true
 }
-
-/**
- * Picks a random element from a [List]
- * @since 1.0.0
- * @return A random element from the given list.
- * @throws IllegalStateException if the list is empty
- */
-public fun <T> List<T>.pickRandom(): T {
-    return when (this.size) {
-        0 -> throw IllegalStateException("Cannot pick random element from empty list.")
-        1 -> this.first()
-        else -> this[SecureRandom().nextInt(this.size).apply { if (this != 0) this - 1 }]
-    }
-}

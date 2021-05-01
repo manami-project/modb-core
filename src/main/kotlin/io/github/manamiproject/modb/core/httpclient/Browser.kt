@@ -2,13 +2,26 @@ package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.extensions.pickRandom
 
-internal enum class Browser {
-    Firefox,
-    Chromium;
+/**
+ * Defines different browsers.
+ * @since 4.0.0
+ */
+public enum class Browser {
+    FIREFOX,
+    CHROME;
 
-    companion object {
-        fun random(): Browser {
+    public companion object {
+        public fun random(): Browser {
             return values().toList().pickRandom()
         }
     }
+}
+
+/**
+ * Defines the visualization type of a [Browser]
+ * @since 4.0.0
+ */
+public enum class BrowserType {
+    MOBILE,
+    DESKTOP;
 }

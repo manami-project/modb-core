@@ -1,7 +1,7 @@
 package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
-import io.github.manamiproject.modb.core.httpclient.HeaderCreator.createHeadersFor
+import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import okhttp3.Headers.Companion.toHeaders

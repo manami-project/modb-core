@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.DisabledOnOs
-import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.condition.OS.MAC
 import java.lang.Thread.sleep
 import java.nio.file.FileSystems
