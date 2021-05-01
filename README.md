@@ -4,20 +4,6 @@ _[modb](https://github.com/manami-project?tab=repositories&q=modb&type=source)_ 
 
 # What does this lib do?
 This lib is the base for every specific meta data provider module. It contains the API for downloaders and converters, defines the anime model and provides basic functionality.
- 
-# Usage
-Add repository and dependency
-```kotlin
-repositories {
-    maven {
-        url = uri("https://dl.bintray.com/manami-project/maven")
-    }
-}
-
-dependencies {
-    implementation("io.github.manamiproject:modb-core:$version")
-}
-```
 
 # Features
 Apart from the interfaces defining the API and the objects defining an anime this lib contains the following features.
