@@ -42,7 +42,7 @@ public data class HttpResponse(
 
     private fun lowerCaseHeaders() {
         val lowerCaseKeyMap = _headers.map {
-            it.key.toLowerCase() to it.value
+            it.key.lowercase() to it.value
         }
 
         _headers.clear()

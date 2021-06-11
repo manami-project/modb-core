@@ -207,11 +207,11 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = title,
-                    synonyms = SortedList(title.toUpperCase()),
+                    synonyms = SortedList(title.uppercase()),
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(title.toUpperCase())
+                assertThat(result.synonyms).containsExactly(title.uppercase())
             }
 
             @Test
@@ -223,13 +223,13 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = title,
                     synonyms = SortedList(
-                        title.toLowerCase(),
-                        title.toUpperCase(),
+                        title.lowercase(),
+                        title.uppercase(),
                     ),
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(title.toUpperCase(), title.toLowerCase())
+                assertThat(result.synonyms).containsExactly(title.uppercase(), title.lowercase())
             }
 
             @Test
@@ -439,10 +439,10 @@ internal class AnimeKtTest {
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(listOf(title.toUpperCase()))
+                anime.addSynonyms(listOf(title.uppercase()))
 
                 // then
-                assertThat(anime.synonyms).containsExactly(title.toUpperCase())
+                assertThat(anime.synonyms).containsExactly(title.uppercase())
             }
 
             @Test
@@ -452,10 +452,10 @@ internal class AnimeKtTest {
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(listOf(title.toLowerCase(), title.toUpperCase()))
+                anime.addSynonyms(listOf(title.lowercase(), title.uppercase()))
 
                 // then
-                assertThat(anime.synonyms).containsExactly(title.toUpperCase(), title.toLowerCase())
+                assertThat(anime.synonyms).containsExactly(title.uppercase(), title.lowercase())
             }
 
             @Test
@@ -628,10 +628,10 @@ internal class AnimeKtTest {
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(title.toUpperCase())
+                anime.addSynonyms(title.uppercase())
 
                 // then
-                assertThat(anime.synonyms).containsExactly(title.toUpperCase())
+                assertThat(anime.synonyms).containsExactly(title.uppercase())
             }
 
             @Test
@@ -641,10 +641,10 @@ internal class AnimeKtTest {
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(title.toLowerCase(), title.toUpperCase())
+                anime.addSynonyms(title.lowercase(), title.uppercase())
 
                 // then
-                assertThat(anime.synonyms).containsExactly(title.toUpperCase(), title.toLowerCase())
+                assertThat(anime.synonyms).containsExactly(title.uppercase(), title.lowercase())
             }
 
             @Test
@@ -1607,7 +1607,7 @@ internal class AnimeKtTest {
 
                 // then
                 assertThat(result.tags.first()).isNotEqualTo(tag)
-                assertThat(result.tags.first()).isEqualTo(tag.toLowerCase())
+                assertThat(result.tags.first()).isEqualTo(tag.lowercase())
             }
 
             @Test
@@ -1772,7 +1772,7 @@ internal class AnimeKtTest {
 
                 // then
                 assertThat(anime.tags.first()).isNotEqualTo(tag)
-                assertThat(anime.tags.first()).isEqualTo(tag.toLowerCase())
+                assertThat(anime.tags.first()).isEqualTo(tag.lowercase())
             }
 
             @Test
@@ -1921,7 +1921,7 @@ internal class AnimeKtTest {
 
                 // then
                 assertThat(anime.tags.first()).isNotEqualTo(tag)
-                assertThat(anime.tags.first()).isEqualTo(tag.toLowerCase())
+                assertThat(anime.tags.first()).isEqualTo(tag.lowercase())
             }
 
             @Test

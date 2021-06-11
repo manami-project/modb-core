@@ -183,7 +183,7 @@ public data class Anime(
         tags.asSequence()
             .map { cleanupTitle(it) }
             .filter { it.isNotBlank() }
-            .map { it.toLowerCase() }
+            .map { it.lowercase() }
             .filter { !this.tags.contains(it) }
             .forEach { this.tags.add(it) }
 

@@ -29,7 +29,7 @@ internal object DefaultHeaderCreator: HeaderCreator {
                 }
         )
 
-        return headers.mapKeys { it.key.toLowerCase() }
+        return headers.mapKeys { it.key.lowercase() }
     }
 
     private fun addBrowserUnspecificHeaders(): Map<String, String> {
