@@ -317,13 +317,32 @@ public data class Anime(
      * @since 1.0.0
      */
     public enum class Type {
+        /**
+         * @since 1.0.0
+         */
         TV,
+        /**
+         * @since 1.0.0
+         */
         Movie,
-        /** Original Video Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_video_animation) */
+        /**
+         * Original Video Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_video_animation)
+         * @since 1.0.0
+         */
         OVA,
-        /** Original Net Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_net_animation) */
+        /**
+         * Original Net Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_net_animation)
+         * @since 1.0.0
+         */
         ONA,
-        Special
+        /**
+         * @since 1.0.0
+         */
+        Special,
+        /**
+         * @since 5.0.0
+         */
+        Unknown,
     }
 
     /**
@@ -331,13 +350,25 @@ public data class Anime(
      * @since 1.0.0
      */
     public enum class Status {
-        /** Finished airing or has been released completely. */
+        /**
+         * Finished airing or has been released completely.
+         * @since 1.0.0
+         */
         FINISHED,
-        /** Currently airing or releasing. */
+        /**
+         * Currently airing or releasing.
+         * @since 1.0.0
+         */
         CURRENTLY,
-        /** Not yet released or aired. */
+        /**
+         * Not yet released or aired.
+         * @since 1.0.0
+         */
         UPCOMING,
-        /** Status is unknown. */
+        /**
+         * Status is unknown.
+         * @since 1.0.0
+         */
         UNKNOWN
     }
 }
