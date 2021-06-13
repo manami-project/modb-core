@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.models
 import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime.Status.*
-import io.github.manamiproject.modb.core.models.Anime.Type.Special
+import io.github.manamiproject.modb.core.models.Anime.Type.SPECIAL
 import io.github.manamiproject.modb.core.models.AnimeSeason.Companion.UNKNOWN_YEAR
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
@@ -2222,7 +2222,7 @@ internal class AnimeKtTest {
             // given
             val anime = Anime(
                     _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                    type = Special,
+                    type = SPECIAL,
                     episodes = 1,
                     status = FINISHED,
                     animeSeason = AnimeSeason(
@@ -2264,7 +2264,7 @@ internal class AnimeKtTest {
                       sources = [https://myanimelist.net/anime/6351]
                       title = Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen
                       synonyms = [Clannad ~After Story~: Another World, Kyou Chapter, Clannad: After Story OVA, クラナド　アフターストーリー　もうひとつの世界　杏編]
-                      type = Special
+                      type = SPECIAL
                       episodes = 1
                       status = FINISHED
                       animeSeason = AnimeSeason(season=SUMMER, year=2009)

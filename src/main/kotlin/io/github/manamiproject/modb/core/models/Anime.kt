@@ -324,7 +324,7 @@ public data class Anime(
         /**
          * @since 1.0.0
          */
-        Movie,
+        MOVIE,
         /**
          * Original Video Animation. See [Wikipedia](https://en.wikipedia.org/wiki/Original_video_animation)
          * @since 1.0.0
@@ -338,11 +338,11 @@ public data class Anime(
         /**
          * @since 1.0.0
          */
-        Special,
+        SPECIAL,
         /**
          * @since 5.0.0
          */
-        Unknown,
+        UNKNOWN,
     }
 
     /**
@@ -369,6 +369,6 @@ public data class Anime(
          * Status is unknown.
          * @since 1.0.0
          */
-        UNKNOWN
+        UNKNOWN,
     }
 }
