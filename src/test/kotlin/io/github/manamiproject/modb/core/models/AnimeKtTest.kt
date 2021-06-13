@@ -1408,7 +1408,7 @@ internal class AnimeKtTest {
         fun `use this status` () {
             // given
             val anime = Anime("this", status = FINISHED)
-            val other = Anime("other", status = CURRENTLY)
+            val other = Anime("other", status = ONGOING)
 
             // when
             val result = anime.mergeWith(other)
@@ -1421,13 +1421,13 @@ internal class AnimeKtTest {
         fun `use other's status if this status is UNKNOWN` () {
             // given
             val anime = Anime("this", status = UNKNOWN)
-            val other = Anime("other", status = CURRENTLY)
+            val other = Anime("other", status = ONGOING)
 
             // when
             val result = anime.mergeWith(other)
 
             // then
-            assertThat(result.status).isEqualTo(CURRENTLY)
+            assertThat(result.status).isEqualTo(ONGOING)
         }
 
         @Test

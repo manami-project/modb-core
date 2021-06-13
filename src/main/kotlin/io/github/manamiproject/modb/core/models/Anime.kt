@@ -357,9 +357,9 @@ public data class Anime(
         FINISHED,
         /**
          * Currently airing or releasing.
-         * @since 1.0.0
+         * @since 5.0.0
          */
-        CURRENTLY,
+        ONGOING,
         /**
          * Not yet released or aired.
          * @since 1.0.0
