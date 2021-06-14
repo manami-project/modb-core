@@ -207,6 +207,7 @@ public data class Anime(
      * + All related anime of the given [Anime] will be added to the [relatedAnime] of this instance.
      * + All tags of the given [Anime] will be added to the [tags] of this instance.
      * + In case the number of episodes of this instance is 0, the value of the given [Anime] will be applied.
+     * + In case the type of this instance is [Type.UNKNOWN], the value of the given [Anime] will be applied.
      * + In case the status of this instance is [Status.UNKNOWN], the value of the given [Anime] will be applied.
      * + In case the duration of this instance is [Duration.UNKNOWN], the value of the given [Anime] will be applied.
      * + In case the season of this instance's [animeSeason] is [UNDEFINED], the season of the given [Anime] will be applied.
@@ -220,6 +221,12 @@ public data class Anime(
             anime.episodes
         } else {
             episodes
+        }
+
+        val mergedType = if (type == Type.UNKNOWN && anime.type != Type.UNKNOWN) {
+            anime.type
+        } else {
+            type
         }
 
         val mergedStatus = if (status == Status.UNKNOWN && anime.status != Status.UNKNOWN) {
@@ -248,7 +255,7 @@ public data class Anime(
 
         return Anime(
             _title = title,
-            type = type,
+            type = mergedType,
             episodes = mergedEpisodes,
             status = mergedStatus,
             picture = picture,

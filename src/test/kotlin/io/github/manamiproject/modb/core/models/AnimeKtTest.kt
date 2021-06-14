@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.models
 import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime.Status.*
+import io.github.manamiproject.modb.core.models.Anime.Type.MOVIE
 import io.github.manamiproject.modb.core.models.Anime.Type.SPECIAL
 import io.github.manamiproject.modb.core.models.AnimeSeason.Companion.UNKNOWN_YEAR
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
@@ -1402,6 +1403,32 @@ internal class AnimeKtTest {
 
             // then
             assertThat(result.episodes).isEqualTo(13)
+        }
+
+        @Test
+        fun `use this type` () {
+            // given
+            val anime = Anime("this", type = MOVIE)
+            val other = Anime("other", type = SPECIAL)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.type).isEqualTo(MOVIE)
+        }
+
+        @Test
+        fun `use other's type if this type is UNKNOWN` () {
+            // given
+            val anime = Anime("this", type = Anime.Type.UNKNOWN)
+            val other = Anime("other", type = SPECIAL)
+
+            // when
+            val result = anime.mergeWith(other)
+
+            // then
+            assertThat(result.type).isEqualTo(SPECIAL)
         }
 
         @Test
