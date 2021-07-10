@@ -10,8 +10,9 @@ public typealias Year = Int
 
 /**
  * Year of the first japanese anime. See [Wikipedia](https://en.wikipedia.org/wiki/Katsud%C5%8D_Shashin)
+ * @since 5.1.0
  */
-private const val YEAR_OF_THE_FIRST_ANIME: Year = 1907
+public const val YEAR_OF_THE_FIRST_ANIME: Year = 1907
 
 /**
  * Defines the season in which an anime premiered or has been published.
