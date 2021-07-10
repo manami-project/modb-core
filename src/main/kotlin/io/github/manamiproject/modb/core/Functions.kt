@@ -1,8 +1,10 @@
 package io.github.manamiproject.modb.core
 
+import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import java.io.BufferedReader
 import java.nio.file.Paths
+import java.util.*
 
 /**
  * During development: Reads the content of a file from _src/main/resources_ into a [String].
@@ -58,4 +60,34 @@ public fun resourceFileExists(path: String): Boolean {
     val file = Paths.get(resource.toURI())
 
     return file.regularFileExists()
+}
+
+/**
+ * Creates a random number within the interval of two given numbers. It doesn't matter which of the parameters is
+ * the min and which one is the max value. Only restriction is that they cannot be equal.
+ * @since 1.0.0
+ * @param number1 Bound for a random number (inclusive).
+ * @param number2 Bound for a random number (inclusive).
+ * @throws IllegalStateException If the given numbers are equal
+ * @return A random number withing the given bounds.
+ */
+public fun random(number1: Int, number2: Int): Long {
+    require(number1 != number2) { "Numbers cannot be equal." }
+
+    val min = if (number1 < number2) number1 else number2
+    val max = if (number1 > number2) number1 else number2
+
+    return (Random().nextInt((max - min) + 1) + min).toLong()
+}
+
+/**
+ * Only executes the given function if the current context is not the test context.
+ * @since 1.0.0
+ * @param config Config of a meta data provider.
+ * @param func Function to be executed if the current context is not the test context.
+ */
+public fun excludeFromTestContext(config: MetaDataProviderConfig, func: () -> Unit) {
+    if (!config.isTestContext()) {
+        func.invoke()
+    }
 }
