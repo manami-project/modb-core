@@ -24,7 +24,7 @@ version = project.findProperty("release.version") as String? ?: ""
 
 dependencies {
     api(kotlin("stdlib-jdk8"))
-    api("org.slf4j:slf4j-api:1.7.31")
+    api("org.slf4j:slf4j-api:1.7.32")
 
     implementation(platform(kotlin("bom")))
     implementation("com.beust:klaxon:5.5")
