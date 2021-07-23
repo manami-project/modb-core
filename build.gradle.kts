@@ -31,7 +31,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.7")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
-    testImplementation("ch.qos.logback:logback-classic:1.2.4")
+    testImplementation("ch.qos.logback:logback-classic:1.2.4-groovyless")
     testImplementation("io.github.manamiproject:modb-test:1.2.7")
 }
 
