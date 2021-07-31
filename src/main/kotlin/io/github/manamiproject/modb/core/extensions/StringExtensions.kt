@@ -45,3 +45,36 @@ public fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false)
  * @return `true` if the given value offers the general syntax of an [Int]
  */
 public fun String.isInt(): Boolean = Regex("[0-9]+").matches(this)
+
+/**
+ * Negation of [isInt]
+ * @since 5.3.0
+ * @see isInt
+ * @return `true` if the given value doesn't offer the general syntax of an [Int]
+ */
+public fun String.isNotInt(): Boolean = !Regex("[0-9]+").matches(this)
+
+/**
+ * Removes all occurrences of [value] in a given [String].
+ * @since 5.3.0
+ * @param value The value that is supposed to be removed from the given [String]
+ * @param ignoreCase Whether to operate case sensitive or not. **Default:** `false`
+ * @param normalizeWhitespaces If set to true multiple consective whitespaces will be replaced with a single one.
+ * @return The [String] without the occurrences of [value]
+ */
+public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWhitespaces: Boolean = false): String {
+    var cleanedValue = this.replace(value, EMPTY, ignoreCase)
+
+    if (normalizeWhitespaces) {
+        cleanedValue = cleanedValue.normalizeWhitespaces()
+    }
+
+    return cleanedValue
+}
+
+/**
+ * Replaces multiple consecutive whitespaces with a single one.
+ * @since 5.3.0
+ * @return The original [String] having a single whitespace in places where it had multiple consecutive whitespaces before.
+ */
+public fun String.normalizeWhitespaces(): String = this.replace(Regex(" {2,}"), " ")
