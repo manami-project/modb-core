@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS.MAC
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.lang.Thread.sleep
 import java.nio.file.FileSystems
 import java.nio.file.Path
@@ -15,7 +17,7 @@ import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 internal class StringExtensionsKtTest {
 
     @Nested
-    inner class WriteTests {
+    inner class WriteToFileTests {
 
         @Test
         fun `throws exception if given Path already exists, but is a directory`() {
@@ -136,6 +138,30 @@ internal class StringExtensionsKtTest {
                 assertThat(isLockFileCreated).isTrue()
                 assertThat(file.changeSuffix("lck")).doesNotExist()
             }
+        }
+    }
+
+    @Nested
+    inner class IsIntTests {
+
+        @ParameterizedTest
+        @ValueSource(strings = ["0", "1", "10", "100", "1000", "43252446346"])
+        fun `return true, because the the given value represents an Int`(value: String) {
+            // when
+            val result = value.isInt()
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["", "  ", " 4", "5 ", "123,3", "123.5", "2021-07-31"])
+        fun `returns false, because the given value is not a representation of an Int`(value: String) {
+            // when
+            val result = value.isInt()
+
+            // then
+            assertThat(result).isFalse()
         }
     }
 }
