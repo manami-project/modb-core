@@ -1,8 +1,6 @@
 package io.github.manamiproject.modb.core.converter
 
 import io.github.manamiproject.modb.core.TestAnimeConverter
-import io.github.manamiproject.modb.core.extensions.createDirectory
-import io.github.manamiproject.modb.core.extensions.createFile
 import io.github.manamiproject.modb.core.extensions.writeToFile
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
@@ -10,6 +8,8 @@ import io.github.manamiproject.modb.test.tempDirectory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.io.path.createDirectory
+import kotlin.io.path.createFile
 
 internal class DefaultPathConverterTest {
 

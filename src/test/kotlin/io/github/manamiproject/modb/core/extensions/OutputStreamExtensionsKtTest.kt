@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.extensions
 import io.github.manamiproject.modb.test.tempDirectory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import kotlin.io.path.outputStream
 
 internal class OutputStreamExtensionsKtTest {
 
@@ -11,7 +12,7 @@ internal class OutputStreamExtensionsKtTest {
         tempDirectory {
             // given
             val file = tempDir.resolve("file.txt")
-            val outputStream = file.newOutputStream()
+            val outputStream = file.outputStream()
             val content = "Test"
 
             // when

@@ -1,5 +1,9 @@
 package io.github.manamiproject.modb.core.extensions
 
+import kotlin.io.path.createFile
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.writeText
+
 /**
  * Constant for empty [String]
  * @since 1.0.0
@@ -30,7 +34,7 @@ public fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false)
         lockFile.createFile()
     }
 
-    file.write(this)
+    file.writeText(this)
 
     if (lockFile.regularFileExists() && writeLockFile) {
         lockFile.deleteIfExists()

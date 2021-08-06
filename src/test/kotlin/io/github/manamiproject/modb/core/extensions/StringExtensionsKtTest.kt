@@ -13,6 +13,8 @@ import java.lang.Thread.sleep
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
+import kotlin.io.path.createDirectory
+import kotlin.io.path.createFile
 
 internal class StringExtensionsKtTest {
 

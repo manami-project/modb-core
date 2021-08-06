@@ -71,20 +71,10 @@ companion object {
 |`List<T>.containsExactlyInTheSameOrder`|Checks if a list contains the same elements in the same order as another list|
 |`OutputStream.write`|Writes a `String` to the `OutputStream` and also flushes the stream|
 |`Path.changeSuffix`|Changes the file suffix|
-|`Path.exists` / `Path.notExists`|Delegate of `Files` and additional negated version|
-|`Path.createFile`|Delegate of `Files`|
-|`Path.createDirectory`|Delegate of `Files`|
-|`Path.deleteIfExists`|Delegate of `Files`|
 |`Path.regularFileExists`|Checks if a given `Path` exists and is a file|
 |`Path.directoryExists`|Checks if a given `Path` exists and is a directory|
-|`Path.list`|Delegate of `Files`|
-|`Path.readAllLines`|Delegate of `Files`|
 |`Path.readFile`|Read the content of a file into a `String`|
 |`Path.copyTo`|Copy file to file, directory to directory or a file into a directory|
-|`Path.write`|Delegate of `Files`|
-|`Path.createDirectories`|Delegate of `Files`|
-|`Path.newInputStream`|Delegate of `Files`|
-|`Path.newOutputStream`|Delegate of `Files`|
 |`Path.fileName`|Filename as `String`|
 |`Path.fileSuffix`|Returns the file suffix as `String`|
 |`String.writeToFile`|Write `String` to file and optionally write a lock file as indications for other processes that the file is being written|

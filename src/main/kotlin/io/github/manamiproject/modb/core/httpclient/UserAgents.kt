@@ -1,14 +1,15 @@
 package io.github.manamiproject.modb.core.httpclient
 
-import io.github.manamiproject.modb.core.extensions.readAllLines
 import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import io.github.manamiproject.modb.core.httpclient.BrowserType.MOBILE
+import io.github.manamiproject.modb.core.httpclient.UserAgents.init
 import io.github.manamiproject.modb.core.loadResource
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.resourceFileExists
 import java.nio.file.Paths
+import kotlin.io.path.readLines
 
 /**
  * Provides user agents. Upon creation the initialization takes place. It can be retriggered by calling [init].
@@ -108,7 +109,7 @@ public object UserAgents {
         log.debug("Checking for property [{}]", firefoxDesktopUserAgentsPropertyName)
         if (System.getProperty(firefoxDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
             log.debug("Found property [{}]", firefoxDesktopUserAgentsPropertyName)
-            return Paths.get(System.getProperty(firefoxDesktopUserAgentsPropertyName)).readAllLines().toSet()
+            return Paths.get(System.getProperty(firefoxDesktopUserAgentsPropertyName)).readLines().toSet()
         }
 
         log.debug("None of the above could be found. Falling back to hard coded user agents.")
@@ -135,7 +136,7 @@ public object UserAgents {
         log.debug("Checking for property [{}]", firefoxMobileUserAgentsPropertyName)
         if (System.getProperty(firefoxMobileUserAgentsPropertyName)?.isNotBlank() == true) {
             log.debug("Found property [{}]", firefoxMobileUserAgentsPropertyName)
-            return Paths.get(System.getProperty(firefoxMobileUserAgentsPropertyName)).readAllLines().toSet()
+            return Paths.get(System.getProperty(firefoxMobileUserAgentsPropertyName)).readLines().toSet()
         }
 
         log.debug("None of the above could be found. Falling back to hard coded user agents.")
@@ -156,7 +157,7 @@ public object UserAgents {
         log.debug("Checking for property [{}]", chromeDesktopUserAgentsPropertyName)
         if (System.getProperty(chromeDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
             log.debug("Found property [{}]", chromeDesktopUserAgentsPropertyName)
-            return Paths.get(System.getProperty(chromeDesktopUserAgentsPropertyName)).readAllLines().toSet()
+            return Paths.get(System.getProperty(chromeDesktopUserAgentsPropertyName)).readLines().toSet()
         }
 
         log.debug("None of the above could be found. Falling back to hard coded user agents.")
@@ -181,7 +182,7 @@ public object UserAgents {
         log.debug("Checking for property [{}]", chromeMobileUserAgentsPropertyName)
         if (System.getProperty(chromeMobileUserAgentsPropertyName)?.isNotBlank() == true) {
             log.debug("Found property [{}]", chromeMobileUserAgentsPropertyName)
-            return Paths.get(System.getProperty(chromeMobileUserAgentsPropertyName)).readAllLines().toSet()
+            return Paths.get(System.getProperty(chromeMobileUserAgentsPropertyName)).readLines().toSet()
         }
 
         log.debug("None of the above could be found. Falling back to hard coded user agents.")

@@ -4,6 +4,7 @@ import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.extensions.*
 import io.github.manamiproject.modb.core.models.Anime
 import java.nio.file.Path
+import kotlin.io.path.listDirectoryEntries
 import kotlin.streams.toList
 
 /**
@@ -28,7 +29,7 @@ public class DefaultPathConverter(
     private fun convertSingleFile(file: RegularFile) = listOf(animeConverter.convert(file.readFile()))
 
     private fun convertAllFilesInADirectory(path: Directory): List<Anime> {
-        return path.list()
+        return path.listDirectoryEntries()
             .filter { it.regularFileExists() }
             .filter { it.fileSuffix() == fileSuffix }
             .map { convert(it).first() }

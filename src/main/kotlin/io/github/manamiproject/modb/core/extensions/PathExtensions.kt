@@ -1,13 +1,11 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.config.FileSuffix
-import java.io.InputStream
-import java.io.OutputStream
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
-import java.nio.file.attribute.FileAttribute
-import java.util.stream.Stream
+import kotlin.io.path.exists
+import kotlin.io.path.readLines
 
 /**
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a directory.
@@ -63,42 +61,6 @@ public fun Path.changeSuffix(suffix: String): RegularFile {
 }
 
 /**
- * Convenience wrapper for [Files.exists]
- * @since 1.0.0
- * @see Files.exists
- */
-public fun Path.exists(vararg linkOption: LinkOption): Boolean = Files.exists(this, *linkOption)
-
-/**
- * Negated version of [exists]
- * @since 1.0.0
- * @param linkOption Indicating how symbolic links are handled
- * @return `true` if the given doesn't exist
- */
-public fun Path.notExists(vararg linkOption: LinkOption): Boolean = !Files.exists(this, *linkOption)
-
-/**
- * Convenience wrapper for [Files.createFile]
- * @since 1.0.0
- * @see Files.createFile
- */
-public fun Path.createFile(vararg fileAttributes: FileAttribute<*>): Path = Files.createFile(this, *fileAttributes)
-
-/**
- * Convenience wrapper for [Files.createDirectory]
- * @since 1.0.0
- * @see Files.createDirectory
- */
-public fun Path.createDirectory(vararg fileAttributes: FileAttribute<*>): Path = Files.createDirectory(this, *fileAttributes)
-
-/**
- * Convenience wrapper for [Files.deleteIfExists]
- * @since 1.0.0
- * @see Files.deleteIfExists
- */
-public fun Path.deleteIfExists(): Boolean = Files.deleteIfExists(this)
-
-/**
  * Checks whether the given [Path] is a regular file and exists.
  * @since 1.0.0
  * @param linkOption Indicating how symbolic links are handled
@@ -115,20 +77,6 @@ public fun Path.regularFileExists(vararg linkOption: LinkOption): Boolean = this
 public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.exists(*linkOption) && Files.isDirectory(this, *linkOption)
 
 /**
- * Convenience wrapper for [Files.list]
- * @since 1.0.0
- * @see Files.list
- */
-public fun Path.list(): Stream<Path> = Files.list(this)
-
-/**
- * Convenience wrapper for [Files.readAllLines]
- * @since 1.0.0
- * @see Files.readAllLines
- */
-public fun Path.readAllLines(charset: Charset = UTF_8): List<String> = Files.readAllLines(this, charset)
-
-/**
  * Read the content of a file to a [String]
  * @since 1.0.0
  * @param charset The charset to use for decoding. **Default** is [UTF_8]
@@ -137,7 +85,7 @@ public fun Path.readAllLines(charset: Charset = UTF_8): List<String> = Files.rea
  */
 public fun Path.readFile(charset: Charset = UTF_8): String {
     return if (this.regularFileExists()) {
-        this.readAllLines(charset).joinToString("\n")
+        this.readLines(charset).joinToString("\n")
     } else {
         throw NoSuchFileException(this.toString())
     }
@@ -161,34 +109,6 @@ public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
 
     return Files.copy(this, processedTarget, *copyOptions)
 }
-
-/**
- * Convenience wrapper for [Files.write]
- * @since 1.0.0
- * @see Files.write
- */
-public fun Path.write(content: String, charset: Charset = UTF_8): RegularFile = Files.write(this, content.toByteArray(charset))
-
-/**
- * Convenience wrapper for [Files.createDirectories]
- * @since 1.0.0
- * @see Files.createDirectories
- */
-public fun Path.createDirectories(vararg attributes: FileAttribute<*>): Path = Files.createDirectories(this, *attributes)
-
-/**
- * Convenience wrapper for [Files.newInputStream]
- * @since 1.0.0
- * @see Files.newInputStream
- */
-public fun Path.newInputStream(vararg options: OpenOption): InputStream = Files.newInputStream(this, *options)
-
-/**
- * Convenience wrapper for [Files.newOutputStream]
- * @since 1.0.0
- * @see Files.newOutputStream
- */
-public fun Path.newOutputStream(vararg options: OpenOption): OutputStream = Files.newOutputStream(this, *options)
 
 /**
  * Will return the name of either a [RegularFile] or a [Directory].

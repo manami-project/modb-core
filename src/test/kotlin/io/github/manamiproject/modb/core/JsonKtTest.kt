@@ -1,6 +1,5 @@
 package io.github.manamiproject.modb.core
 
-import io.github.manamiproject.modb.core.extensions.newInputStream
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.core.models.Anime.Status.FINISHED
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
@@ -13,11 +12,12 @@ import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.net.URI
+import kotlin.io.path.inputStream
 
 internal class JsonKtTest {
 
     @Test
-    fun `deserialize anime using input stream`() {
+    fun `deserialize anime using inputstream`() {
         // given
         val expectedAnime =  Anime(
             _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
@@ -42,7 +42,7 @@ internal class JsonKtTest {
                     "romance",
             )
 
-        val inputStream = testResource("json_tests/anime_all_properties_set.json").newInputStream()
+        val inputStream = testResource("json_tests/anime_all_properties_set.json").inputStream()
 
         // when
         val result = Json.parseJson<Anime>(inputStream)
