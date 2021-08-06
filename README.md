@@ -78,6 +78,5 @@ companion object {
 |`Path.fileName`|Filename as `String`|
 |`Path.fileSuffix`|Returns the file suffix as `String`|
 |`String.writeToFile`|Write `String` to file and optionally write a lock file as indications for other processes that the file is being written|
-|`String.isInt` / `String.isNotInt`|Check if a `String` provides the syntax of an `Int` or not|
 |`String.remove`|Remove sequence from a `String`|
 |`String.normalizeWhitespaces`|Replaces multiple consecutive whitespaces with a single one|

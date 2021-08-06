@@ -144,54 +144,6 @@ internal class StringExtensionsKtTest {
     }
 
     @Nested
-    inner class IsIntTests {
-
-        @ParameterizedTest
-        @ValueSource(strings = ["0", "1", "10", "100", "1000", "43252446346"])
-        fun `return true, because the the given value represents an Int`(value: String) {
-            // when
-            val result = value.isInt()
-
-            // then
-            assertThat(result).isTrue()
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = ["", "  ", " 4", "5 ", "123,3", "123.5", "2021-07-31"])
-        fun `returns false, because the given value is not a representation of an Int`(value: String) {
-            // when
-            val result = value.isInt()
-
-            // then
-            assertThat(result).isFalse()
-        }
-    }
-
-    @Nested
-    inner class IsNotIntTests {
-
-        @ParameterizedTest
-        @ValueSource(strings = ["0", "1", "10", "100", "1000", "43252446346"])
-        fun `returns false, because the the given value represents an Int`(value: String) {
-            // when
-            val result = value.isNotInt()
-
-            // then
-            assertThat(result).isFalse()
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = ["", "  ", " 4", "5 ", "123,3", "123.5", "2021-07-31"])
-        fun `returns true, because the given value is not a representation of an Int`(value: String) {
-            // when
-            val result = value.isNotInt()
-
-            // then
-            assertThat(result).isTrue()
-        }
-    }
-
-    @Nested
     inner class RemoveTests {
 
         @Test

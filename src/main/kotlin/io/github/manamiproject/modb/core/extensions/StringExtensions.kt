@@ -42,23 +42,6 @@ public fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false)
 }
 
 /**
- * Determines whether a given [String] is a representation of an [Int] or not.
- * This function only checks the syntax. It doesn't check if the value can be safely parsed. So there is no check
- * if the value is within the boundaries of [Int.MIN_VALUE] and [Int.MAX_VALUE].
- * @since 5.2.0
- * @return `true` if the given value offers the general syntax of an [Int]
- */
-public fun String.isInt(): Boolean = Regex("[0-9]+").matches(this)
-
-/**
- * Negation of [isInt]
- * @since 5.3.0
- * @see isInt
- * @return `true` if the given value doesn't offer the general syntax of an [Int]
- */
-public fun String.isNotInt(): Boolean = !Regex("[0-9]+").matches(this)
-
-/**
  * Removes all occurrences of [value] in a given [String].
  * @since 5.3.0
  * @param value The value that is supposed to be removed from the given [String]
