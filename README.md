@@ -9,7 +9,7 @@ This lib is the base for every specific meta data provider module. It contains t
 Apart from the interfaces defining the API and the objects defining an anime this lib contains the following features.
 
 ## SortedList
-+ An implementation of `MutableList` is is always sorted by a predefined `Comparator`
++ An implementation of `MutableList` is always sorted by a predefined `Comparator`
 
 ## Interfaces
 * Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathConverter`. `HttpClient` which define the standard API
