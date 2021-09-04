@@ -14,6 +14,7 @@ import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.net.URI
 import kotlin.io.path.inputStream
 
@@ -23,7 +24,7 @@ internal class JsonKtTest {
     inner class DeserializationTests {
 
         @Test
-        fun `deserialize anime using inputstream`() {
+        fun `deserialize Anime object using inputstream`() {
             // given
             val expectedAnime =  Anime(
                 _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
@@ -58,7 +59,7 @@ internal class JsonKtTest {
         }
 
         @Test
-        fun `deserialize anime - all properties set`() {
+        fun `deserialize Anime object - all properties set`() {
             // given
             val expectedAnime = Anime(
                 _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
@@ -94,7 +95,7 @@ internal class JsonKtTest {
         }
 
         @Test
-        fun `deserialize anime - default properties`() {
+        fun `deserialize Anime object - default properties`() {
             // given
             val expectedAnime = Anime("Death Note")
 
@@ -105,6 +106,83 @@ internal class JsonKtTest {
 
             // then
             assertThat(result).isEqualTo(expectedAnime)
+        }
+
+        @Test
+        fun `deserialize object - non nullable types with default value can contain null`() {
+            // given
+            val json = """
+                {
+                  "nullableString": null,
+                  "nonNullableString": null
+                }
+            """.trimIndent()
+
+            // when
+            val result = Json.parseJson<NullableTestClass>(json)
+
+            // then
+            assertThat(result?.nonNullableString).isNull()
+            assertThat(result?.nullableString).isNull()
+        }
+
+        @Test
+        fun `deserialize object - throws NullPointerException if copy() is called on an object having a property of non-nullable type, but containing null as value`() {
+            // given
+            val json = """
+                {
+                  "nullableString": null,
+                  "nonNullableString": null
+                }
+            """.trimIndent()
+
+            // when
+            val result = assertThrows<NullPointerException> {
+                Json.parseJson<NullableTestClass>(json)?.copy()
+            }
+
+            // then
+            assertThat(result).hasMessage("Parameter specified as non-null is null: method io.github.manamiproject.modb.core.NullableTestClass.copy, parameter nonNullableString")
+        }
+
+        @Test
+        fun `deserialize an array - non nullable types with default value can contain null`() {
+            // given
+            val json = """
+                {
+                  "nonNullableList": [
+                    "value1",
+                    null,
+                    "value3"
+                  ]
+                }
+            """.trimIndent()
+
+            // when
+            val result = Json.parseJson<ClassWithList>(json)
+
+            // then
+            assertThat(result?.nonNullableList).containsNull()
+        }
+
+        @Test
+        fun `deserialize an arry - Although the type of the list is non-nullable and copy is called on a list containing null, no exception is being thrown`() {
+            // given
+            val json = """
+                {
+                  "nonNullableList": [
+                    "value1",
+                    null,
+                    "value3"
+                  ]
+                }
+            """.trimIndent()
+
+            // when
+            val result = Json.parseJson<ClassWithList>(json)?.copy()!!
+
+            // then
+            assertThat(result.nonNullableList).containsNull()
         }
     }
 
@@ -296,3 +374,4 @@ internal class JsonKtTest {
 }
 
 private data class NullableTestClass(val nullableString: String? = null, val nonNullableString: String = "test")
+private data class ClassWithList(val nonNullableList: List<String> = emptyList())

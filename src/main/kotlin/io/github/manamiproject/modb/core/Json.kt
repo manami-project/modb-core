@@ -18,6 +18,14 @@ public object Json {
 
     /**
      * Parse a [String] into an object.
+     *
+     * **WARNING** Due to the underlying implementation it is possible that non-nullable kotlin types can contain `null`
+     * as value. Instead of checking non-nullable kotlin types for `null` which will trigger compiler messages you can
+     * keep the non-nullable types and call `copy()`. This will immediately throw a `NullPointerException`
+     * in case one of the non-nullable types contains `null`.
+     * Any type of [Collection] is not affected by this. If the [Collection] contains `null` then no exception will be
+     * thrown.
+     * Alternatively you can always use nullable types on targets..
      * @since 1.0.0
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
@@ -26,11 +34,19 @@ public object Json {
 
     /**
      * Parse an [InputStream] into an object.
+     *
+     * **WARNING** Due to the underlying implementation it is possible that non-nullable kotlin types can contain `null`
+     * as value. Instead of checking non-nullable kotlin types for `null` which will trigger compiler messages you can
+     * keep the non-nullable types and call `copy()`. This will immediately throw a `NullPointerException`
+     * in case one of the non-nullable types contains `null`.
+     * Any type of [Collection] is not affected by this. If the [Collection] contains `null` then no exception will be
+     * thrown.
+     * Alternatively you can always use nullable types on targets.
      * @since 1.0.0
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
-    public inline fun <reified T> parseJson(json: InputStream): T? = this.defaultGson.fromJson(InputStreamReader(json), T::class.java)
+    public inline fun <reified T> parseJson(json: InputStream): T? = defaultGson.fromJson(InputStreamReader(json), T::class.java)
 
     /**
      * Serialize any object to JSON.
