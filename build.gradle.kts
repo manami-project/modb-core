@@ -27,7 +27,6 @@ dependencies {
     api("org.slf4j:slf4j-api:1.7.32")
 
     implementation(platform(kotlin("bom")))
-    implementation("com.beust:klaxon:5.5")
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
