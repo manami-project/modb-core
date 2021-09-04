@@ -1,5 +1,7 @@
 package io.github.manamiproject.modb.core
 
+import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
+import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.core.models.Anime.Status.FINISHED
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
@@ -109,34 +111,37 @@ internal class JsonKtTest {
     @Nested
     inner class SerializationTests {
 
-        @Test
-        fun `serialize anime - all properties set`() {
-            // given
-            val anime = Anime(
-                _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                type = TV,
-                episodes = 24,
-                status = FINISHED,
-                animeSeason = AnimeSeason(
-                    season = SUMMER,
-                    year = 2009
-                ),
-                picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-                thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-                duration = Duration(24, MINUTES)
-            ).addSources(URI("https://myanimelist.net/anime/6351"))
-                .addRelations(URI("https://myanimelist.net/anime/2167"))
-                .addSynonyms(
-                    "Clannad ~After Story~: Another World, Kyou Chapter",
-                    "Clannad: After Story OVA",
-                    "クラナド　アフターストーリー　もうひとつの世界　杏編",
-                )
-                .addTags(
-                    "comedy",
-                    "romance",
-                )
+        @Nested
+        inner class DefaultOptionsTests {
 
-            val expectedJson = """
+            @Test
+            fun `serialize anime - all properties set`() {
+                // given
+                val anime = Anime(
+                    _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                    type = TV,
+                    episodes = 24,
+                    status = FINISHED,
+                    animeSeason = AnimeSeason(
+                        season = SUMMER,
+                        year = 2009
+                    ),
+                    picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                    thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                    duration = Duration(24, MINUTES)
+                ).addSources(URI("https://myanimelist.net/anime/6351"))
+                    .addRelations(URI("https://myanimelist.net/anime/2167"))
+                    .addSynonyms(
+                        "Clannad ~After Story~: Another World, Kyou Chapter",
+                        "Clannad: After Story OVA",
+                        "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                    )
+                    .addTags(
+                        "comedy",
+                        "romance",
+                    )
+
+                val expectedJson = """
         {
           "_title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
           "sources": [
@@ -170,19 +175,19 @@ internal class JsonKtTest {
         }
     """.trimIndent()
 
-            // when
-            val result = Json.toJson(anime)
+                // when
+                val result = Json.toJson(anime)
 
-            // then
-            assertThat(result).isEqualTo(expectedJson)
-        }
+                // then
+                assertThat(result).isEqualTo(expectedJson)
+            }
 
-        @Test
-        fun `serialize anime - default properties`() {
-            // given
-            val anime = Anime("Death Note")
+            @Test
+            fun `serialize anime - default properties`() {
+                // given
+                val anime = Anime("Death Note")
 
-            val expectedJson = """
+                val expectedJson = """
         {
           "_title": "Death Note",
           "sources": [],
@@ -205,11 +210,89 @@ internal class JsonKtTest {
         }
     """.trimIndent()
 
-            // when
-            val result = Json.toJson(anime)
+                // when
+                val result = Json.toJson(anime)
 
-            // then
-            assertThat(result).isEqualTo(expectedJson)
+                // then
+                assertThat(result).isEqualTo(expectedJson)
+            }
+
+            @Test
+            fun `serialize - option serialize null is activated by default`() {
+                // given
+
+                val expectedJson = """
+        {
+          "nullableString": null,
+          "nonNullableString": "test"
+        }
+    """.trimIndent()
+
+                // when
+                val result = Json.toJson(NullableTestClass())
+
+                // then
+                assertThat(result).isEqualTo(expectedJson)
+            }
+        }
+
+        @Nested
+        inner class CustomOptionsTests {
+
+            @Test
+            fun `serialize - deactivate pretty print`() {
+                // given
+                val anime = Anime(
+                    _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                    type = TV,
+                    episodes = 24,
+                    status = FINISHED,
+                    animeSeason = AnimeSeason(
+                        season = SUMMER,
+                        year = 2009
+                    ),
+                    picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                    thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                    duration = Duration(24, MINUTES)
+                ).addSources(URI("https://myanimelist.net/anime/6351"))
+                    .addRelations(URI("https://myanimelist.net/anime/2167"))
+                    .addSynonyms(
+                        "Clannad ~After Story~: Another World, Kyou Chapter",
+                        "Clannad: After Story OVA",
+                        "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                    )
+                    .addTags(
+                        "comedy",
+                        "romance",
+                    )
+
+                val expectedJson = """{"_title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","sources":["https://myanimelist.net/anime/6351"],"synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","duration":{"value":24,"unit":"MINUTES"},"relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
+
+                // when
+                val result = Json.toJson(anime, DEACTIVATE_PRETTY_PRINT)
+
+                // then
+                assertThat(result).isEqualTo(expectedJson)
+            }
+
+            @Test
+            fun `serialize - deactivate serialize null`() {
+                // given
+
+                val expectedJson = """
+        {
+          "nonNullableString": "test"
+        }
+    """.trimIndent()
+
+                // when
+                val result = Json.toJson(NullableTestClass(), DEACTIVATE_SERIALIZE_NULL)
+
+                // then
+                assertThat(result).isEqualTo(expectedJson)
+            }
         }
     }
 }
+
+private data class NullableTestClass(val nullableString: String? = null, val nonNullableString: String = "test")

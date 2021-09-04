@@ -2,6 +2,8 @@ package io.github.manamiproject.modb.core
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
+import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
 import java.io.InputStream
 import java.io.InputStreamReader
 
@@ -34,7 +36,50 @@ public object Json {
      * Serialize any object to JSON.
      * @since 1.0.0
      * @param obj Any object that is supposed to be serialized to JSON.
+     * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    public fun toJson(obj: Any): String =  defaultGson.toJson(obj)
+    public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String {
+        if (options.isEmpty()) {
+            return defaultGson.toJson(obj)
+        }
+
+        return configureGsonBuilder(GsonBuilder(), JsonSerializationSettings(options.toSet())).create().toJson(obj)
+    }
+
+    private fun configureGsonBuilder(gsonBuilder: GsonBuilder, settings: JsonSerializationSettings): GsonBuilder {
+        if (settings.serializeNullActivated) {
+            gsonBuilder.serializeNulls()
+        }
+
+        if (settings.prettyPrintActivated) {
+            gsonBuilder.setPrettyPrinting()
+        }
+
+        return gsonBuilder
+    }
+}
+
+/**
+ * Possible options to customize serialization of JSON documents using [Json.toJson]
+ * @since 6.1.0
+ */
+public enum class JsonSerializationOptions {
+    /**
+     * By default the output JSON string is formatted. Using this option will create a minified string instead.
+     * @since 6.1.0
+     */
+    DEACTIVATE_PRETTY_PRINT,
+    /**
+     * By default a property providing `null` as value will be serialized. Using this option will omit these properties.
+     * @since 6.1.0
+     */
+    DEACTIVATE_SERIALIZE_NULL,
+}
+
+private class JsonSerializationSettings(val options: Set<JsonSerializationOptions>) {
+    /** Prettyprint is activated by default */
+    val prettyPrintActivated: Boolean = false.takeIf { options.contains(DEACTIVATE_PRETTY_PRINT)} ?: true
+    /** Serialize null is activated by default */
+    val serializeNullActivated: Boolean = false.takeIf { options.contains(DEACTIVATE_SERIALIZE_NULL)} ?: true
 }
