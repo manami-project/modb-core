@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
 import kotlin.io.path.exists
 import kotlin.io.path.readLines
+import kotlin.io.path.createFile
 
 /**
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a directory.
