@@ -1,5 +1,5 @@
 package io.github.manamiproject.modb.core.logging
 
-public interface LogLevelRetriever {
-    public val logLevel: LogLevel
+internal interface LogLevelRetriever {
+    val logLevel: LogLevel
 }

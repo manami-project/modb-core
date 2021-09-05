@@ -21,6 +21,12 @@ import kotlin.reflect.KProperty
  * If nothing is set then the global configuration will be used.
  */
 public class LoggerDelegate(private val logLevel: LogLevel? = null) {
+
+    /**
+     * Creates the [Logger] for use in delegation.
+     * @since 7.0.0
+     * @return Actual instance of the logger to use
+     */
     public operator fun getValue(thisRef: Any, property: KProperty<*>): Logger {
         return ModbLogger(ref = thisRef::class, logLevel = logLevel)
     }
