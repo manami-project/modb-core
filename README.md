@@ -20,6 +20,16 @@ This lib contains the following features.
 ## HttpClient
 + A client for HTTP requests based on [okhttp](https://github.com/square/okhttp)
 + Can use individual retries if a request fails
++ Constants for the name of the property which can contain the path to a file providing possible user agents:
+  + `FIREFOX_DESKTOP_USER_AGENTS_FILE_PROPERTY_NAME`
+  + `FIREFOX_MOBILE_USER_AGENT_PROPERTY_NAME`
+  + `CHROME_DESKTOP_USER_AGENT_PROPERTY_NAME`
+  + `CHROME_MOBILE_USER_AGENT_PROPERTY_NAME`
++ Constants for the file name in the classpath providing possible user agents:
+  + `FIREFOX_DESKTOP_USER_AGENT_RESOURCE_FILE`
+  + `FIREFOX_MOBILE_USER_AGENT_RESOURCE_FILE`
+  + `CHROME_DESKTOP_USER_AGENT_RESOURCE_FILE`
+  + `CHROME_MOBILE_USER_AGENT_RESOURCE_FILE`
 
 ### Retryables
 + Offers `Retryable`s inspired by [resilience4j](https://github.com/resilience4j/resilience4j)
@@ -33,6 +43,7 @@ companion object {
     private val log by LoggerDelegate()
 }
 ```
++ Const `LOG_LEVEL_CONFIG_PROPERTY_NAME` for property name which lets you set the global log level
 
 ## Models
 * For `Anime` and all underlying subtypes
