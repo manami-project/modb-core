@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core
 
+import com.squareup.moshi.JsonDataException
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
 import io.github.manamiproject.modb.core.models.Anime
@@ -109,7 +110,7 @@ internal class JsonKtTest {
         }
 
         @Test
-        fun `deserialize object - non nullable types with default value can contain null`() {
+        fun `deserialize object - throws exception if a property having a non-nullable type is mapped to null`() {
             // given
             val json = """
                 {
@@ -119,30 +120,12 @@ internal class JsonKtTest {
             """.trimIndent()
 
             // when
-            val result = Json.parseJson<NullableTestClass>(json)
-
-            // then
-            assertThat(result?.nonNullableString).isNull()
-            assertThat(result?.nullableString).isNull()
-        }
-
-        @Test
-        fun `deserialize object - throws NullPointerException if copy() is called on an object having a property of non-nullable type, but containing null as value`() {
-            // given
-            val json = """
-                {
-                  "nullableString": null,
-                  "nonNullableString": null
-                }
-            """.trimIndent()
-
-            // when
-            val result = assertThrows<NullPointerException> {
+            val result = assertThrows<JsonDataException> {
                 Json.parseJson<NullableTestClass>(json)?.copy()
             }
 
             // then
-            assertThat(result).hasMessage("Parameter specified as non-null is null: method io.github.manamiproject.modb.core.NullableTestClass.copy, parameter nonNullableString")
+            assertThat(result).hasMessage("Non-null value 'nonNullableString' was null at \$.nonNullableString")
         }
 
         @Test
@@ -166,7 +149,7 @@ internal class JsonKtTest {
         }
 
         @Test
-        fun `deserialize an arry - Although the type of the list is non-nullable and copy is called on a list containing null, no exception is being thrown`() {
+        fun `deserialize an array - Although the type of the list is non-nullable and copy is called on a list containing null, no exception is being thrown`() {
             // given
             val json = """
                 {

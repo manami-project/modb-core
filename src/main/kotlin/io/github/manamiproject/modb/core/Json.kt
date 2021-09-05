@@ -1,11 +1,12 @@
 package io.github.manamiproject.modb.core
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.squareup.moshi.*
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
+import io.github.manamiproject.modb.core.collections.SortedList
 import java.io.InputStream
-import java.io.InputStreamReader
+import java.net.URI
 
 /**
  * Handles serialization and deserialization of objects to/from JSON.
@@ -13,40 +14,37 @@ import java.io.InputStreamReader
  */
 public object Json {
 
+    private const val JSON_IDENT = "  "
+
     @PublishedApi
-    internal val defaultGson: Gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
+    internal val moshi: Moshi = Moshi.Builder()
+        .add(UriAdapter())
+        .add(SortedListStringAdapter())
+        .add(SortedListUriAdapter())
+        .addLast(KotlinJsonAdapterFactory())
+        .build()
 
     /**
      * Parse a [String] into an object.
      *
-     * **WARNING** Due to the underlying implementation it is possible that non-nullable kotlin types can contain `null`
-     * as value. Instead of checking non-nullable kotlin types for `null` which will trigger compiler messages you can
-     * keep the non-nullable types and call `copy()`. This will immediately throw a `NullPointerException`
-     * in case one of the non-nullable types contains `null`.
-     * Any type of [Collection] is not affected by this. If the [Collection] contains `null` then no exception will be
-     * thrown.
-     * Alternatively you can always use nullable types on targets..
+     * **WARNING** [Collection]s of a non-nullable type can still contain null.
      * @since 1.0.0
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
      */
-    public inline fun <reified T> parseJson(json: String): T? = defaultGson.fromJson(json, T::class.java)
+    @OptIn(ExperimentalStdlibApi::class)
+    public inline fun <reified T> parseJson(json: String): T? = moshi.adapter<T>().nullSafe().fromJson(json)
 
     /**
      * Parse an [InputStream] into an object.
      *
-     * **WARNING** Due to the underlying implementation it is possible that non-nullable kotlin types can contain `null`
-     * as value. Instead of checking non-nullable kotlin types for `null` which will trigger compiler messages you can
-     * keep the non-nullable types and call `copy()`. This will immediately throw a `NullPointerException`
-     * in case one of the non-nullable types contains `null`.
-     * Any type of [Collection] is not affected by this. If the [Collection] contains `null` then no exception will be
-     * thrown.
-     * Alternatively you can always use nullable types on targets.
+     * **WARNING** [Collection]s of a non-nullable type can still contain null.
      * @since 1.0.0
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
-    public inline fun <reified T> parseJson(json: InputStream): T? = defaultGson.fromJson(InputStreamReader(json), T::class.java)
+    @OptIn(ExperimentalStdlibApi::class)
+    public inline fun <reified T> parseJson(json: InputStream): T? = moshi.adapter<T>().fromJson(json.bufferedReader().readText())
 
     /**
      * Serialize any object to JSON.
@@ -55,24 +53,79 @@ public object Json {
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
+    @OptIn(ExperimentalStdlibApi::class)
     public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String {
-        if (options.isEmpty()) {
-            return defaultGson.toJson(obj)
-        }
-
-        return configureGsonBuilder(GsonBuilder(), JsonSerializationSettings(options.toSet())).create().toJson(obj)
+        return configureJsopnAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
     }
 
-    private fun configureGsonBuilder(gsonBuilder: GsonBuilder, settings: JsonSerializationSettings): GsonBuilder {
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun configureJsopnAdapter(settings: JsonSerializationSettings): JsonAdapter<Any> {
+        var jsonAdapter = moshi.adapter<Any>()
+
         if (settings.serializeNullActivated) {
-            gsonBuilder.serializeNulls()
+            jsonAdapter = jsonAdapter.serializeNulls()
         }
 
         if (settings.prettyPrintActivated) {
-            gsonBuilder.setPrettyPrinting()
+            jsonAdapter = jsonAdapter.indent(JSON_IDENT)
         }
 
-        return gsonBuilder
+        return jsonAdapter
+    }
+}
+
+private class UriAdapter {
+
+    @ToJson
+    fun toJson(uri: URI): String = uri.toString()
+
+    @FromJson
+    fun fromJson(value: String): URI = URI(value)
+}
+
+private class SortedListUriAdapter {
+
+    @ToJson
+    fun toJson(writer: JsonWriter, sortedList: SortedList<URI>) {
+        writer.beginArray()
+        sortedList.forEach {
+            writer.jsonValue(it.toString())
+        }
+        writer.endArray()
+    }
+
+    @FromJson
+    fun fromJson(reader: JsonReader): SortedList<URI> {
+        val result = SortedList<URI>()
+        reader.beginArray()
+        while (reader.hasNext()) {
+            result.add(URI(reader.nextString()))
+        }
+        reader.endArray()
+        return result
+    }
+}
+
+private class SortedListStringAdapter {
+
+    @ToJson
+    fun toJson(writer: JsonWriter, sortedList: SortedList<String>) {
+        writer.beginArray()
+        sortedList.forEach {
+            writer.jsonValue(it)
+        }
+        writer.endArray()
+    }
+
+    @FromJson
+    fun fromJson(reader: JsonReader): SortedList<String> {
+        val result = SortedList<String>()
+        reader.beginArray()
+        while (reader.hasNext()) {
+            result.add(reader.nextString())
+        }
+        reader.endArray()
+        return result
     }
 }
 

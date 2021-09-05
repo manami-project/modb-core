@@ -5,7 +5,7 @@
     "status": "UNKNOWN",
     "animeSeason": {
       "season": "UNDEFINED",
-      "year": null
+      "year": 0
     },
     "duration": {
       "value": 0,

@@ -27,7 +27,7 @@ dependencies {
     api("org.slf4j:slf4j-api:1.7.32")
 
     implementation(platform(kotlin("bom")))
-    implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
     testImplementation("ch.qos.logback:logback-classic:1.2.5")
@@ -41,12 +41,13 @@ kotlin {
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = Versions.JVM_TARGET
-    freeCompilerArgs = listOf("-Xinline-classes")
+    freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
 val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = Versions.JVM_TARGET
+    freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
 tasks.withType<Test> {
