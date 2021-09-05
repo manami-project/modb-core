@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.httpclient
 
+import io.github.manamiproject.modb.core.extensions.regularFileExists
 import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
@@ -47,20 +48,57 @@ public object UserAgents {
     
     private val log by LoggerDelegate()
 
-    private const val firefoxDesktopUserAgentsFileName = "modb-firefox-desktop-user-agents.txt"
-    private const val firefoxDesktopUserAgentsPropertyName = "modb.firefox.desktop.user.agents.file"
+    /**
+     * Name of the resource file in classpath.
+     * @since 7.0.0
+     */
+    public const val FIREFOX_DESKTOP_USER_AGENT_RESOURCE_FILE: String = "modb-firefox-desktop-user-agents.txt"
+
+    /**
+     * Name of the property which can be set to contain the path to an alternative file providing user agents.
+     * @since 7.0.0
+     */
+    public const val FIREFOX_DESKTOP_USER_AGENTS_FILE_PROPERTY_NAME: String = "modb.httpclient.useragents.firefox.desktop.path"
+
+    /**
+     * Name of the resource file in classpath.
+     * @since 7.0.0
+     */
+    public const val FIREFOX_MOBILE_USER_AGENT_RESOURCE_FILE: String = "modb-firefox-mobile-user-agents.txt"
+
+    /**
+     * Name of the property which can be set to contain the path to an alternative file providing user agents.
+     * @since 7.0.0
+     */
+    public const val FIREFOX_MOBILE_USER_AGENT_PROPERTY_NAME: String = "modb.httpclient.useragents.firefox.mobile.path"
+
+    /**
+     * Name of the resource file in classpath.
+     * @since 7.0.0
+     */
+    public const val CHROME_DESKTOP_USER_AGENT_RESOURCE_FILE: String = "modb-chrome-desktop-user-agents.txt"
+
+    /**
+     * Name of the property which can be set to contain the path to an alternative file providing user agents.
+     * @since 7.0.0
+     */
+    public const val CHROME_DESKTOP_USER_AGENT_PROPERTY_NAME: String = "modb.httpclient.useragents.chrome.desktop.path"
+
+    /**
+     * Name of the resource file in classpath.
+     * @since 7.0.0
+     */
+    public const val CHROME_MOBILE_USER_AGENT_RESOURCE_FILE: String = "modb-chrome-mobile-user-agents.txt"
+
+    /**
+     * Name of the property which can be set to contain the path to an alternative file providing user agents.
+     * @since 7.0.0
+     */
+    public const val CHROME_MOBILE_USER_AGENT_PROPERTY_NAME: String = "modb.httpclient.useragents.chrome.mobile.path"
+
     private var firefoxDesktopUserAgents: Set<String> = emptySet()
-
-    private const val firefoxMobileUserAgentsFileName = "modb-firefox-mobile-user-agents.txt"
-    private const val firefoxMobileUserAgentsPropertyName = "modb.firefox.mobile.user.agents.file"
     private var firefoxMobileUserAgents: Set<String> = emptySet()
-
-    private const val chromeDesktopUserAgentsFileName = "modb-chrome-desktop-user-agents.txt"
-    private const val chromeDesktopUserAgentsPropertyName = "modb.chrome.desktop.user.agents.file"
     private var chromeDesktopUserAgents: Set<String> = emptySet()
-
-    private const val chromeMobileUserAgentsFileName = "modb-chrome-mobile-user-agents.txt"
-    private const val chromeMobileUserAgentsPropertyName = "modb.chrome.mobile.user.agents.file"
     private var chromeMobileUserAgents: Set<String> = emptySet()
 
     init {
@@ -72,10 +110,48 @@ public object UserAgents {
      * @since 4.0.0
      */
     public fun init() {
-        firefoxDesktopUserAgents = firefoxDesktopUserAgents()
-        firefoxMobileUserAgents = firefoxMobileUserAgents()
-        chromeDesktopUserAgents = chromeDesktopUserAgents()
-        chromeMobileUserAgents = chromeMobileUserAgents()
+        firefoxDesktopUserAgents = desktopUserAgents(
+            browser = FIREFOX,
+            fileName = FIREFOX_DESKTOP_USER_AGENT_RESOURCE_FILE,
+            propertyName = FIREFOX_DESKTOP_USER_AGENTS_FILE_PROPERTY_NAME,
+            default = setOf(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.5; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (X11; Linux i686; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0",
+            )
+        )
+        firefoxMobileUserAgents = desktopUserAgents(
+            browser = FIREFOX,
+            fileName = FIREFOX_MOBILE_USER_AGENT_RESOURCE_FILE,
+            propertyName = FIREFOX_MOBILE_USER_AGENT_PROPERTY_NAME,
+            default = setOf(
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 11_5_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/36.0 Mobile/15E148 Safari/605.1.15",
+            )
+        )
+        chromeDesktopUserAgents = desktopUserAgents(
+            browser = FIREFOX,
+            fileName = CHROME_DESKTOP_USER_AGENT_RESOURCE_FILE,
+            propertyName = CHROME_DESKTOP_USER_AGENT_PROPERTY_NAME,
+            default = setOf(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+            )
+        )
+        chromeMobileUserAgents = desktopUserAgents(
+            browser = FIREFOX,
+            fileName = CHROME_MOBILE_USER_AGENT_RESOURCE_FILE,
+            propertyName = CHROME_MOBILE_USER_AGENT_PROPERTY_NAME,
+            default = setOf(
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/93.0.4577.39 Mobile/15E148 Safari/604.1",
+            )
+        )
     }
 
     /**
@@ -97,100 +173,31 @@ public object UserAgents {
         }
     }
 
-    private fun firefoxDesktopUserAgents(): Set<String> {
-        log.info { "Initializing user-agents for firefox (desktop)" }
+    private fun desktopUserAgents(browser: Browser, fileName: String, propertyName: String, default: Set<String>): Set<String> {
+        log.info { "Initializing user-agents for [$browser] ($propertyName)" }
 
-        log.debug { "Checking for user-agent file [$firefoxDesktopUserAgentsFileName] in classpath." }
-        if (resourceFileExists(firefoxDesktopUserAgentsFileName)) {
-            log.debug { "Found the file [$firefoxDesktopUserAgentsFileName] in classpath" }
-            return loadResource(firefoxDesktopUserAgentsFileName).split('\n').toSet()
+        log.debug { "Checking for user-agent file [$fileName] in classpath." }
+
+        if (resourceFileExists(fileName)) {
+            log.debug { "Found the file [$fileName] in classpath" }
+            return loadResource(fileName).split('\n').toSet()
         }
 
-        log.debug { "Checking for property [$firefoxDesktopUserAgentsPropertyName]" }
-        if (System.getProperty(firefoxDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug { "Found property [$firefoxDesktopUserAgentsPropertyName]" }
-            return Paths.get(System.getProperty(firefoxDesktopUserAgentsPropertyName)).readLines().toSet()
-        }
+        log.debug { "Checking for property [$propertyName]" }
 
-        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
+        if (System.getProperty(propertyName)?.isNotBlank() == true) {
+            log.debug { "Found property [$propertyName]" }
 
-        return setOf(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (X11; Linux i686; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-            "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-        )
-    }
+            val file = Paths.get(System.getProperty(propertyName))
 
-    private fun firefoxMobileUserAgents(): Set<String> {
-        log.info { "Initializing user-agents for firefox (mobile)" }
-
-        log.debug { "Checking for user-agent file [$firefoxMobileUserAgentsFileName] in classpath." }
-        if (resourceFileExists(firefoxMobileUserAgentsFileName)) {
-            log.debug { "Found the file [$firefoxMobileUserAgentsFileName] in classpath" }
-            return loadResource(firefoxMobileUserAgentsFileName).split('\n').toSet()
-        }
-
-        log.debug { "Checking for property [$firefoxMobileUserAgentsPropertyName]" }
-        if (System.getProperty(firefoxMobileUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug {"Found property [$firefoxMobileUserAgentsPropertyName]" }
-            return Paths.get(System.getProperty(firefoxMobileUserAgentsPropertyName)).readLines().toSet()
+            when(file.regularFileExists()) {
+                true -> return file.readLines().toSet()
+                false -> log.warn { "Property file [${file.toAbsolutePath()}] does not exist or is not a file." }
+            }
         }
 
         log.debug { "None of the above could be found. Falling back to hard coded user agents." }
 
-        return setOf(
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
-        )
-    }
-
-    private fun chromeDesktopUserAgents(): Set<String> {
-        log.info { "Initializing user-agents for chrome (desktop)" }
-
-        log.debug { "Checking for user-agent file [$chromeDesktopUserAgentsFileName] in classpath." }
-        if (resourceFileExists(chromeDesktopUserAgentsFileName)) {
-            log.debug { "Found the file [$chromeDesktopUserAgentsFileName] in classpath" }
-            return loadResource(chromeDesktopUserAgentsFileName).split('\n').toSet()
-        }
-
-        log.debug { "Checking for property [$chromeDesktopUserAgentsPropertyName]" }
-        if (System.getProperty(chromeDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug { "Found property [$chromeDesktopUserAgentsPropertyName]" }
-            return Paths.get(System.getProperty(chromeDesktopUserAgentsPropertyName)).readLines().toSet()
-        }
-
-        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
-
-        return setOf(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-        )
-    }
-
-    private fun chromeMobileUserAgents(): Set<String> {
-        log.info { "Initializing user-agents for chrome (mobile)" }
-
-        log.debug { "Checking for user-agent file [$chromeMobileUserAgentsFileName] in classpath." }
-        if (resourceFileExists(chromeMobileUserAgentsFileName)) {
-            log.debug { "Found the file [$chromeMobileUserAgentsFileName] in classpath" }
-            return loadResource(chromeMobileUserAgentsFileName).split('\n').toSet()
-        }
-
-        log.debug { "Checking for property [$chromeMobileUserAgentsPropertyName]" }
-        if (System.getProperty(chromeMobileUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug { "Found property [$chromeMobileUserAgentsPropertyName]" }
-            return Paths.get(System.getProperty(chromeMobileUserAgentsPropertyName)).readLines().toSet()
-        }
-
-        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
-        return setOf(
-            "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36",
-        )
+        return default
     }
 }
