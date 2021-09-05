@@ -6,10 +6,10 @@ _[modb](https://github.com/manami-project?tab=repositories&q=modb&type=source)_ 
 This lib is the base for every specific meta data provider module. It contains the API for downloaders and converters, defines the anime model and provides basic functionality.
 
 # Features
-Apart from the interfaces defining the API and the objects defining an anime this lib contains the following features.
+This lib contains the following features.
 
 ## SortedList
-+ An implementation of `MutableList` is always sorted by a predefined `Comparator`
++ An implementation of `MutableList` whose elements are always sorted by a predefined `Comparator`
 
 ## Interfaces
 * Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathConverter`. `HttpClient` which define the standard API
