@@ -34,7 +34,7 @@ public class Retryable(private val config: RetryBehavior) {
         var attempt = 0
 
         while (attempt < config.maxAttempts && config.retryOnResponsePredicate.invoke(response)) {
-            log.info("Performing retry [{}/{}]", attempt+1, config.maxAttempts)
+            log.info { "Performing retry [${attempt+1}/${config.maxAttempts}]" }
 
             sleep(config.waitDuration.invoke())
             config.executeBeforeRetry[response.code]?.invoke()

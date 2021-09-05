@@ -98,21 +98,22 @@ public object UserAgents {
     }
 
     private fun firefoxDesktopUserAgents(): Set<String> {
-        log.info("Initializing user-agents for firefox (desktop)")
+        log.info { "Initializing user-agents for firefox (desktop)" }
 
-        log.debug("Checking for user-agent file [{}] in classpath.", firefoxDesktopUserAgentsFileName)
+        log.debug { "Checking for user-agent file [$firefoxDesktopUserAgentsFileName] in classpath." }
         if (resourceFileExists(firefoxDesktopUserAgentsFileName)) {
-            log.debug("Found the file [{}] in classpath", firefoxDesktopUserAgentsFileName)
+            log.debug { "Found the file [$firefoxDesktopUserAgentsFileName] in classpath" }
             return loadResource(firefoxDesktopUserAgentsFileName).split('\n').toSet()
         }
 
-        log.debug("Checking for property [{}]", firefoxDesktopUserAgentsPropertyName)
+        log.debug { "Checking for property [$firefoxDesktopUserAgentsPropertyName]" }
         if (System.getProperty(firefoxDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug("Found property [{}]", firefoxDesktopUserAgentsPropertyName)
+            log.debug { "Found property [$firefoxDesktopUserAgentsPropertyName]" }
             return Paths.get(System.getProperty(firefoxDesktopUserAgentsPropertyName)).readLines().toSet()
         }
 
-        log.debug("None of the above could be found. Falling back to hard coded user agents.")
+        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
+
         return setOf(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0",
@@ -125,42 +126,44 @@ public object UserAgents {
     }
 
     private fun firefoxMobileUserAgents(): Set<String> {
-        log.info("Initializing user-agents for firefox (mobile)")
+        log.info { "Initializing user-agents for firefox (mobile)" }
 
-        log.debug("Checking for user-agent file [{}] in classpath.", firefoxMobileUserAgentsFileName)
+        log.debug { "Checking for user-agent file [$firefoxMobileUserAgentsFileName] in classpath." }
         if (resourceFileExists(firefoxMobileUserAgentsFileName)) {
-            log.debug("Found the file [{}] in classpath", firefoxMobileUserAgentsFileName)
+            log.debug { "Found the file [$firefoxMobileUserAgentsFileName] in classpath" }
             return loadResource(firefoxMobileUserAgentsFileName).split('\n').toSet()
         }
 
-        log.debug("Checking for property [{}]", firefoxMobileUserAgentsPropertyName)
+        log.debug { "Checking for property [$firefoxMobileUserAgentsPropertyName]" }
         if (System.getProperty(firefoxMobileUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug("Found property [{}]", firefoxMobileUserAgentsPropertyName)
+            log.debug {"Found property [$firefoxMobileUserAgentsPropertyName]" }
             return Paths.get(System.getProperty(firefoxMobileUserAgentsPropertyName)).readLines().toSet()
         }
 
-        log.debug("None of the above could be found. Falling back to hard coded user agents.")
+        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
+
         return setOf(
             "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/33.0 Mobile/15E148 Safari/605.1.15",
         )
     }
 
     private fun chromeDesktopUserAgents(): Set<String> {
-        log.info("Initializing user-agents for chrome (desktop)")
+        log.info { "Initializing user-agents for chrome (desktop)" }
 
-        log.debug("Checking for user-agent file [{}] in classpath.", chromeDesktopUserAgentsFileName)
+        log.debug { "Checking for user-agent file [$chromeDesktopUserAgentsFileName] in classpath." }
         if (resourceFileExists(chromeDesktopUserAgentsFileName)) {
-            log.debug("Found the file [{}] in classpath", chromeDesktopUserAgentsFileName)
+            log.debug { "Found the file [$chromeDesktopUserAgentsFileName] in classpath" }
             return loadResource(chromeDesktopUserAgentsFileName).split('\n').toSet()
         }
 
-        log.debug("Checking for property [{}]", chromeDesktopUserAgentsPropertyName)
+        log.debug { "Checking for property [$chromeDesktopUserAgentsPropertyName]" }
         if (System.getProperty(chromeDesktopUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug("Found property [{}]", chromeDesktopUserAgentsPropertyName)
+            log.debug { "Found property [$chromeDesktopUserAgentsPropertyName]" }
             return Paths.get(System.getProperty(chromeDesktopUserAgentsPropertyName)).readLines().toSet()
         }
 
-        log.debug("None of the above could be found. Falling back to hard coded user agents.")
+        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
+
         return setOf(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
             "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
@@ -171,21 +174,21 @@ public object UserAgents {
     }
 
     private fun chromeMobileUserAgents(): Set<String> {
-        log.info("Initializing user-agents for chrome (mobile)")
+        log.info { "Initializing user-agents for chrome (mobile)" }
 
-        log.debug("Checking for user-agent file [{}] in classpath.", chromeMobileUserAgentsFileName)
+        log.debug { "Checking for user-agent file [$chromeMobileUserAgentsFileName] in classpath." }
         if (resourceFileExists(chromeMobileUserAgentsFileName)) {
-            log.debug("Found the file [{}] in classpath", chromeMobileUserAgentsFileName)
+            log.debug { "Found the file [$chromeMobileUserAgentsFileName] in classpath" }
             return loadResource(chromeMobileUserAgentsFileName).split('\n').toSet()
         }
 
-        log.debug("Checking for property [{}]", chromeMobileUserAgentsPropertyName)
+        log.debug { "Checking for property [$chromeMobileUserAgentsPropertyName]" }
         if (System.getProperty(chromeMobileUserAgentsPropertyName)?.isNotBlank() == true) {
-            log.debug("Found property [{}]", chromeMobileUserAgentsPropertyName)
+            log.debug { "Found property [$chromeMobileUserAgentsPropertyName]" }
             return Paths.get(System.getProperty(chromeMobileUserAgentsPropertyName)).readLines().toSet()
         }
 
-        log.debug("None of the above could be found. Falling back to hard coded user agents.")
+        log.debug { "None of the above could be found. Falling back to hard coded user agents." }
         return setOf(
             "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36",
         )

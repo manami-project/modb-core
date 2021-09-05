@@ -78,17 +78,17 @@ public object Json {
 
 /**
  * Possible options to customize serialization of JSON documents using [Json.toJson]
- * @since 6.1.0
+ * @since 7.0.0
  */
 public enum class JsonSerializationOptions {
     /**
      * By default the output JSON string is formatted. Using this option will create a minified string instead.
-     * @since 6.1.0
+     * @since 7.0.0
      */
     DEACTIVATE_PRETTY_PRINT,
     /**
      * By default a property providing `null` as value will be serialized. Using this option will omit these properties.
-     * @since 6.1.0
+     * @since 7.0.0
      */
     DEACTIVATE_SERIALIZE_NULL,
 }

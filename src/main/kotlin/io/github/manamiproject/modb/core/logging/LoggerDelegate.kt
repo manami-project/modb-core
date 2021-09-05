@@ -1,11 +1,14 @@
 package io.github.manamiproject.modb.core.logging
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.github.manamiproject.modb.core.logging.DefaultLogLevelRetriever.Companion.LOG_LEVEL_CONFIG_PROPERTY_NAME
 import kotlin.reflect.KProperty
 
 /**
- * Creates a slf4j [Logger].
+ * Creates a [Logger] for the class in which it is being instantiated.
+ * Implementation uses SLF4J. You use bridges to redirect log statements.
+ *
+ * Global log level can be set either by setting the environment variable [LOG_LEVEL_CONFIG_PROPERTY_NAME] or the system
+ * property with the same name.
  *
  * **Usage:**
  * ```
@@ -13,10 +16,12 @@ import kotlin.reflect.KProperty
  *   private val log by LoggerDelegate()
  * }
  * ```
- * @since 1.0.0
+ * @since 7.0.0
+ * @param logLevel Local override for the log level. This log level will only apply to this specific logger instance.
+ * If nothing is set then the global configuration will be used.
  */
-public class LoggerDelegate {
+public class LoggerDelegate(private val logLevel: LogLevel? = null) {
     public operator fun getValue(thisRef: Any, property: KProperty<*>): Logger {
-        return LoggerFactory.getLogger(thisRef::class.java)
+        return ModbLogger(ref = thisRef::class, logLevel = logLevel)
     }
 }

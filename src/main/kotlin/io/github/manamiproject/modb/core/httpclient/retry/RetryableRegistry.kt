@@ -20,10 +20,10 @@ public object RetryableRegistry {
      */
     public fun register(name: String, retryBehaviorConfig: RetryBehavior): Boolean {
         return if (retries.containsKey(name)) {
-            log.warn("RetryBehaviorConfig named [{}] already exists in repository", name)
+            log.warn { "RetryBehaviorConfig named [$name] already exists in repository" }
             false
         } else {
-            log.info("Successfully added [{}] to RetryBehaviorRegistry", name)
+            log.info { "Successfully added [$name] to RetryBehaviorRegistry" }
             retries[name] = Retryable(retryBehaviorConfig)
             true
         }
@@ -38,10 +38,10 @@ public object RetryableRegistry {
     public fun deregister(name: String): Boolean {
         return if (retries.containsKey(name)) {
             retries.remove(name)
-            log.info("RetryBehaviorConfig named [{}] successfully removed.", name)
+            log.info { "RetryBehaviorConfig named [$name] successfully removed." }
             true
         } else {
-            log.warn("RetryBehaviorConfig named [{}] doesn't exist and therefore couldn't be removed.", name)
+            log.warn { "RetryBehaviorConfig named [$name] doesn't exist and therefore couldn't be removed." }
             false
         }
     }

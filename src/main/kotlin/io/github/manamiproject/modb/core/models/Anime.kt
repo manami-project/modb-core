@@ -276,18 +276,18 @@ public data class Anime(
 
         REPLACEMENTS.forEach { replacement ->
             if (editedTitle.contains(Regex(replacement))) {
-                log.debug("Identified [{}] in [{}]", replacement, editedTitle)
-                log.debug("Changed: [{}]", editedTitle)
+                log.debug { "Identified [$replacement] in [$editedTitle]" }
+                log.debug { "Changed: [$editedTitle]" }
                 editedTitle = editedTitle.replace(Regex(replacement), " ")
-                log.debug("To     : [{}]", editedTitle)
+                log.debug { "To     : [$editedTitle]" }
             }
         }
 
         if (editedTitle.startsWith(WHITESPACE) || editedTitle.endsWith(WHITESPACE)) {
-            log.debug("Identified leading or trailing space in [{}]", editedTitle)
-            log.debug("Changed: [{}]", editedTitle)
+            log.debug { "Identified leading or trailing space in [$editedTitle]" }
+            log.debug { "Changed: [$editedTitle]" }
             editedTitle = editedTitle.trim()
-            log.debug("To     : [{}]", editedTitle)
+            log.debug { "To     : [$editedTitle]" }
         }
 
         return editedTitle

@@ -77,7 +77,7 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
         return try {
             client.newCall(request).execute().toHttpResponse()
         } catch(e: SocketTimeoutException) {
-            log.warn("SocketTimeoutException calling [${request.method} ${request.url}]. Retry in 5 seconds.")
+            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in 5 seconds." }
 
             sleep(5000)
             executeRequest(request)
