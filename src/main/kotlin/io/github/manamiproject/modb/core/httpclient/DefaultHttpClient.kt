@@ -12,10 +12,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.ByteString.Companion.encodeUtf8
 import java.lang.Thread.sleep
-import java.net.Proxy
+import java.net.*
 import java.net.Proxy.NO_PROXY
-import java.net.SocketTimeoutException
-import java.net.URL
 
 /**
  * @since 1.0.0
@@ -76,16 +74,25 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
     private fun executeRequest(request: Request): HttpResponse {
         return try {
             client.newCall(request).execute().toHttpResponse()
-        } catch(e: SocketTimeoutException) {
-            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in 5 seconds." }
+        } catch(e: Throwable) {
+            when(e) {
+                is SocketTimeoutException,
+                is ConnectException,
+                is UnknownHostException,
+                is NoRouteToHostException -> {
+                    log.warn { "[${e::class.simpleName}] calling [${request.method} ${request.url}]. Retry in [${WAITING_TIME_CONNECTION_EXCEPTIONS/1000}] seconds." }
 
-            sleep(5000)
-            executeRequest(request)
+                    sleep(WAITING_TIME_CONNECTION_EXCEPTIONS)
+                    executeRequest(request)
+                }
+                else -> throw e
+            }
         }
     }
 
     private companion object {
         private val log by LoggerDelegate()
+        private const val WAITING_TIME_CONNECTION_EXCEPTIONS = 5000L
     }
 }
 
