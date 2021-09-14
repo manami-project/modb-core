@@ -74,25 +74,17 @@ public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
     private fun executeRequest(request: Request): HttpResponse {
         return try {
             client.newCall(request).execute().toHttpResponse()
-        } catch(e: Throwable) {
-            when(e) {
-                is SocketTimeoutException,
-                is ConnectException,
-                is UnknownHostException,
-                is NoRouteToHostException -> {
-                    log.warn { "[${e::class.simpleName}] calling [${request.method} ${request.url}]. Retry in [${WAITING_TIME_CONNECTION_EXCEPTIONS/1000}] seconds." }
+        } catch(e: SocketTimeoutException) {
+            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in [$WAIT_BEFORE_RETRY_IN_SECONDS] seconds." }
 
-                    sleep(WAITING_TIME_CONNECTION_EXCEPTIONS)
-                    executeRequest(request)
-                }
-                else -> throw e
-            }
+            sleep(WAIT_BEFORE_RETRY_IN_SECONDS*1000L)
+            executeRequest(request)
         }
     }
 
     private companion object {
         private val log by LoggerDelegate()
-        private const val WAITING_TIME_CONNECTION_EXCEPTIONS = 5000L
+        private const val WAIT_BEFORE_RETRY_IN_SECONDS = 5L
     }
 }
 
