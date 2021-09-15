@@ -174,7 +174,7 @@ public object UserAgents {
     }
 
     private fun desktopUserAgents(browser: Browser, fileName: String, propertyName: String, default: Set<String>): Set<String> {
-        log.info { "Initializing user-agents for [$browser] ($propertyName)" }
+        log.info { "Initializing user-agents for [$browser]" }
 
         log.debug { "Checking for user-agent file [$fileName] in classpath." }
 
