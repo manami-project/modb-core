@@ -31,7 +31,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
     testImplementation("ch.qos.logback:logback-classic:1.2.6")
-    testImplementation("io.github.manamiproject:modb-test:1.2.10")
+    testImplementation("io.github.manamiproject:modb-test:1.2.11")
 }
 
 kotlin {
