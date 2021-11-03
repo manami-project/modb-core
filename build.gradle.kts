@@ -116,6 +116,7 @@ publishing {
 coverallsJacoco {
     reportPath = "$buildDir/reports/jacoco/test/jacocoFullReport.xml"
 }
+
 tasks.jacocoTestReport {
     reports {
         html.required.set(false)
