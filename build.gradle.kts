@@ -40,16 +40,11 @@ kotlin {
     explicitApi()
 }
 
-val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = Versions.JVM_TARGET
-    freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
-}
-
-val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = Versions.JVM_TARGET
-    freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = Versions.JVM_TARGET
+        freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+    }
 }
 
 tasks.withType<Test> {
