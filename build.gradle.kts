@@ -29,7 +29,7 @@ dependencies {
 
     implementation(platform(kotlin("bom")))
     implementation("org.slf4j:slf4j-api:1.7.32")
-    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
     testImplementation("ch.qos.logback:logback-classic:1.2.7")
