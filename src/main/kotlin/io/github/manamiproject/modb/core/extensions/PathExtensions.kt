@@ -23,11 +23,11 @@ public typealias RegularFile = Path
 /**
  * Creates a new [Path] instance with the file's suffix changed. A file is not created by this. If you want to create it
  * call [createFile] afterwards.
- * + If the file is a regular file in form of `name.suffix` the suffix is simply changed to the given value.
- * + If the given path is an existing directory, norhing is changed and the given path is returned unchanged.
- * + If a file does not provide a suffix yet, it will be added.
- * + If the path is a hidden file (files whose whole file name starts with a dot **example:** `.gitignore`) the suffix is simply
- * appended.
+ * + If the file is a regular file in form of `name.suffix` the suffix is simply changed to the given value. `test.yaml` => `test.yml`
+ * + If the file contains multiple suffix parts (**example:** `test.json.BAK`) only the last part is changed. `test.yml.BAK` => `test.yml.backup`
+ * + If the given path is an existing directory, norhing is changed and the given path is returned unchanged. `directory` => `directory`
+ * + If a file does not provide a suffix yet, it will be added. `test` => `test.yml`
+ * + If the path is a hidden file (files whose whole file name starts with a dot **example:** `.gitignore`) the suffix is simply appended. `.gitignore` => `.gitignore.BAK`
  * @since 1.0.0
  * @param suffix Can be either a suffix with a leading dot (**example:** `.json`) or without a leading dot (**example:** `json`)
  * @return The modified [RegularFile] object
