@@ -68,6 +68,24 @@ internal class PathExtensionsKtTest {
         }
 
         @Test
+        fun `Correctly changes only the part after the last dot`() {
+            tempDirectory {
+                // given
+                val originalFile = tempDir.resolve("file.json.BAK").apply {
+                    Files.createFile(this)
+                }
+
+                // when
+                originalFile.changeSuffix(EMPTY).apply {
+                    Files.createFile(this)
+                }
+
+                // then
+                assertThat(tempDir.resolve("file.json")).exists()
+            }
+        }
+
+        @Test
         fun `Add suffix to file without suffix`() {
             tempDirectory {
                 // given

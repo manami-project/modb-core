@@ -43,7 +43,7 @@ public fun Path.changeSuffix(suffix: String): RegularFile {
     val fileNameWithoutSuffix = if (fileName.startsWith('.')) {
         fileName
     } else {
-        fileName.split('.').first()
+        fileName.substringBeforeLast('.')
     }
 
     val newSuffix = if (suffix.startsWith(".")) {
@@ -52,7 +52,11 @@ public fun Path.changeSuffix(suffix: String): RegularFile {
         suffix
     }
 
-    val fileNameRewrite = "$fileNameWithoutSuffix.$newSuffix"
+    val fileNameRewrite = if (newSuffix.isBlank()) {
+        fileNameWithoutSuffix
+    } else {
+        "$fileNameWithoutSuffix.$newSuffix"
+    }
 
     return if (directory == null) {
         Paths.get(fileNameRewrite)
