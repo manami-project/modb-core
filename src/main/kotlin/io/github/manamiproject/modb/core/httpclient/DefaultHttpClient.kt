@@ -7,6 +7,8 @@ import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Protocol.*
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -19,9 +21,13 @@ import java.net.Proxy.NO_PROXY
  * @since 1.0.0
  * @param proxy **Default** is [NO_PROXY]
  */
-public class DefaultHttpClient(proxy: Proxy = NO_PROXY) : HttpClient {
+public class DefaultHttpClient(
+    proxy: Proxy = NO_PROXY,
+    protocols: List<Protocol> = listOf(HTTP_2, HTTP_1_1),
+) : HttpClient {
 
     private val client = OkHttpClient.Builder()
+        .protocols(protocols)
         .proxy(proxy)
         .retryOnConnectionFailure(true)
         .build()
