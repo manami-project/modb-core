@@ -2,13 +2,13 @@ package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
+import io.github.manamiproject.modb.core.httpclient.HttpProtocol.*
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import okhttp3.Protocol.*
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -20,14 +20,15 @@ import java.net.Proxy.NO_PROXY
 /**
  * @since 1.0.0
  * @param proxy **Default** is [NO_PROXY]
+ * @param protocols List of supported http protocol versions in the order of preference.
  */
 public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
-    protocols: List<Protocol> = listOf(HTTP_2, HTTP_1_1),
+    private val protocols: List<HttpProtocol> = listOf(HTTP_2, HTTP_1_1),
 ) : HttpClient {
 
     private val client = OkHttpClient.Builder()
-        .protocols(protocols)
+        .protocols(mapHttpProtocols())
         .proxy(proxy)
         .retryOnConnectionFailure(true)
         .build()
@@ -75,6 +76,15 @@ public class DefaultHttpClient(
     override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
         return RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+    }
+
+    private fun mapHttpProtocols(): List<Protocol> {
+        return protocols.map {
+            when(it) {
+                HTTP_2 -> okhttp3.Protocol.HTTP_2
+                HTTP_1_1 -> okhttp3.Protocol.HTTP_1_1
+            }
+        }
     }
 
     private fun executeRequest(request: Request): HttpResponse {
