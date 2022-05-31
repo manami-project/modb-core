@@ -25,6 +25,21 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
     }
 
     @Nested
+    inner class ConstructorTests {
+
+        @Test
+        fun `throws exception if the list of http protocol versions is empty`() {
+            // when
+            val result = assertThrows<IllegalArgumentException> {
+                DefaultHttpClient(protocols = emptyList())
+            }
+
+            // then
+            assertThat(result).hasMessage("Requires at least one http protocol version.")
+        }
+    }
+
+    @Nested
     inner class GetTests {
 
         @Test

@@ -79,6 +79,8 @@ public class DefaultHttpClient(
     }
 
     private fun mapHttpProtocols(): List<Protocol> {
+        require(protocols.isNotEmpty()) { "Requires at least one http protocol version." }
+
         return protocols.map {
             when(it) {
                 HTTP_2 -> okhttp3.Protocol.HTTP_2
