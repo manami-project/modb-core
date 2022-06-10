@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.httpclient
 /**
  * @since 7.2.1
  */
-enum class HttpProtocol {
+public enum class HttpProtocol {
     /**
      * @since 7.2.1
      */
