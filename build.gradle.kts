@@ -30,7 +30,7 @@ dependencies {
     implementation(platform(kotlin("bom")))
     implementation("org.slf4j:slf4j-api:1.7.36")
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
     testImplementation("ch.qos.logback:logback-classic:1.2.11")
     testImplementation("io.github.manamiproject:modb-test:1.3.5")
