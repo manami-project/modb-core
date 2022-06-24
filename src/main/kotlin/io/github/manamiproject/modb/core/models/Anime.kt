@@ -49,7 +49,7 @@ public data class Anime(
     val animeSeason: AnimeSeason = AnimeSeason(),
     val picture: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
     val thumbnail: URI = URI("https://cdn.myanimelist.net/images/qm_50.gif"),
-    val duration: Duration = Duration.UNKNOWN,
+    @Deprecated("Will be removed in the next version") val duration: Duration = Duration.UNKNOWN,
     val relatedAnime: SortedList<URI> = SortedList(),
     val tags: SortedList<Tag> = SortedList(),
 ) {
