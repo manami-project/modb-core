@@ -6,7 +6,6 @@ import java.util.*
 /**
  * @since 1.0.0
  */
-@Deprecated("Will be removed in the next version")
 public typealias Seconds = Int
 
 /**
@@ -15,7 +14,6 @@ public typealias Seconds = Int
  * @property value The duration
  * @property unit Indicates whether the [value] refers to seconds, minutes or hours.
  */
-@Deprecated("Will be removed in the next version")
 public data class Duration(
     private val value: Int,
     private val unit: TimeUnit
