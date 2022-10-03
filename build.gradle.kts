@@ -32,7 +32,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
-    testImplementation("ch.qos.logback:logback-classic:1.4.1")
+    testImplementation("ch.qos.logback:logback-classic:1.4.3")
     testImplementation("io.github.manamiproject:modb-test:1.3.10")
 }
 
