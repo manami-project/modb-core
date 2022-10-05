@@ -5,6 +5,9 @@ import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createH
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.*
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -33,7 +36,21 @@ public class DefaultHttpClient(
         .retryOnConnectionFailure(true)
         .build()
 
-    override fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse {
+    @Deprecated("Use coroutine", ReplaceWith(
+        "runBlocking { postSuspendable(url, requestBody, headers, retryWith) }",
+        "kotlinx.coroutines.runBlocking"
+    )
+    )
+    override fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
+        postSuspendable(url, requestBody, headers, retryWith)
+    }
+
+    override suspend fun postSuspendable(
+        url: URL,
+        requestBody: RequestBody,
+        headers: Map<String, Collection<String>>,
+        retryWith: String,
+    ): HttpResponse = withContext(IO) {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
@@ -48,14 +65,22 @@ public class DefaultHttpClient(
             .headers(requestHeaders.toHeaders())
             .build()
 
-        return if (retryWith.isNotBlank()) {
+        return@withContext if (retryWith.isNotBlank()) {
             RetryableRegistry.fetch(retryWith)?.execute { executeRequest(request) } ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
         } else {
             executeRequest(request)
         }
     }
 
-    override fun get(url: URL, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse {
+    override fun get(url: URL, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
+        getSuspedable(url, headers, retryWith)
+    }
+
+    override suspend fun getSuspedable(
+        url: URL,
+        headers: Map<String, Collection<String>>,
+        retryWith: String
+    ): HttpResponse = withContext(IO) {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
@@ -66,16 +91,25 @@ public class DefaultHttpClient(
             .headers(requestHeaders.toHeaders())
             .build()
 
-        return if (retryWith.isNotBlank()) {
+        return@withContext if (retryWith.isNotBlank()) {
             RetryableRegistry.fetch(retryWith)?.execute { executeRequest(request) } ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
         } else {
             executeRequest(request)
         }
     }
 
-    override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse {
+    @Deprecated("Use coroutine", ReplaceWith(
+        "runBlocking { executeRetryableSuspendable(retryWith, func) }",
+        "kotlinx.coroutines.runBlocking"
+    )
+    )
+    override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
+        executeRetryableSuspendable(retryWith, func)
+    }
+
+    override suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse = withContext(IO) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
-        return RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+        return@withContext RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
     }
 
     private fun mapHttpProtocols(): List<Protocol> {

@@ -19,4 +19,7 @@ internal object MetaDataProviderTestConfig : MetaDataProviderConfig {
 
 internal object TestAnimeConverter : AnimeConverter {
     override fun convert(rawContent: String): Anime = shouldNotBeInvoked()
+    override suspend fun convertSuspendable(rawContent: String): Anime {
+        TODO("Not yet implemented")
+    }
 }

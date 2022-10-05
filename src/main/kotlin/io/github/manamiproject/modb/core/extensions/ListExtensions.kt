@@ -1,5 +1,8 @@
 package io.github.manamiproject.modb.core.extensions
 
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 
 /**
@@ -7,25 +10,42 @@ import java.security.SecureRandom
  * @since 1.0.0
  * @return The randomized list
  */
-public fun <T> List<T>.createShuffledList(): List<T> {
-    if (this.isEmpty() || this.size == 1) {
-        return this
+@Deprecated("Use coroutines",
+    ReplaceWith("runBlocking { createShuffledListSuspendable() }", "kotlinx.coroutines.runBlocking")
+)
+public fun <T> List<T>.createShuffledList(): List<T> = runBlocking {
+    createShuffledListSuspendable()
+}
+
+/**
+ * Randomizes the order of elements in a [List]
+ * @since 1.0.0
+ * @return The randomized list
+ */
+public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
+    val list = this
+
+    return withContext(Default) {
+
+        if (list.isEmpty() || list.size == 1) {
+            return@withContext list
+        }
+
+        var shuffledList = mutableListOf<T>()
+
+        shuffledList.addAll(list)
+
+        shuffledList.shuffle(SecureRandom())
+        shuffledList.shuffle(SecureRandom())
+        shuffledList.shuffle(SecureRandom())
+        shuffledList.shuffle(SecureRandom())
+
+        while (list.containsExactlyInTheSameOrder(shuffledList)) {
+            shuffledList = list.createShuffledListSuspendable().toMutableList()
+        }
+
+        return@withContext shuffledList
     }
-
-    var shuffledList = mutableListOf<T>()
-
-    shuffledList.addAll(this)
-
-    shuffledList.shuffle(SecureRandom())
-    shuffledList.shuffle(SecureRandom())
-    shuffledList.shuffle(SecureRandom())
-    shuffledList.shuffle(SecureRandom())
-
-    while (this.containsExactlyInTheSameOrder(shuffledList)) {
-        shuffledList = this.createShuffledList().toMutableList()
-    }
-
-    return shuffledList
 }
 
 /**

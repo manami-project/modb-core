@@ -5,6 +5,10 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
 import io.github.manamiproject.modb.core.collections.SortedList
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.net.URI
 
@@ -32,8 +36,29 @@ public object Json {
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
      */
+    @Deprecated("Use coroutine", ReplaceWith(
+        "moshi.adapter<T>().nullSafe().fromJson(json)",
+        "io.github.manamiproject.modb.core.Json.moshi",
+        "com.squareup.moshi.adapter"
+    )
+    )
     @OptIn(ExperimentalStdlibApi::class)
-    public inline fun <reified T> parseJson(json: String): T? = moshi.adapter<T>().nullSafe().fromJson(json)
+    public inline fun <reified T> parseJson(json: String): T? = runBlocking {
+        return@runBlocking parseJsonSuspendable(json)
+    }
+
+    /**
+     * Parse a [String] into an object.
+     *
+     * **WARNING** [Collection]s of a non-nullable type can still contain null.
+     * @since 7.3.0
+     * @param json Valid JSON as [String]
+     * @return Deserialzed JSON as object of given type [T]
+     */
+    @OptIn(ExperimentalStdlibApi::class)
+    public suspend inline fun <reified T> parseJsonSuspendable(json: String): T? = withContext(Default) {
+        return@withContext moshi.adapter<T>().nullSafe().fromJson(json)
+    }
 
     /**
      * Parse an [InputStream] into an object.
@@ -43,8 +68,30 @@ public object Json {
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
+    @Deprecated("Use coroutine", ReplaceWith(
+        "runBlocking { moshi.adapter<T>().fromJson(json.bufferedReader().readText()) }",
+        "kotlinx.coroutines.runBlocking",
+        "io.github.manamiproject.modb.core.Json.moshi",
+        "com.squareup.moshi.adapter"
+    )
+    )
     @OptIn(ExperimentalStdlibApi::class)
-    public inline fun <reified T> parseJson(json: InputStream): T? = moshi.adapter<T>().fromJson(json.bufferedReader().readText())
+    public inline fun <reified T> parseJson(json: InputStream): T? = runBlocking {
+        return@runBlocking parseJsonSuspendable(json)
+    }
+
+    /**
+     * Parse an [InputStream] into an object.
+     *
+     * **WARNING** [Collection]s of a non-nullable type can still contain null.
+     * @since 7.3.0
+     * @param json Valid JSON as [InputStream]
+     * @return Deserialized JSON as object of given type [T]
+     */
+    @OptIn(ExperimentalStdlibApi::class)
+    public suspend inline fun <reified T> parseJsonSuspendable(json: InputStream): T? = withContext(IO) {
+        return@withContext moshi.adapter<T>().fromJson(json.bufferedReader().readText())
+    }
 
     /**
      * Serialize any object to JSON.
@@ -54,8 +101,21 @@ public object Json {
      * @return Given object serialized in JSON as [String]
      */
     @OptIn(ExperimentalStdlibApi::class)
-    public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String {
-        return configureJsopnAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
+    @Deprecated("Use coroutine")
+    public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String = runBlocking {
+        return@runBlocking toJsonSuspendable(obj, *options)
+    }
+
+    /**
+     * Serialize any object to JSON.
+     * @since 7.3.0
+     * @param obj Any object that is supposed to be serialized to JSON.
+     * @param options Options that can change the default behavior of the JSON serialization
+     * @return Given object serialized in JSON as [String]
+     */
+    @OptIn(ExperimentalStdlibApi::class)
+    public suspend fun toJsonSuspendable(obj: Any, vararg options: JsonSerializationOptions): String = withContext(Default) {
+        return@withContext configureJsopnAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
