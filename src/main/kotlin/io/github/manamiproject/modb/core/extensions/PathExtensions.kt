@@ -1,12 +1,16 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.config.FileSuffix
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
 import kotlin.io.path.exists
 import kotlin.io.path.readLines
 import kotlin.io.path.createFile
+import kotlin.io.path.Path as PathCreator
 
 /**
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a directory.
@@ -59,7 +63,7 @@ public fun Path.changeSuffix(suffix: String): RegularFile {
     }
 
     return if (directory == null) {
-        Paths.get(fileNameRewrite)
+        PathCreator(fileNameRewrite)
     } else {
         directory.resolve(fileNameRewrite)
     }
@@ -88,9 +92,23 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-public fun Path.readFile(charset: Charset = UTF_8): String {
-    return if (this.regularFileExists()) {
-        this.readLines(charset).joinToString("\n")
+@Deprecated("Use coroutine",
+    ReplaceWith("runBlocking { readFileSuspendable(charset) }", "kotlinx.coroutines.runBlocking")
+)
+public fun Path.readFile(charset: Charset = UTF_8): String = runBlocking {
+    readFileSuspendable(charset)
+}
+
+/**
+ * Read the content of a file to a [String]
+ * @since 7.3.0
+ * @param charset The charset to use for decoding. **Default** is [UTF_8]
+ * @return The file's content
+ * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
+ */
+public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = withContext(IO) {
+    if (regularFileExists()) {
+        readLines(charset).joinToString("\n")
     } else {
         throw NoSuchFileException(this.toString())
     }
@@ -105,14 +123,36 @@ public fun Path.readFile(charset: Charset = UTF_8): String {
  * @return The target as [Path] object
  * @throws FileAlreadyExistsException if the target already exists
  */
-public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
-    val processedTarget = when {
-        this.regularFileExists() && target.directoryExists() -> target.resolve(this.fileName)
-        this.directoryExists() && target.directoryExists() -> target.resolve(this.fileName)
-        else -> target
-    }
+@Deprecated("Use coroutine", ReplaceWith(
+    "runBlocking { copyToSuspedable(target, *copyOptions) }",
+    "kotlinx.coroutines.runBlocking"
+)
+)
+public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path = runBlocking {
+    copyToSuspedable(target, *copyOptions)
+}
 
-    return Files.copy(this, processedTarget, *copyOptions)
+/**
+ * Can copy file to file, directory to directory or a file into a directory.
+ * Does not copy the content of directory.
+ * @since 7.3.0
+ * @param target Target to copy the given [Path] to
+ * @param copyOptions Specifying how the copy should be done
+ * @return The target as [Path] object
+ * @throws FileAlreadyExistsException if the target already exists
+ */
+public suspend fun Path.copyToSuspedable(target: Path, vararg copyOptions: CopyOption): Path {
+    val source = this
+
+    return withContext(IO) {
+        val processedTarget = when {
+            source.regularFileExists() && target.directoryExists() -> target.resolve(source.fileName)
+            source.directoryExists() && target.directoryExists() -> target.resolve(source.fileName)
+            else -> target
+        }
+
+        return@withContext Files.copy(source, processedTarget, *copyOptions)
+    }
 }
 
 /**

@@ -14,5 +14,14 @@ public interface AnimeConverter {
      * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */
+    @Deprecated("Use coroutines")
     public fun convert(rawContent: String): Anime
+
+    /**
+     * Converts a [String] into an [Anime].
+     * @since 7.3.0
+     * @param rawContent The raw content which will be converted to an [Anime]
+     * @return Instance of [Anime]
+     */
+    public suspend fun convertSuspendable(rawContent: String): Anime
 }
