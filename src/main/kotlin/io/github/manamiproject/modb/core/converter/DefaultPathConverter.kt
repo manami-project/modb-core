@@ -3,6 +3,10 @@ package io.github.manamiproject.modb.core.converter
 import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.extensions.*
 import io.github.manamiproject.modb.core.models.Anime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.useDirectoryEntries
 
@@ -17,22 +21,37 @@ public class DefaultPathConverter(
     private val fileSuffix: FileSuffix
 ) : PathConverter {
 
+    @Deprecated("Use coroutines",
+        ReplaceWith("runBlocking { convertSuspendable(path) }", "kotlinx.coroutines.runBlocking")
+    )
     override fun convert(path: Path): List<Anime> {
-        return when{
-            path.regularFileExists() -> convertSingleFile(path)
-            path.directoryExists() -> convertAllFilesInADirectory(path)
-            else -> throw IllegalArgumentException("Given path [$path] does not exist.")
+        return runBlocking {
+            convertSuspendable(path)
         }
     }
 
-    private fun convertSingleFile(file: RegularFile) = listOf(animeConverter.convert(file.readFile()))
+    override suspend fun convertSuspendable(path: Path): List<Anime> {
+        return withContext(IO) {
+            println(this.coroutineContext)
+            when{
+                path.regularFileExists() -> convertSingleFile(path)
+                path.directoryExists() -> convertAllFilesInADirectory(path)
+                else -> throw IllegalArgumentException("Given path [$path] does not exist.")
+            }
+        }
+    }
 
-    private fun convertAllFilesInADirectory(path: Directory): List<Anime> {
-        return path.useDirectoryEntries { pathSequence ->
+    private suspend fun convertSingleFile(file: RegularFile) = withContext(IO) {
+        listOf(animeConverter.convert(file.readFile()))
+    }
+
+    private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(IO) {
+        path.useDirectoryEntries { pathSequence ->
             pathSequence.filter { it.regularFileExists() }
-            .filter { it.fileSuffix() == fileSuffix }
-            .map { convert(it).first() }
-            .toList()
+                .filter { it.fileSuffix() == fileSuffix }
+                .map { convert(it) }
+                .flatten()
+                .toList()
         }
     }
 }
