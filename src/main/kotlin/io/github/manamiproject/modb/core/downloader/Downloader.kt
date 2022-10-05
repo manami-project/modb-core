@@ -18,5 +18,16 @@ public interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
+    @Deprecated("Use coroutines")
     public fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
+
+    /**
+     * Downloads raw data for a specific anime which then can be converted into an [Anime] using an [AnimeConverter]
+     * @since 7.3.0
+     * @param id The id of the anime for which you want to download the raw data
+     * @param onDeadEntry Function that is executed if the anime in question is found to be a dead entry on the website
+     * of the metadata provider when it is downloaded. **Default:** is no action
+     * @return Raw data
+     */
+    public suspend fun downloadSuspendable(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
 }
