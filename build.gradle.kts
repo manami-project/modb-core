@@ -33,7 +33,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 
-    testImplementation("ch.qos.logback:logback-classic:1.4.3")
+    testImplementation("ch.qos.logback:logback-classic:1.4.4")
     testImplementation("io.github.manamiproject:modb-test:1.3.10")
 }
 
