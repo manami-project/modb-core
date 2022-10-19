@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core
 
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -16,7 +17,9 @@ internal class FunctionsKtTest {
         @Test
         fun `load test resource from root directory`() {
             // when
-            val result = loadResource("load_resource_tests/test-file.txt")
+            val result = runBlocking {
+                loadResourceSuspendable("load_resource_tests/test-file.txt")
+            }
 
             // then
             assertThat(result).isEqualTo("File in\n\nroot directory.")
@@ -25,7 +28,9 @@ internal class FunctionsKtTest {
         @Test
         fun `load test resource from subdirectory`() {
             // when
-            val result = loadResource("load_resource_tests/subdirectory/other-test-file.txt")
+            val result = runBlocking {
+                loadResourceSuspendable("load_resource_tests/subdirectory/other-test-file.txt")
+            }
 
             // then
             assertThat(result).isEqualTo("File in\nsubdirectory.")
@@ -36,7 +41,9 @@ internal class FunctionsKtTest {
             val path = "load_resource_tests"
 
             // when
-            val result = loadResource(path)
+            val result = runBlocking {
+                loadResourceSuspendable(path)
+            }
 
             // then
             assertThat(result).isEqualTo("subdirectory\ntest-file.txt\n")
@@ -47,8 +54,8 @@ internal class FunctionsKtTest {
             val path = "non-existent-file.txt"
 
             // when
-            val result = assertThrows<IllegalStateException> {
-                loadResource(path)
+            val result = suspendableExpectingException<IllegalStateException> {
+                loadResourceSuspendable(path)
             }
 
             // then
@@ -59,8 +66,8 @@ internal class FunctionsKtTest {
         @ValueSource(strings = ["", "   "])
         fun `throws an exception if the the given path is blank or empty`(value: String) {
             // when
-            val result = assertThrows<IllegalArgumentException> {
-                loadResource(value)
+            val result = suspendableExpectingException<IllegalArgumentException> {
+                loadResourceSuspendable(value)
             }
 
             // then

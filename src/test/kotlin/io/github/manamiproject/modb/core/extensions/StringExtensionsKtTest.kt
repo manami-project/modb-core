@@ -1,20 +1,26 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.test.tempDirectory
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS.MAC
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.lang.Thread.sleep
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
+import java.util.concurrent.TimeUnit.MINUTES
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
+import kotlin.time.Duration
 
 internal class StringExtensionsKtTest {
 
@@ -81,7 +87,7 @@ internal class StringExtensionsKtTest {
 
                 // then
                 assertThat(file).exists()
-                assertThat(file.readFile()).isEqualTo(string)
+                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
             }
         }
 
@@ -99,44 +105,47 @@ internal class StringExtensionsKtTest {
 
                 // then
                 assertThat(file).exists()
-                assertThat(file.readFile()).isEqualTo(string)
+                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
             }
         }
 
         @Test
-        @DisabledOnOs(MAC, disabledReason = "The FS watch service of macos takes way to long to register that there is a new file.")
+        @Timeout(value = 1, unit = MINUTES)
+        @DisabledOnOs(MAC, disabledReason = "The FS watch service of macos takes way too long to register that there is a new file.")
         fun `successfully write string using lock file`() {
             tempDirectory {
                 // given
                 val watchService = FileSystems.getDefault().newWatchService()
                 tempDir.register(watchService, ENTRY_CREATE)
 
-                var isLockFileCreated = false
-
-                Thread {
-                    var key = watchService.takeOrNull()
-
-                    while (key != null) {
-                        val events = key.pollEvents()
-                        events.find { it.kind() == ENTRY_CREATE && (it.context() as Path).fileName.toString().endsWith(LOCK_FILE_SUFFIX)}?.let { isLockFileCreated = true }
-
-                        key.reset()
-                        key = watchService.takeOrNull()
-                    }
-                }.start()
-
                 val string = "Some content\nfor a test file."
                 val file = tempDir.resolve("test.txt")
+                var isLockFileCreated = false
 
-                sleep(4000)
+                runBlocking {
+                    val watchServiceJob = launch {
+                        withTimeout(Duration.parse("1m")) {
+                            var key = watchService.takeOrNullSuspendable()
 
-                // when
-                string.writeToFile(file, true)
+                            while (key != null && isActive && !isLockFileCreated) {
+                                val events = key.pollEvents()
+                                events.find { it.kind() == ENTRY_CREATE && (it.context() as Path).fileName.toString().endsWith(LOCK_FILE_SUFFIX)}?.let { isLockFileCreated = true }
+
+                                key.reset()
+                                key = watchService.takeOrNullSuspendable()
+                            }
+                        }
+                    }
+
+
+                    // when
+                    string.writeToFile(file, true)
+                    watchServiceJob.join()
+                }
 
                 // then
-                sleep(4000)
                 assertThat(file).exists()
-                assertThat(file.readFile()).isEqualTo(string)
+                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
                 assertThat(isLockFileCreated).isTrue()
                 assertThat(file.changeSuffix("lck")).doesNotExist()
             }

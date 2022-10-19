@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.extensions
 
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -15,7 +16,7 @@ internal class ListExtensionsKtTest {
             val sortedList = mutableListOf("A", "B", "C", "D")
 
             // when
-            val result = sortedList.createShuffledList()
+            val result = runBlocking { sortedList.createShuffledListSuspendable() }
 
             // then
             assertThat(result).containsAll(sortedList)
@@ -28,7 +29,7 @@ internal class ListExtensionsKtTest {
             val sortedList = mutableListOf("A")
 
             // when
-            val result = sortedList.createShuffledList()
+            val result = runBlocking { sortedList.createShuffledListSuspendable() }
 
             // then
             assertThat(result).containsExactly("A")
@@ -40,7 +41,7 @@ internal class ListExtensionsKtTest {
             val sortedList = emptyList<String>()
 
             // when
-            val result = sortedList.createShuffledList()
+            val result = runBlocking { sortedList.createShuffledListSuspendable() }
 
             // then
             assertThat(result).isEmpty()
