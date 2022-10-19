@@ -12,10 +12,10 @@ import io.github.manamiproject.modb.core.models.Duration
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.MINUTES
 import io.github.manamiproject.modb.test.loadTestResource
 import io.github.manamiproject.modb.test.testResource
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.net.URI
 import kotlin.io.path.inputStream
 
@@ -53,7 +53,9 @@ internal class JsonKtTest {
             val inputStream = testResource("json_tests/anime_all_properties_set.json").inputStream()
 
             // when
-            val result = Json.parseJson<Anime>(inputStream)
+            val result = runBlocking {
+                Json.parseJsonSuspendable<Anime>(inputStream)
+            }
 
             // then
             assertThat(result).isEqualTo(expectedAnime)
@@ -89,7 +91,9 @@ internal class JsonKtTest {
             val json = loadTestResource("json_tests/anime_all_properties_set.json")
 
             // when
-            val result = Json.parseJson<Anime>(json)
+            val result = runBlocking {
+                Json.parseJsonSuspendable<Anime>(json)
+            }
 
             // then
             assertThat(result).isEqualTo(expectedAnime)
@@ -103,7 +107,9 @@ internal class JsonKtTest {
             val json = loadTestResource("json_tests/anime_default_values.json")
 
             // when
-            val result = Json.parseJson<Anime>(json)
+            val result = runBlocking {
+                Json.parseJsonSuspendable<Anime>(json)
+            }
 
             // then
             assertThat(result).isEqualTo(expectedAnime)
@@ -120,8 +126,8 @@ internal class JsonKtTest {
             """.trimIndent()
 
             // when
-            val result = assertThrows<JsonDataException> {
-                Json.parseJson<NullableTestClass>(json)?.copy()
+            val result = suspendableExpectingException<JsonDataException> {
+                Json.parseJsonSuspendable<NullableTestClass>(json)?.copy()
             }
 
             // then
@@ -142,7 +148,9 @@ internal class JsonKtTest {
             """.trimIndent()
 
             // when
-            val result = Json.parseJson<ClassWithList>(json)
+            val result = runBlocking {
+                Json.parseJsonSuspendable<ClassWithList>(json)
+            }
 
             // then
             assertThat(result?.nonNullableList).containsNull()
@@ -162,7 +170,9 @@ internal class JsonKtTest {
             """.trimIndent()
 
             // when
-            val result = Json.parseJson<ClassWithList>(json)?.copy()!!
+            val result = runBlocking {
+                Json.parseJsonSuspendable<ClassWithList>(json)?.copy()!!
+            }
 
             // then
             assertThat(result.nonNullableList).containsNull()
@@ -237,7 +247,9 @@ internal class JsonKtTest {
     """.trimIndent()
 
                 // when
-                val result = Json.toJson(anime)
+                val result = runBlocking {
+                    Json.toJsonSuspendable(anime)
+                }
 
                 // then
                 assertThat(result).isEqualTo(expectedJson)
@@ -272,7 +284,9 @@ internal class JsonKtTest {
     """.trimIndent()
 
                 // when
-                val result = Json.toJson(anime)
+                val result = runBlocking {
+                    Json.toJsonSuspendable(anime)
+                }
 
                 // then
                 assertThat(result).isEqualTo(expectedJson)
@@ -290,7 +304,9 @@ internal class JsonKtTest {
     """.trimIndent()
 
                 // when
-                val result = Json.toJson(NullableTestClass())
+                val result = runBlocking {
+                    Json.toJsonSuspendable(NullableTestClass())
+                }
 
                 // then
                 assertThat(result).isEqualTo(expectedJson)
@@ -330,7 +346,9 @@ internal class JsonKtTest {
                 val expectedJson = """{"_title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","sources":["https://myanimelist.net/anime/6351"],"synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","duration":{"value":24,"unit":"MINUTES"},"relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
 
                 // when
-                val result = Json.toJson(anime, DEACTIVATE_PRETTY_PRINT)
+                val result = runBlocking {
+                    Json.toJsonSuspendable(anime, DEACTIVATE_PRETTY_PRINT)
+                }
 
                 // then
                 assertThat(result).isEqualTo(expectedJson)
@@ -347,7 +365,9 @@ internal class JsonKtTest {
     """.trimIndent()
 
                 // when
-                val result = Json.toJson(NullableTestClass(), DEACTIVATE_SERIALIZE_NULL)
+                val result = runBlocking {
+                    Json.toJsonSuspendable(NullableTestClass(), DEACTIVATE_SERIALIZE_NULL)
+                }
 
                 // then
                 assertThat(result).isEqualTo(expectedJson)

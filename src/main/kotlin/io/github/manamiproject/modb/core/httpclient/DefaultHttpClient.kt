@@ -72,6 +72,11 @@ public class DefaultHttpClient(
         }
     }
 
+    @Deprecated("Use coroutine", ReplaceWith(
+        "runBlocking { getSuspedable(url, headers, retryWith) }",
+        "kotlinx.coroutines.runBlocking"
+        )
+    )
     override fun get(url: URL, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
         getSuspedable(url, headers, retryWith)
     }

@@ -7,8 +7,10 @@ import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.FailedAfterRetryException
 import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
+import io.github.manamiproject.modb.core.suspendableExpectingException
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
@@ -61,7 +63,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val url = URL("http://localhost:$port/$path")
 
             // when
-            val result = DefaultHttpClient().get(url)
+            val result = runBlocking { DefaultHttpClient().getSuspedable(url) }
 
             // then
             assertThat(result.code).isEqualTo(httpResponseCode)
@@ -87,7 +89,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val url = URL("http://localhost:$port/$path")
 
             // when
-            val result = DefaultHttpClient().get(url)
+            val result = runBlocking { DefaultHttpClient().getSuspedable(url) }
 
             // then
             assertThat(result.code).isEqualTo(httpResponseCode)
@@ -109,7 +111,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().get(URL("http://localhost:$port/test"), header)
+           runBlocking { DefaultHttpClient().getSuspedable(URL("http://localhost:$port/test"), header) }
 
             // then
             serverInstance.verify(
@@ -133,7 +135,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().get(URL("http://localhost:$port/test"), header)
+            runBlocking {
+                DefaultHttpClient().getSuspedable(
+                    url = URL("http://localhost:$port/test"),
+                    headers = header,
+                )
+            }
 
             // then
             serverInstance.verify(
@@ -155,10 +162,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
 
             // when
-            DefaultHttpClient().get(
-                url = URL("http://localhost:$port/test"),
-                headers = headers
-            )
+            runBlocking {
+                DefaultHttpClient().getSuspedable(
+                    url = URL("http://localhost:$port/test"),
+                    headers = headers,
+                )
+            }
 
             // then
             serverInstance.verify(
@@ -170,10 +179,10 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry behavior can't be found`() {
             // when
-            val result = assertThrows<IllegalStateException> {
-                DefaultHttpClient().get(
+            val result = suspendableExpectingException<IllegalStateException> {
+                DefaultHttpClient().getSuspedable(
                     url = URL("http://localhost:$port/test"),
-                    retryWith = "unknown"
+                    retryWith = "unknown",
                 )
             }
 
@@ -199,10 +208,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = DefaultHttpClient().get(
-                url = URL("http://localhost:$port/test"),
-                retryWith = testRetryBehaviorName
-            )
+            val result = runBlocking {
+                DefaultHttpClient().getSuspedable(
+                    url = URL("http://localhost:$port/test"),
+                    retryWith = testRetryBehaviorName,
+                )
+            }
 
             assertThat(result.code).isEqualTo(200)
             assertThat(result.body).isEmpty()
@@ -227,8 +238,8 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = assertThrows<FailedAfterRetryException> {
-                DefaultHttpClient().get(
+            val result = suspendableExpectingException<FailedAfterRetryException> {
+                DefaultHttpClient().getSuspedable(
                     url = URL("http://localhost:$port/test"),
                     retryWith = testRetryBehaviorName
                 )
@@ -259,14 +270,16 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val url = URL("http://localhost:$port/$path")
 
             // when
-            val result = DefaultHttpClient().post(
-                url = url,
-                headers = mapOf("test-header" to listOf("headervalue")),
-                requestBody = RequestBody(
-                    mediaType = APPLICATION_JSON,
-                    body = body
+            val result = runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    )
                 )
-            )
+            }
 
             // then
             assertThat(result.code).isEqualTo(httpResponseCode)
@@ -288,14 +301,16 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                headers = header,
-                requestBody = RequestBody(
-                    mediaType = APPLICATION_JSON,
-                    body = "{ \"key\": \"some-value\" }"
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    headers = header,
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = "{ \"key\": \"some-value\" }"
+                    )
                 )
-            )
+            }
 
             // then
             serverInstance.verify(
@@ -315,13 +330,15 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                requestBody = RequestBody(
-                    mediaType = APPLICATION_JSON,
-                    body = "{ \"id\": 1 }"
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = "{ \"id\": 1 }"
+                    )
                 )
-            )
+            }
 
             // then
             serverInstance.verify(
@@ -341,13 +358,15 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                requestBody = RequestBody(
-                    mediaType = "application/xml",
-                    body = "<element>content<element>"
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(
+                        mediaType = "application/xml",
+                        body = "<element>content<element>"
+                    )
                 )
-            )
+            }
 
             // then
             serverInstance.verify(
@@ -371,14 +390,16 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                headers = header,
-                requestBody = RequestBody(
-                    mediaType = APPLICATION_JSON,
-                    body = "{ \"id\": 1 }"
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    headers = header,
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = "{ \"id\": 1 }"
+                    )
                 )
-            )
+            }
 
             // then
             serverInstance.verify(
@@ -398,13 +419,15 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                requestBody = RequestBody(
-                    mediaType = APPLICATION_JSON,
-                    body = "{ \"property\": \"value\" }"
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = "{ \"property\": \"value\" }"
+                    )
                 )
-            )
+            }
 
             // then
             serverInstance.verify(
@@ -423,10 +446,10 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = assertThrows<IllegalArgumentException> {
-                client.post(
+            val result = suspendableExpectingException<IllegalArgumentException> {
+                client.postSuspendable(
                         url = URL("http://localhost:$port/test"),
-                        requestBody = requestBody
+                        requestBody = requestBody,
                     )
             }
 
@@ -444,10 +467,10 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = assertThrows<IllegalArgumentException> {
-                client.post(
+            val result = suspendableExpectingException<IllegalArgumentException> {
+                client.postSuspendable(
                     url = URL("http://localhost:$port/test"),
-                    requestBody = requestBody
+                    requestBody = requestBody,
                 )
             }
 
@@ -468,11 +491,13 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
 
             // when
-            DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                headers = headers
-            )
+            runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
+                    headers = headers
+                )
+            }
 
             // then
             serverInstance.verify(
@@ -484,11 +509,11 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry behavior can't be found`() {
             // when
-            val result = assertThrows<IllegalStateException> {
-                DefaultHttpClient().post(
+            val result = suspendableExpectingException<IllegalStateException> {
+                DefaultHttpClient().postSuspendable(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    retryWith = "unknown"
+                    retryWith = "unknown",
                 )
             }
 
@@ -514,11 +539,13 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = DefaultHttpClient().post(
-                url = URL("http://localhost:$port/test"),
-                requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                retryWith = testRetryBehaviorName
-            )
+            val result = runBlocking {
+                DefaultHttpClient().postSuspendable(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
+                    retryWith = testRetryBehaviorName
+                )
+            }
 
             assertThat(result.code).isEqualTo(200)
             assertThat(result.body).isEmpty()
@@ -543,11 +570,11 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = assertThrows<FailedAfterRetryException> {
-                DefaultHttpClient().post(
+            val result = suspendableExpectingException<FailedAfterRetryException> {
+                DefaultHttpClient().postSuspendable(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    retryWith = testRetryBehaviorName
+                    retryWith = testRetryBehaviorName,
                 )
             }
 
@@ -570,8 +597,8 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
             // when
-            val result = assertThrows<FailedAfterRetryException> {
-                DefaultHttpClient().executeRetryable(testRetryBehaviorName) {
+            val result = suspendableExpectingException<FailedAfterRetryException> {
+                DefaultHttpClient().executeRetryableSuspendable(testRetryBehaviorName) {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -592,8 +619,10 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
             // when
-            val result = DefaultHttpClient().executeRetryable(testRetryBehaviorName) {
-                expectedResult
+            val result = runBlocking {
+                DefaultHttpClient().executeRetryableSuspendable(testRetryBehaviorName) {
+                    expectedResult
+                }
             }
 
             assertThat(result).isEqualTo(expectedResult)
@@ -602,8 +631,8 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry can't be found`() {
             // when
-            val result = assertThrows<IllegalStateException> {
-                DefaultHttpClient().executeRetryable("test") {
+            val result = suspendableExpectingException<IllegalStateException> {
+                DefaultHttpClient().executeRetryableSuspendable("test") {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -614,8 +643,8 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the name of the RetryBehavior is blank`() {
             // when
-            val result = assertThrows<IllegalArgumentException> {
-                DefaultHttpClient().executeRetryable("       ") {
+            val result = suspendableExpectingException<IllegalArgumentException> {
+                DefaultHttpClient().executeRetryableSuspendable("       ") {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -626,8 +655,8 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the name of the RetryBehavior is empty`() {
             // when
-            val result = assertThrows<IllegalArgumentException> {
-                DefaultHttpClient().executeRetryable("") {
+            val result = suspendableExpectingException<IllegalArgumentException> {
+                DefaultHttpClient().executeRetryableSuspendable("") {
                     HttpResponse(200, EMPTY)
                 }
             }

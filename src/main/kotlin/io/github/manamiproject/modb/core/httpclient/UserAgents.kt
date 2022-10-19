@@ -6,9 +6,10 @@ import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import io.github.manamiproject.modb.core.httpclient.BrowserType.MOBILE
 import io.github.manamiproject.modb.core.httpclient.UserAgents.init
-import io.github.manamiproject.modb.core.loadResource
+import io.github.manamiproject.modb.core.loadResourceSuspendable
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.resourceFileExists
+import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 import kotlin.io.path.readLines
 
@@ -180,7 +181,7 @@ public object UserAgents {
 
         if (resourceFileExists(fileName)) {
             log.debug { "Found the file [$fileName] in classpath" }
-            return loadResource(fileName).split('\n').toSet()
+            return runBlocking { loadResourceSuspendable(fileName).split('\n').toSet() }
         }
 
         log.debug { "Checking for property [$propertyName]" }

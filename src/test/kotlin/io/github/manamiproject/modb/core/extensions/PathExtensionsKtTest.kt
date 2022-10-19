@@ -1,10 +1,11 @@
 package io.github.manamiproject.modb.core.extensions
 
+import io.github.manamiproject.modb.core.suspendableExpectingException
 import io.github.manamiproject.modb.test.tempDirectory
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
@@ -242,8 +243,8 @@ internal class PathExtensionsKtTest {
         fun `throws exception if the path is not a regular file`() {
             tempDirectory {
                 // when
-                val result = assertThrows<NoSuchFileException> {
-                    tempDir.readFile()
+                val result = suspendableExpectingException<NoSuchFileException> {
+                    tempDir.readFileSuspendable()
                 }
 
                 // then
@@ -261,7 +262,7 @@ internal class PathExtensionsKtTest {
                 }
 
                 // when
-                val result = file.readFile()
+                val result = runBlocking { file.readFileSuspendable() }
 
                 // then
                 assertThat(result).isEqualTo("""This file
@@ -280,7 +281,7 @@ carriage return line feed [CRLF]""")
                 }
 
                 // when
-                val result = file.readFile()
+                val result = runBlocking { file.readFileSuspendable() }
 
                 // then
                 assertThat(result).isEqualTo("""This file
@@ -308,7 +309,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcFile.copyTo(target)
+                val result = runBlocking { srcFile.copyToSuspedable(target) }
 
                 // then
                 assertThat(tempDir.resolve("target").resolve(fileName)).exists()
@@ -332,7 +333,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcFile.copyTo(target.resolve(expectedFileName))
+                val result = runBlocking { srcFile.copyToSuspedable(target.resolve(expectedFileName)) }
 
                 // then
                 assertThat(target.resolve(expectedFileName)).exists()
@@ -356,8 +357,8 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = assertThrows<FileAlreadyExistsException> {
-                    srcFile.copyTo(target)
+                val result = suspendableExpectingException<FileAlreadyExistsException> {
+                    srcFile.copyToSuspedable(target)
                 }
 
                 // then
@@ -378,7 +379,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcDirectory.copyTo(targetDirectory)
+                val result = runBlocking { srcDirectory.copyToSuspedable(targetDirectory) }
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
@@ -400,7 +401,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcDirectory.copyTo(targetDirectory.resolve("src"))
+                val result = runBlocking { srcDirectory.copyToSuspedable(targetDirectory.resolve("src")) }
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
@@ -423,8 +424,8 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = assertThrows<FileAlreadyExistsException> {
-                    srcDirectory.copyTo(targetDirectory)
+                val result = suspendableExpectingException<FileAlreadyExistsException> {
+                    srcDirectory.copyToSuspedable(targetDirectory)
                 }
 
                 // then

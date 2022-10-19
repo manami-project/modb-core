@@ -3,11 +3,10 @@ package io.github.manamiproject.modb.core.converter
 import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.extensions.*
 import io.github.manamiproject.modb.core.models.Anime
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.nio.file.Path
+import kotlin.coroutines.coroutineContext
 import kotlin.io.path.useDirectoryEntries
 
 /**
@@ -32,7 +31,6 @@ public class DefaultPathConverter(
 
     override suspend fun convertSuspendable(path: Path): List<Anime> {
         return withContext(IO) {
-            println(this.coroutineContext)
             when{
                 path.regularFileExists() -> convertSingleFile(path)
                 path.directoryExists() -> convertAllFilesInADirectory(path)
@@ -42,14 +40,19 @@ public class DefaultPathConverter(
     }
 
     private suspend fun convertSingleFile(file: RegularFile) = withContext(IO) {
-        listOf(animeConverter.convert(file.readFile()))
+        yield()
+        listOf(animeConverter.convertSuspendable(file.readFileSuspendable()))
     }
 
     private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(IO) {
         path.useDirectoryEntries { pathSequence ->
             pathSequence.filter { it.regularFileExists() }
                 .filter { it.fileSuffix() == fileSuffix }
-                .map { convert(it) }
+                .map {
+                    runBlocking {
+                        convertSingleFile(it)
+                    }
+                }
                 .flatten()
                 .toList()
         }
