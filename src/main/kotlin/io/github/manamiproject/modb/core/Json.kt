@@ -42,7 +42,6 @@ public object Json {
         "com.squareup.moshi.adapter"
     )
     )
-    @OptIn(ExperimentalStdlibApi::class)
     public inline fun <reified T> parseJson(json: String): T? = runBlocking {
         return@runBlocking parseJsonSuspendable(json)
     }
@@ -51,7 +50,7 @@ public object Json {
      * Parse a [String] into an object.
      *
      * **WARNING** [Collection]s of a non-nullable type can still contain null.
-     * @since 7.3.0
+     * @since 8.0.0
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
      */
@@ -75,7 +74,6 @@ public object Json {
         "com.squareup.moshi.adapter"
     )
     )
-    @OptIn(ExperimentalStdlibApi::class)
     public inline fun <reified T> parseJson(json: InputStream): T? = runBlocking {
         return@runBlocking parseJsonSuspendable(json)
     }
@@ -84,7 +82,7 @@ public object Json {
      * Parse an [InputStream] into an object.
      *
      * **WARNING** [Collection]s of a non-nullable type can still contain null.
-     * @since 7.3.0
+     * @since 8.0.0
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
@@ -100,7 +98,6 @@ public object Json {
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated("Use coroutine")
     public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String = runBlocking {
         return@runBlocking toJsonSuspendable(obj, *options)
@@ -108,12 +105,11 @@ public object Json {
 
     /**
      * Serialize any object to JSON.
-     * @since 7.3.0
+     * @since 8.0.0
      * @param obj Any object that is supposed to be serialized to JSON.
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    @OptIn(ExperimentalStdlibApi::class)
     public suspend fun toJsonSuspendable(obj: Any, vararg options: JsonSerializationOptions): String = withContext(Default) {
         return@withContext configureJsopnAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
     }

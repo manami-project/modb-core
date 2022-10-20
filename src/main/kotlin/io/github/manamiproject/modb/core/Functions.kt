@@ -53,7 +53,7 @@ public fun loadResource(path: String): String = runBlocking {
  * val content = testResource("dir/subdir/file.txt")
  * ```
  *
- * @since 7.3.0
+ * @since 8.0.0
  * @return Content of a file as [String]
  * @throws IllegalArgumentException If the given path is blank.
  * @throws IllegalStateException If the given path does not exist.

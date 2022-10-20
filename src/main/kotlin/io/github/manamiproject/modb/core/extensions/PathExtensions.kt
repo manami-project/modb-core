@@ -101,7 +101,7 @@ public fun Path.readFile(charset: Charset = UTF_8): String = runBlocking {
 
 /**
  * Read the content of a file to a [String]
- * @since 7.3.0
+ * @since 8.0.0
  * @param charset The charset to use for decoding. **Default** is [UTF_8]
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
@@ -135,7 +135,7 @@ public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path = run
 /**
  * Can copy file to file, directory to directory or a file into a directory.
  * Does not copy the content of directory.
- * @since 7.3.0
+ * @since 8.0.0
  * @param target Target to copy the given [Path] to
  * @param copyOptions Specifying how the copy should be done
  * @return The target as [Path] object

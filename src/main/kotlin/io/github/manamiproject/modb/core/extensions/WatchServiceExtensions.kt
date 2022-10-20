@@ -19,7 +19,7 @@ public fun WatchService.takeOrNull(): WatchKey? = runBlocking {
 
 /**
  * Retrieve [WatchKey]s and prevent [ClosedWatchServiceException] to be thrown. Instead of throwing the exception `null` is being returned.
- * @since 7.3.0
+ * @since 8.0.0
  * @return Either a [WatchKey] or `null`
  */
 public suspend fun WatchService.takeOrNullSuspendable(): WatchKey? {

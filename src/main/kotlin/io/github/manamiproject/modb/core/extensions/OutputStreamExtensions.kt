@@ -16,7 +16,7 @@ public fun OutputStream.write(body: String): OutputStream = runBlocking {
 
 /**
  * Writes a [String] to an [OutputStream] and flushes it.
- * @since 7.3.0
+ * @since 8.0.0
  * @return The same [OutputStream] which has been used to write the [String]
  */
 public suspend fun OutputStream.writeSuspendable(body: String): OutputStream {

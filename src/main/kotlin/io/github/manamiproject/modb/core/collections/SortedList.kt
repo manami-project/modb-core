@@ -11,7 +11,7 @@ import java.util.function.Predicate
  */
 public class SortedList<T: Comparable<T>>(
         private val list: MutableList<T> = mutableListOf(),
-        private val comparator: Comparator<T> = Comparator { o1, o2 -> o1.compareTo(o2) }
+        private val comparator: Comparator<T> = Comparator { o1, o2 -> o1.compareTo(o2) },
 ) : MutableList<T> by list {
 
     /**
