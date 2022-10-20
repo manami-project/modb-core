@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.httpclient.retry
 
+import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -7,29 +8,59 @@ import org.junit.jupiter.api.Test
 internal class RetryBehaviorKtTest {
 
     @Nested
-    inner class AddExecuteBeforeRetryPredicateTests {
+    inner class AddCaseTests {
 
         @Test
-        fun `returns true if a new executeBeforeRetryPredicate has been added successfully`() {
+        fun `adding duplicates is possible`() {
             // given
-            val retryBehavior = RetryBehavior(retryOnResponsePredicate = { false })
+            val retryBehavior = RetryBehavior().apply {
+                addCase(
+                    retryIf = { httpResponse -> httpResponse.code == 403 },
+                    executeBeforeRetry = { println("this statement has bee executed before the retry") }
+                )
+            }
 
             // when
-            val result = retryBehavior.addExecuteBeforeRetryPredicate(403) { println("test") }
+            retryBehavior.addCase(
+                retryIf = { httpResponse -> httpResponse.code == 403 },
+                executeBeforeRetry = { println("this statement has bee executed before the retry") }
+            )
+
+            // then
+            assertThat(retryBehavior.cases.size).isEqualTo(2)
+        }
+
+        @Test
+        fun `returns true when adding a new case`() {
+            // given
+            val retryBehavior = RetryBehavior()
+
+            // when
+            val result = retryBehavior.addCase(
+                retryIf = { httpResponse: HttpResponse -> httpResponse.code == 403 },
+                executeBeforeRetry = { }
+            )
 
             // then
             assertThat(result).isTrue()
         }
 
         @Test
-        fun `returns false if an executeBeforeRetryPredicate wasn't added, because an entry for the given HttpResponseCode already exists`() {
+        fun `returns false if case wasn't added, because a matching entry already exists`() {
             // given
-            val retryBehavior = RetryBehavior(retryOnResponsePredicate = { false }).apply {
-                addExecuteBeforeRetryPredicate(403) { println("test") }
+            val retryIf = { httpResponse: HttpResponse -> httpResponse.code == 403 }
+            val retryBehavior = RetryBehavior().apply {
+                addCase(
+                    retryIf = retryIf,
+                    executeBeforeRetry = { println("this statement has bee executed before the retry") }
+                )
             }
 
             // when
-            val result = retryBehavior.addExecuteBeforeRetryPredicate(403) { println("other") }
+            val result = retryBehavior.addCase(
+                retryIf = retryIf,
+                executeBeforeRetry = { }
+            )
 
             // then
             assertThat(result).isFalse()

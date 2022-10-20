@@ -20,9 +20,7 @@ internal class RetryableRegistryTest {
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             // when
             val result = RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
@@ -37,9 +35,7 @@ internal class RetryableRegistryTest {
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -59,9 +55,7 @@ internal class RetryableRegistryTest {
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -90,9 +84,7 @@ internal class RetryableRegistryTest {
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -119,7 +111,7 @@ internal class RetryableRegistryTest {
         @Test
         fun `successfully removed all entries`() {
             // given
-            val retryBehavior = RetryBehavior(retryOnResponsePredicate = { false })
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register("1", retryBehavior)
             RetryableRegistry.register("2", retryBehavior)

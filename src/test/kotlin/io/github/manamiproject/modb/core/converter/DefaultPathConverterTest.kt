@@ -1,9 +1,9 @@
 package io.github.manamiproject.modb.core.converter
 
 import io.github.manamiproject.modb.core.TestAnimeConverter
-import io.github.manamiproject.modb.core.suspendableExpectingException
 import io.github.manamiproject.modb.core.extensions.writeToFile
 import io.github.manamiproject.modb.core.models.Anime
+import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import io.github.manamiproject.modb.test.tempDirectory
 import kotlinx.coroutines.*
@@ -24,7 +24,7 @@ internal class DefaultPathConverterTest {
             val converter = DefaultPathConverter(specificTestConverter, "txt")
 
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 converter.convertSuspendable(file)
             }
 

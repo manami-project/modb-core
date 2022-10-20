@@ -9,13 +9,13 @@ import java.lang.Thread.*
  *
  * # Trigger
  * A retry will always execute the request first.
- * If this request failed based on the return value of [RetryBehavior.retryOnResponsePredicate] then the request will be retried the number of times
+ * If this request failed based on one of the cases of the [RetryBehavior] then the request will be retried the number of times
  * defined in [RetryBehavior.maxAttempts]. So for the worst case a request will be executed initial request + [RetryBehavior.maxAttempts] times.
  * **Example:** if [RetryBehavior.maxAttempts] is set to `3` worst case would be `4` executions in total.
  *
  * # Retry
  * + Waits for the number of milliseconds defined in [RetryBehavior.waitDuration]
- * + Checks if some other code has to be executed first based on the response code.
+ * + Checks if some other code has to be executed before performing the retry.
  * + Executes request again
  * @since 1.0.0
  * @param config Configuration which individualizes the retry behavior
@@ -33,16 +33,17 @@ public class Retryable(private val config: RetryBehavior) {
         var response = request.invoke()
         var attempt = 0
 
-        while (attempt < config.maxAttempts && config.retryOnResponsePredicate.invoke(response)) {
+        while (attempt < config.maxAttempts && config.cases.keys.any { it.invoke(response) }) {
             log.info { "Performing retry [${attempt+1}/${config.maxAttempts}]" }
 
-            sleep(config.waitDuration.invoke())
-            config.executeBeforeRetry[response.code]?.invoke()
-            response = request.invoke()
+            sleep(config.waitDuration.invoke().inWholeMilliseconds)
+            val currentCase = config.cases.keys.find { it.invoke(response) }
+            config.cases[currentCase]?.invoke() // invoke executeBeforeRetry
+            response = request.invoke() // perform retry
             attempt++
         }
 
-        if (config.retryOnResponsePredicate.invoke(response)) {
+        if (config.cases.keys.any { it.invoke(response) }) {
             throw FailedAfterRetryException("Execution failed despite retry attempts.")
         }
 
