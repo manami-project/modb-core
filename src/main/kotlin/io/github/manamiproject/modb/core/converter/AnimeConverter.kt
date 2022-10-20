@@ -19,7 +19,7 @@ public interface AnimeConverter {
 
     /**
      * Converts a [String] into an [Anime].
-     * @since 7.3.0
+     * @since 8.0.0
      * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */

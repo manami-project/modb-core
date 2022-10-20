@@ -28,7 +28,7 @@ public interface HttpClient {
 
     /**
      * Performs a HTTP POST request with a [RequestBody]
-     * @since 7.3.0
+     * @since 8.0.0
      * @param url The actual [URL] that you want to call
      * @param requestBody Contains the the payload as well as the media type which will be automatically applied as content-type header
      * @param headers Optional header parameters. Entries of this map will either add or override header parameters.
@@ -56,7 +56,7 @@ public interface HttpClient {
 
     /**
      * Performs a HTTP GET request.
-     * @since 7.3.0
+     * @since 8.0.0
      * @param url The actual URL that you want to call
      * @param headers Optional header parameters. Entries of this map will either add or override header parameters.
      * The key is the name of the header parameter. The value is a list of values for the respective parameters. The values will be joined together.
@@ -83,7 +83,7 @@ public interface HttpClient {
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
      * In comparison to [post] or [get] you can have multiple statements within the retry context.
-     * @since 7.3.0
+     * @since 8.0.0
      * @param retryWith Name of the [Retryable] which should be used for this request. The name must not be blank.
      * @param func Function which performs a request and returns an [HttpResponse]
      * @return The actual HTTP response from a successful attempt

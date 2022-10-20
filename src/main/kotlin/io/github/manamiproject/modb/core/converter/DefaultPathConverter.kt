@@ -6,7 +6,6 @@ import io.github.manamiproject.modb.core.models.Anime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.nio.file.Path
-import kotlin.coroutines.coroutineContext
 import kotlin.io.path.useDirectoryEntries
 
 /**
@@ -17,7 +16,7 @@ import kotlin.io.path.useDirectoryEntries
  */
 public class DefaultPathConverter(
     private val animeConverter: AnimeConverter,
-    private val fileSuffix: FileSuffix
+    private val fileSuffix: FileSuffix,
 ) : PathConverter {
 
     @Deprecated("Use coroutines",
@@ -40,7 +39,6 @@ public class DefaultPathConverter(
     }
 
     private suspend fun convertSingleFile(file: RegularFile) = withContext(IO) {
-        yield()
         listOf(animeConverter.convertSuspendable(file.readFileSuspendable()))
     }
 
@@ -50,6 +48,7 @@ public class DefaultPathConverter(
                 .filter { it.fileSuffix() == fileSuffix }
                 .map {
                     runBlocking {
+                        yield()
                         convertSingleFile(it)
                     }
                 }

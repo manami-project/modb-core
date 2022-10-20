@@ -26,7 +26,6 @@ public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
     val list = this
 
     return withContext(Default) {
-
         if (list.isEmpty() || list.size == 1) {
             return@withContext list
         }

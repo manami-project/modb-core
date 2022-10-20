@@ -11,5 +11,5 @@ public enum class HttpProtocol {
     /**
      * @since 7.2.1
      */
-    HTTP_2
+    HTTP_2,
 }
