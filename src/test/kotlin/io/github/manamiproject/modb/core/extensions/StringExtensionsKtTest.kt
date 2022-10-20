@@ -1,10 +1,7 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -17,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
+import java.nio.file.WatchEvent
 import java.util.concurrent.TimeUnit.MINUTES
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
@@ -106,48 +104,6 @@ internal class StringExtensionsKtTest {
                 // then
                 assertThat(file).exists()
                 assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
-            }
-        }
-
-        @Test
-        @Timeout(value = 1, unit = MINUTES)
-        @DisabledOnOs(MAC, disabledReason = "The FS watch service of macos takes way too long to register that there is a new file.")
-        fun `successfully write string using lock file`() {
-            tempDirectory {
-                // given
-                val watchService = FileSystems.getDefault().newWatchService()
-                tempDir.register(watchService, ENTRY_CREATE)
-
-                val string = "Some content\nfor a test file."
-                val file = tempDir.resolve("test.txt")
-                var isLockFileCreated = false
-
-                runBlocking {
-                    val watchServiceJob = launch {
-                        withTimeout(Duration.parse("1m")) {
-                            var key = watchService.takeOrNullSuspendable()
-
-                            while (key != null && isActive && !isLockFileCreated) {
-                                val events = key.pollEvents()
-                                events.find { it.kind() == ENTRY_CREATE && (it.context() as Path).fileName.toString().endsWith(LOCK_FILE_SUFFIX)}?.let { isLockFileCreated = true }
-
-                                key.reset()
-                                key = watchService.takeOrNullSuspendable()
-                            }
-                        }
-                    }
-
-
-                    // when
-                    string.writeToFile(file, true)
-                    watchServiceJob.join()
-                }
-
-                // then
-                assertThat(file).exists()
-                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
-                assertThat(isLockFileCreated).isTrue()
-                assertThat(file.changeSuffix("lck")).doesNotExist()
             }
         }
     }
