@@ -7,9 +7,9 @@ import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.FailedAfterRetryException
 import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
-import io.github.manamiproject.modb.core.suspendableExpectingException
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
+import io.github.manamiproject.modb.test.exceptionExpected
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -179,7 +179,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry behavior can't be found`() {
             // when
-            val result = suspendableExpectingException<IllegalStateException> {
+            val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient().getSuspedable(
                     url = URL("http://localhost:$port/test"),
                     retryWith = "unknown",
@@ -194,9 +194,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -224,9 +222,9 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { true }
-            )
+            val retryBehavior = RetryBehavior().apply {
+                addCase { true }
+            }
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -238,7 +236,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = suspendableExpectingException<FailedAfterRetryException> {
+            val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient().getSuspedable(
                     url = URL("http://localhost:$port/test"),
                     retryWith = testRetryBehaviorName
@@ -446,7 +444,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 client.postSuspendable(
                         url = URL("http://localhost:$port/test"),
                         requestBody = requestBody,
@@ -467,7 +465,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 client.postSuspendable(
                     url = URL("http://localhost:$port/test"),
                     requestBody = requestBody,
@@ -509,7 +507,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry behavior can't be found`() {
             // when
-            val result = suspendableExpectingException<IllegalStateException> {
+            val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient().postSuspendable(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
@@ -525,9 +523,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -556,9 +552,9 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { true }
-            )
+            val retryBehavior = RetryBehavior().apply {
+                addCase { true }
+            }
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -570,7 +566,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             )
 
             // when
-            val result = suspendableExpectingException<FailedAfterRetryException> {
+            val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient().postSuspendable(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
@@ -590,14 +586,14 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // given
             val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { true }
-            )
+            val retryBehavior = RetryBehavior().apply {
+                addCase { true }
+            }
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
             // when
-            val result = suspendableExpectingException<FailedAfterRetryException> {
+            val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient().executeRetryableSuspendable(testRetryBehaviorName) {
                     HttpResponse(200, EMPTY)
                 }
@@ -612,9 +608,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val testRetryBehaviorName = "test"
             val expectedResult = HttpResponse(200, EMPTY)
 
-            val retryBehavior = RetryBehavior(
-                retryOnResponsePredicate = { false }
-            )
+            val retryBehavior = RetryBehavior()
 
             RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
@@ -631,7 +625,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the retry can't be found`() {
             // when
-            val result = suspendableExpectingException<IllegalStateException> {
+            val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient().executeRetryableSuspendable("test") {
                     HttpResponse(200, EMPTY)
                 }
@@ -643,7 +637,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the name of the RetryBehavior is blank`() {
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 DefaultHttpClient().executeRetryableSuspendable("       ") {
                     HttpResponse(200, EMPTY)
                 }
@@ -655,7 +649,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the name of the RetryBehavior is empty`() {
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 DefaultHttpClient().executeRetryableSuspendable("") {
                     HttpResponse(200, EMPTY)
                 }

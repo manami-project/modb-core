@@ -10,6 +10,7 @@ import io.github.manamiproject.modb.core.models.AnimeSeason
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.SUMMER
 import io.github.manamiproject.modb.core.models.Duration
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.MINUTES
+import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.loadTestResource
 import io.github.manamiproject.modb.test.testResource
 import kotlinx.coroutines.runBlocking
@@ -126,7 +127,7 @@ internal class JsonKtTest {
             """.trimIndent()
 
             // when
-            val result = suspendableExpectingException<JsonDataException> {
+            val result = exceptionExpected<JsonDataException> {
                 Json.parseJsonSuspendable<NullableTestClass>(json)?.copy()
             }
 

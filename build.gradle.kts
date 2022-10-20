@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 
     testImplementation("ch.qos.logback:logback-classic:1.4.4")
-    testImplementation("io.github.manamiproject:modb-test:1.3.10")
+    testImplementation("io.github.manamiproject:modb-test:1.4.0a")
 }
 
 kotlin {

@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core
 
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
+import io.github.manamiproject.modb.test.exceptionExpected
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -54,7 +55,7 @@ internal class FunctionsKtTest {
             val path = "non-existent-file.txt"
 
             // when
-            val result = suspendableExpectingException<IllegalStateException> {
+            val result = exceptionExpected<IllegalStateException> {
                 loadResourceSuspendable(path)
             }
 
@@ -66,7 +67,7 @@ internal class FunctionsKtTest {
         @ValueSource(strings = ["", "   "])
         fun `throws an exception if the the given path is blank or empty`(value: String) {
             // when
-            val result = suspendableExpectingException<IllegalArgumentException> {
+            val result = exceptionExpected<IllegalArgumentException> {
                 loadResourceSuspendable(value)
             }
 

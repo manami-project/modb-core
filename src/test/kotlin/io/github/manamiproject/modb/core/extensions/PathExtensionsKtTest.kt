@@ -1,6 +1,6 @@
 package io.github.manamiproject.modb.core.extensions
 
-import io.github.manamiproject.modb.core.suspendableExpectingException
+import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.tempDirectory
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -243,7 +243,7 @@ internal class PathExtensionsKtTest {
         fun `throws exception if the path is not a regular file`() {
             tempDirectory {
                 // when
-                val result = suspendableExpectingException<NoSuchFileException> {
+                val result = exceptionExpected<NoSuchFileException> {
                     tempDir.readFileSuspendable()
                 }
 
@@ -357,7 +357,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = suspendableExpectingException<FileAlreadyExistsException> {
+                val result = exceptionExpected<FileAlreadyExistsException> {
                     srcFile.copyToSuspedable(target)
                 }
 
@@ -424,7 +424,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = suspendableExpectingException<FileAlreadyExistsException> {
+                val result = exceptionExpected<FileAlreadyExistsException> {
                     srcDirectory.copyToSuspedable(targetDirectory)
                 }
 
