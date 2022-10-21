@@ -1,8 +1,8 @@
 package io.github.manamiproject.modb.core
 
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import io.github.manamiproject.modb.core.extensions.regularFileExists
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -58,7 +58,7 @@ public fun loadResource(path: String): String = runBlocking {
  * @throws IllegalArgumentException If the given path is blank.
  * @throws IllegalStateException If the given path does not exist.
  */
-public suspend fun loadResourceSuspendable(path: String): String = withContext(IO) {
+public suspend fun loadResourceSuspendable(path: String): String = withContext(LIMITED_FS) {
     require(path.isNotBlank()) { "Given path must not be blank" }
 
     return@withContext ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()

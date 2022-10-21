@@ -5,8 +5,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_PRETTY_PRINT
 import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SERIALIZE_NULL
 import io.github.manamiproject.modb.core.collections.SortedList
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.Dispatchers.IO
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.InputStream
@@ -55,7 +55,7 @@ public object Json {
      * @return Deserialzed JSON as object of given type [T]
      */
     @OptIn(ExperimentalStdlibApi::class)
-    public suspend inline fun <reified T> parseJsonSuspendable(json: String): T? = withContext(Default) {
+    public suspend inline fun <reified T> parseJsonSuspendable(json: String): T? = withContext(LIMITED_CPU) {
         return@withContext moshi.adapter<T>().nullSafe().fromJson(json)
     }
 
@@ -87,7 +87,7 @@ public object Json {
      * @return Deserialized JSON as object of given type [T]
      */
     @OptIn(ExperimentalStdlibApi::class)
-    public suspend inline fun <reified T> parseJsonSuspendable(json: InputStream): T? = withContext(IO) {
+    public suspend inline fun <reified T> parseJsonSuspendable(json: InputStream): T? = withContext(LIMITED_FS) {
         return@withContext moshi.adapter<T>().fromJson(json.bufferedReader().readText())
     }
 
@@ -110,12 +110,12 @@ public object Json {
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    public suspend fun toJsonSuspendable(obj: Any, vararg options: JsonSerializationOptions): String = withContext(Default) {
-        return@withContext configureJsopnAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
+    public suspend fun toJsonSuspendable(obj: Any, vararg options: JsonSerializationOptions): String = withContext(LIMITED_CPU) {
+        return@withContext configureJsonAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun configureJsopnAdapter(settings: JsonSerializationSettings): JsonAdapter<Any> {
+    private fun configureJsonAdapter(settings: JsonSerializationSettings): JsonAdapter<Any> {
         var jsonAdapter = moshi.adapter<Any>()
 
         if (settings.serializeNullActivated) {

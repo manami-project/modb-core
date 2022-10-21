@@ -1,15 +1,16 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.config.FileSuffix
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
+import kotlin.io.path.createFile
 import kotlin.io.path.exists
 import kotlin.io.path.readLines
-import kotlin.io.path.createFile
 import kotlin.io.path.Path as PathCreator
 
 /**
@@ -106,7 +107,7 @@ public fun Path.readFile(charset: Charset = UTF_8): String = runBlocking {
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = withContext(IO) {
+public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
     if (regularFileExists()) {
         readLines(charset).joinToString("\n")
     } else {

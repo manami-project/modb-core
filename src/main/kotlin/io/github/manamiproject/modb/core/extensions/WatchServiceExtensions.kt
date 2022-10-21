@@ -1,8 +1,7 @@
 package io.github.manamiproject.modb.core.extensions
 
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
+import kotlinx.coroutines.*
 import java.nio.file.ClosedWatchServiceException
 import java.nio.file.WatchKey
 import java.nio.file.WatchService
@@ -13,8 +12,12 @@ import java.nio.file.WatchService
  * @return Either a [WatchKey] or `null`
  */
 @Deprecated("Use coroutines", ReplaceWith("runBlocking { takeOrNullSuspendable() }", "kotlinx.coroutines.runBlocking"))
-public fun WatchService.takeOrNull(): WatchKey? = runBlocking {
-    takeOrNullSuspendable()
+public fun WatchService.takeOrNull(): WatchKey? {
+    return try {
+        this.take()
+    } catch (e: ClosedWatchServiceException) {
+        null
+    }
 }
 
 /**
@@ -22,10 +25,16 @@ public fun WatchService.takeOrNull(): WatchKey? = runBlocking {
  * @since 8.0.0
  * @return Either a [WatchKey] or `null`
  */
-public suspend fun WatchService.takeOrNullSuspendable(): WatchKey? {
-    return withContext(IO) {
-         try {
-            take()
+public suspend fun WatchService.longPoll(): WatchKey? { // FIXME: create custom key in order to prevent nullable return value?
+    val watchService = this
+    return withContext(LIMITED_FS) {
+        try {
+            var key: WatchKey? = null
+            while (key == null && isActive) {
+                yield()
+                key = watchService.poll()
+            }
+            key
         } catch (e: ClosedWatchServiceException) {
             null
         }

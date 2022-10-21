@@ -1,6 +1,6 @@
 package io.github.manamiproject.modb.core.extensions
 
-import kotlinx.coroutines.Dispatchers.Default
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.security.SecureRandom
@@ -25,7 +25,7 @@ public fun <T> List<T>.createShuffledList(): List<T> = runBlocking {
 public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
     val list = this
 
-    return withContext(Default) {
+    return withContext(LIMITED_CPU) {
         if (list.isEmpty() || list.size == 1) {
             return@withContext list
         }
