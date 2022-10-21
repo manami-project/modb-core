@@ -44,16 +44,16 @@ public class DefaultPathConverter(
 
     private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(IO) {
         path.useDirectoryEntries { pathSequence ->
-            pathSequence.filter { it.regularFileExists() }
+            val jobs = pathSequence.filter { it.regularFileExists() }
                 .filter { it.fileSuffix() == fileSuffix }
+                .toList()
                 .map {
-                    runBlocking {
-                        yield()
+                    async {
                         convertSingleFile(it)
                     }
                 }
-                .flatten()
-                .toList()
+
+            awaitAll(*jobs.toTypedArray()).flatten().toList()
         }
     }
 }
