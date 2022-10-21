@@ -1,11 +1,11 @@
 package io.github.manamiproject.modb.core.httpclient
 
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.*
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.Headers.Companion.toHeaders
@@ -50,7 +50,7 @@ public class DefaultHttpClient(
         requestBody: RequestBody,
         headers: Map<String, Collection<String>>,
         retryWith: String,
-    ): HttpResponse = withContext(IO) {
+    ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
@@ -85,7 +85,7 @@ public class DefaultHttpClient(
         url: URL,
         headers: Map<String, Collection<String>>,
         retryWith: String
-    ): HttpResponse = withContext(IO) {
+    ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
@@ -112,7 +112,7 @@ public class DefaultHttpClient(
         executeRetryableSuspendable(retryWith, func)
     }
 
-    override suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse = withContext(IO) {
+    override suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
         return@withContext RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
     }
