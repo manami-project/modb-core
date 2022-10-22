@@ -1,8 +1,9 @@
 package io.github.manamiproject.modb.core.httpclient.retry
 
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
-import java.lang.Thread.*
+import kotlinx.coroutines.*
 
 /**
  * Handles individual retry behavior for a HTTP request.
@@ -29,14 +30,34 @@ public class Retryable(private val config: RetryBehavior) {
      * @param request Lambda which performs a HTTP request returning a [HttpResponse]
      * @return The actual [HttpResponse] of the request if the request was successful
      */
+    @Deprecated("Use coroutine instead", ReplaceWith(
+        "runBlocking { executeSuspendable { request.invoke() } }",
+        "kotlinx.coroutines.runBlocking"
+        )
+    )
     public fun execute(request: () -> HttpResponse): HttpResponse {
+        return runBlocking {
+            executeSuspendable {
+                request.invoke()
+            }
+        }
+    }
+
+    /**
+     * Executes a request and retries it if necessary.
+     * @since 8.0.0
+     * @param request Lambda which performs a HTTP request returning a [HttpResponse]
+     * @return The actual [HttpResponse] of the request if the request was successful
+     */
+    public suspend fun executeSuspendable(request: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         var response = request.invoke()
         var attempt = 0
 
-        while (attempt < config.maxAttempts && config.cases.keys.any { it.invoke(response) }) {
+        while (attempt < config.maxAttempts && isActive && config.cases.keys.any { it.invoke(response) }) {
             log.info { "Performing retry [${attempt+1}/${config.maxAttempts}]" }
 
-            sleep(config.waitDuration.invoke().inWholeMilliseconds)
+            delay(config.waitDuration.invoke().inWholeMilliseconds) // FIXME: exclude from test context
+
             val currentCase = config.cases.keys.find { it.invoke(response) }
             config.cases[currentCase]?.invoke() // invoke executeBeforeRetry
             response = request.invoke() // perform retry
@@ -47,7 +68,7 @@ public class Retryable(private val config: RetryBehavior) {
             throw FailedAfterRetryException("Execution failed despite retry attempts.")
         }
 
-        return response
+        return@withContext response
     }
 
     private companion object {
