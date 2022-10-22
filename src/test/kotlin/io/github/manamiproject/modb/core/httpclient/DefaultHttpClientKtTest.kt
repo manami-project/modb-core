@@ -10,12 +10,20 @@ import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
 import io.github.manamiproject.modb.test.exceptionExpected
+import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import kotlinx.coroutines.runBlocking
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Protocol.HTTP_2
+import okhttp3.Request
+import okhttp3.Response
+import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.net.SocketTimeoutException
 import java.net.URL
 
 internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by WireMockServerCreator() {
@@ -269,6 +277,56 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             }
 
             assertThat(result).hasMessage("Execution failed despite retry attempts.")
+        }
+
+        @Test
+        fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
+            // given
+            val url = URL("http://localhost:$port/test")
+
+            val testCall = object: Call {
+                override fun cancel() = shouldNotBeInvoked()
+                override fun clone(): Call = shouldNotBeInvoked()
+                override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                override fun request(): Request = shouldNotBeInvoked()
+                override fun timeout(): Timeout = shouldNotBeInvoked()
+                override fun execute(): Response = Response.Builder()
+                    .protocol(HTTP_2)
+                    .message(EMPTY)
+                    .request(
+                        Request.Builder()
+                            .url(url)
+                            .build()
+                    )
+                    .code(200)
+                    .build()
+            }
+
+            var invocations = 0
+            val testOkHttpClient = Call.Factory {
+                invocations++
+
+                return@Factory when(invocations) {
+                    1 -> throw SocketTimeoutException("invoked by test")
+                    2 -> testCall
+                    else -> shouldNotBeInvoked()
+                }
+            }
+
+            // when
+            val result = runBlocking {
+                DefaultHttpClient(
+                    isTestContext = true,
+                    okhttpClient = testOkHttpClient,
+                ).getSuspedable(
+                    url = url,
+                )
+            }
+
+            assertThat(result.code).isEqualTo(200)
+            assertThat(result.body).isEmpty()
         }
     }
 
@@ -620,6 +678,57 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             }
 
             assertThat(result).hasMessage("Execution failed despite retry attempts.")
+        }
+
+        @Test
+        fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
+            // given
+            val url = URL("http://localhost:$port/test")
+
+            val testCall = object: Call {
+                override fun cancel() = shouldNotBeInvoked()
+                override fun clone(): Call = shouldNotBeInvoked()
+                override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                override fun request(): Request = shouldNotBeInvoked()
+                override fun timeout(): Timeout = shouldNotBeInvoked()
+                override fun execute(): Response = Response.Builder()
+                    .protocol(HTTP_2)
+                    .message(EMPTY)
+                    .request(
+                        Request.Builder()
+                            .url(url)
+                            .build()
+                    )
+                    .code(200)
+                    .build()
+            }
+
+            var invocations = 0
+            val testOkHttpClient = Call.Factory {
+                invocations++
+
+                return@Factory when(invocations) {
+                    1 -> throw SocketTimeoutException("invoked by test")
+                    2 -> testCall
+                    else -> shouldNotBeInvoked()
+                }
+            }
+
+            // when
+            val result = runBlocking {
+                DefaultHttpClient(
+                    isTestContext = true,
+                    okhttpClient = testOkHttpClient,
+                ).postSuspendable(
+                    url = url,
+                    requestBody = RequestBody("application/json", "{}"),
+                )
+            }
+
+            assertThat(result.code).isEqualTo(200)
+            assertThat(result.body).isEmpty()
         }
     }
 
