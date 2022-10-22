@@ -90,5 +90,6 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    public suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse
+    @Deprecated("Will possibly be removed")
+    public suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse // FIXME: is this still needed?
 }
