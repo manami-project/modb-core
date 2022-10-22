@@ -6,6 +6,7 @@ import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createH
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.*
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.Headers.Companion.toHeaders
@@ -16,9 +17,10 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.ByteString.Companion.encodeUtf8
-import java.lang.Thread.sleep
 import java.net.*
 import java.net.Proxy.NO_PROXY
+import kotlin.time.DurationUnit.SECONDS
+import kotlin.time.toDuration
 
 /**
  * @since 1.0.0
@@ -28,6 +30,7 @@ import java.net.Proxy.NO_PROXY
 public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
     private val protocols: List<HttpProtocol> = listOf(HTTP_2, HTTP_1_1),
+    private val isTestContext: Boolean = false,
 ) : HttpClient {
 
     private val client = OkHttpClient.Builder()
@@ -65,7 +68,7 @@ public class DefaultHttpClient(
             .headers(requestHeaders.toHeaders())
             .build()
 
-        return@withContext if (retryWith.isNotBlank()) {
+        if (retryWith.isNotBlank()) {
             executeRetryableSuspendable(retryWith) {
                 executeRequest(request)
             }
@@ -98,7 +101,7 @@ public class DefaultHttpClient(
             .headers(requestHeaders.toHeaders())
             .build()
 
-        return@withContext if (retryWith.isNotBlank()) {
+        if (retryWith.isNotBlank()) {
             executeRetryableSuspendable(retryWith) {
                 executeRequest(request)
             }
@@ -116,9 +119,10 @@ public class DefaultHttpClient(
         executeRetryableSuspendable(retryWith, func)
     }
 
-    override suspend fun executeRetryableSuspendable(retryWith: String, func: () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
+    @Deprecated("Will possibly be removed")
+    override suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
-        return@withContext RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+        RetryableRegistry.fetch(retryWith)?.executeSuspendable(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
     }
 
     private fun mapHttpProtocols(): List<Protocol> {
@@ -132,20 +136,22 @@ public class DefaultHttpClient(
         }
     }
 
-    private fun executeRequest(request: Request): HttpResponse {
-        return try {
+    private suspend fun executeRequest(request: Request): HttpResponse = withContext(LIMITED_NETWORK) {
+        try {
             client.newCall(request).execute().toHttpResponse()
-        } catch(e: SocketTimeoutException) {
-            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in [$WAIT_BEFORE_RETRY_IN_SECONDS] seconds." }
+        } catch (e: SocketTimeoutException) {
+            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in [${WAIT_BEFORE_RETRY.inWholeSeconds}] seconds." }
 
-            sleep(WAIT_BEFORE_RETRY_IN_SECONDS*1000L)
+            if (!isTestContext) {
+                delay(WAIT_BEFORE_RETRY)
+            }
             executeRequest(request)
         }
     }
 
     private companion object {
         private val log by LoggerDelegate()
-        private const val WAIT_BEFORE_RETRY_IN_SECONDS = 5L
+        private val WAIT_BEFORE_RETRY = 5.toDuration(SECONDS)
     }
 }
 

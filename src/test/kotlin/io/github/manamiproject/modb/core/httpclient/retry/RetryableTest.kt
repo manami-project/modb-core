@@ -2,9 +2,10 @@ package io.github.manamiproject.modb.core.httpclient.retry
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.HttpResponse
+import io.github.manamiproject.modb.test.exceptionExpected
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 internal class RetryableTest {
 
@@ -15,7 +16,9 @@ internal class RetryableTest {
         val retryable = Retryable(RetryBehavior())
 
         // when
-        val result = retryable.execute { expectedResult }
+        val result = runBlocking {
+            retryable.executeSuspendable { expectedResult }
+        }
 
         // then
         assertThat(result).isEqualTo(expectedResult)
@@ -42,11 +45,13 @@ internal class RetryableTest {
         val retryable = Retryable(retryBehavior)
 
         // when
-        val result = retryable.execute {
-            if (currentAttempt != 3) {
-                HttpResponse(500, EMPTY)
-            } else {
-                expectedResult
+        val result = runBlocking {
+            retryable.executeSuspendable {
+                if (currentAttempt != 3) {
+                    HttpResponse(500, EMPTY)
+                } else {
+                    expectedResult
+                }
             }
         }
 
@@ -73,8 +78,8 @@ internal class RetryableTest {
         val retryable = Retryable(retryBehavior)
 
         // when
-        val result = assertThrows<FailedAfterRetryException> {
-            retryable.execute { HttpResponse(500, EMPTY) }
+        val result = exceptionExpected<FailedAfterRetryException> {
+            retryable.executeSuspendable { HttpResponse(500, EMPTY) }
         }
 
         // then
@@ -107,11 +112,13 @@ internal class RetryableTest {
         val retryable = Retryable(retryBehavior)
 
         // when
-        retryable.execute {
-            if (currentAttempt != 3) {
-                HttpResponse(500, EMPTY)
-            } else {
-                expectedResult
+        runBlocking {
+            retryable.executeSuspendable {
+                if (currentAttempt != 3) {
+                    HttpResponse(500, EMPTY)
+                } else {
+                    expectedResult
+                }
             }
         }
 
