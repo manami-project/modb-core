@@ -9,13 +9,10 @@ import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Protocol
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import okio.ByteString.Companion.encodeUtf8
 import java.net.*
 import java.net.Proxy.NO_PROXY
@@ -31,13 +28,17 @@ public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
     private val protocols: List<HttpProtocol> = listOf(HTTP_2, HTTP_1_1),
     private val isTestContext: Boolean = false,
+    private var okhttpClient: Call.Factory = sharedOkHttpClient,
 ) : HttpClient {
 
-    private val client = OkHttpClient.Builder()
-        .protocols(mapHttpProtocols())
-        .proxy(proxy)
-        .retryOnConnectionFailure(true)
-        .build()
+    init {
+        if (okhttpClient is OkHttpClient) {
+            okhttpClient = (okhttpClient as OkHttpClient).newBuilder()
+                .protocols(mapHttpProtocols())
+                .proxy(proxy)
+                .build()
+        }
+    }
 
     @Deprecated("Use coroutine", ReplaceWith(
         "runBlocking { postSuspendable(url, requestBody, headers, retryWith) }",
@@ -89,7 +90,7 @@ public class DefaultHttpClient(
     override suspend fun getSuspedable(
         url: URL,
         headers: Map<String, Collection<String>>,
-        retryWith: String
+        retryWith: String,
     ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
         requestHeaders.putAll(createHeadersFor(url, Browser.random()))
@@ -138,7 +139,7 @@ public class DefaultHttpClient(
 
     private suspend fun executeRequest(request: Request): HttpResponse = withContext(LIMITED_NETWORK) {
         try {
-            client.newCall(request).execute().toHttpResponse()
+            okhttpClient.newCall(request).execute().toHttpResponse()
         } catch (e: SocketTimeoutException) {
             log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Retry in [${WAIT_BEFORE_RETRY.inWholeSeconds}] seconds." }
 
@@ -160,3 +161,13 @@ private fun Response.toHttpResponse() = HttpResponse(
     body = this.body?.string() ?: EMPTY,
     _headers = this.headers.toMultimap().toMutableMap()
 )
+
+/**
+ * Shared [OkHttpClient]. Useful, because this will result in a sharedthread pool between different instances of [DefaultHttpClient].
+ * [see](https://square.github.io/okhttp/4.x/okhttp/okhttp3/-ok-http-client/#customize-your-client-with-newbuilder)
+ */
+private val sharedOkHttpClient: Call.Factory by lazy {
+    OkHttpClient.Builder()
+        .retryOnConnectionFailure(true)
+        .build()
+}
