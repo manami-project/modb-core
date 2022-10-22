@@ -66,7 +66,9 @@ public class DefaultHttpClient(
             .build()
 
         return@withContext if (retryWith.isNotBlank()) {
-            RetryableRegistry.fetch(retryWith)?.execute { executeRequest(request) } ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+            executeRetryableSuspendable(retryWith) {
+                executeRequest(request)
+            }
         } else {
             executeRequest(request)
         }
@@ -97,7 +99,9 @@ public class DefaultHttpClient(
             .build()
 
         return@withContext if (retryWith.isNotBlank()) {
-            RetryableRegistry.fetch(retryWith)?.execute { executeRequest(request) } ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+            executeRetryableSuspendable(retryWith) {
+                executeRequest(request)
+            }
         } else {
             executeRequest(request)
         }
@@ -106,7 +110,7 @@ public class DefaultHttpClient(
     @Deprecated("Use coroutine", ReplaceWith(
         "runBlocking { executeRetryableSuspendable(retryWith, func) }",
         "kotlinx.coroutines.runBlocking"
-    )
+        )
     )
     override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
         executeRetryableSuspendable(retryWith, func)
