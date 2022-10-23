@@ -56,7 +56,9 @@ public class Retryable(private val config: RetryBehavior) {
         while (attempt < config.maxAttempts && isActive && config.cases.keys.any { it.invoke(response) }) {
             log.info { "Performing retry [${attempt+1}/${config.maxAttempts}]" }
 
-            delay(config.waitDuration.invoke().inWholeMilliseconds) // FIXME: exclude from test context
+            if (!config.isTestContext) {
+                delay(config.waitDuration.invoke().inWholeMilliseconds)
+            }
 
             val currentCase = config.cases.keys.find { it.invoke(response) }
             config.cases[currentCase]?.invoke() // invoke executeBeforeRetry

@@ -15,6 +15,7 @@ import kotlin.time.Duration.Companion.ZERO
 public data class RetryBehavior(
     val maxAttempts: Int = 3,
     val waitDuration: () -> Duration = { ZERO },
+    val isTestContext: Boolean = false,
 ) {
 
     private val retryIfToExecuteBeforeRetry = mutableMapOf<(HttpResponse) -> Boolean, () -> Unit>()
