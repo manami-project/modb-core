@@ -10,7 +10,7 @@ import java.io.OutputStream
  * @since 1.0.0
  * @return The same [OutputStream] which has been used to write the [String]
  */
-@Deprecated("Will possibly be removed")
+@Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
 public fun OutputStream.write(body: String): OutputStream = runBlocking {// FIXME: still needed?
     writeSuspendable(body)
 }
@@ -20,7 +20,7 @@ public fun OutputStream.write(body: String): OutputStream = runBlocking {// FIXM
  * @since 8.0.0
  * @return The same [OutputStream] which has been used to write the [String]
  */
-@Deprecated("Will possibly be removed")
+@Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
 public suspend fun OutputStream.writeSuspendable(body: String): OutputStream { // FIXME: still needed?
     val outputStream = this
 

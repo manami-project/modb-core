@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.converter
 
 import io.github.manamiproject.modb.core.models.Anime
+import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
 
 /**
@@ -16,11 +17,13 @@ public interface PathConverter {
      * @return Converted [Anime]
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory
      */
-    @Deprecated("Use coroutines")
-    public fun convert(path: Path): List<Anime>
+    @Deprecated("Use coroutines", ReplaceWith("convertSuspendable()"))
+    public fun convert(path: Path): List<Anime> = runBlocking {
+        convertSuspendable(path).toList()
+    }
 
     /**
-     * Converts a file into a single [Anime] (wrapped in a [List]) or a directory into a [List] of [Anime]s.
+     * Converts a file into a single [Anime] (wrapped in a [Collection]) or a directory into a [Collection] of [Anime]s.
      * @since 8.0.0
      * @param path Can either be a file or a directory
      * @return Converted [Anime]
