@@ -10,6 +10,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
+import kotlin.io.path.forEachDirectoryEntry
+import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.useDirectoryEntries
 
 /**
@@ -45,17 +47,14 @@ public class DefaultPathConverter(
     }
 
     private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(LIMITED_FS) {
-        path.useDirectoryEntries { pathSequence ->
-            val jobs = pathSequence.filter { it.regularFileExists() }
-                .filter { it.fileSuffix() == fileSuffix }
-                .toList()
-                .map {
-                    async {
-                        convertSingleFile(it)
-                    }
+        val jobs = path.listDirectoryEntries(glob = "*$fileSuffix")
+            .filter { it.regularFileExists() }
+            .map {
+                async {
+                    convertSingleFile(it)
                 }
+            }
 
-            awaitAll(*jobs.toTypedArray()).flatten().toList()
-        }
+        awaitAll(*jobs.toTypedArray()).flatten().toList()
     }
 }
