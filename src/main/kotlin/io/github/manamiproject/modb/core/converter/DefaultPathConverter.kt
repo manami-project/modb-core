@@ -25,15 +25,6 @@ public class DefaultPathConverter(
     private val fileSuffix: FileSuffix,
 ) : PathConverter {
 
-    @Deprecated("Use coroutines",
-        ReplaceWith("runBlocking { convertSuspendable(path) }", "kotlinx.coroutines.runBlocking")
-    )
-    override fun convert(path: Path): List<Anime> {
-        return runBlocking {
-            convertSuspendable(path)
-        }
-    }
-
     override suspend fun convertSuspendable(path: Path): List<Anime> = withContext(LIMITED_CPU) {
         when{
             path.regularFileExists() -> convertSingleFile(path)

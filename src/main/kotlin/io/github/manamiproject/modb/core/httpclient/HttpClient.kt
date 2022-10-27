@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.core.httpclient.retry.Retryable
+import kotlinx.coroutines.runBlocking
 import java.net.URL
 
 /**
@@ -23,8 +24,10 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    @Deprecated("Use coroutine")
-    public fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    @Deprecated("Use coroutine", ReplaceWith("postSuspendable()"))
+    public fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse = runBlocking {
+        postSuspendable(url, requestBody, headers, retryWith)
+    }
 
     /**
      * Performs a HTTP POST request with a [RequestBody]
@@ -51,8 +54,10 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    @Deprecated("Use coroutine")
-    public fun get(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    @Deprecated("Use coroutine", ReplaceWith("getSuspedable()"))
+    public fun get(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse = runBlocking {
+        getSuspedable(url, headers, retryWith)
+    }
 
     /**
      * Performs a HTTP GET request.
@@ -77,8 +82,10 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    @Deprecated("Use coroutine")
-    public fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse
+    @Deprecated("Will be removed", ReplaceWith(EMPTY))
+    public fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
+        executeRetryableSuspendable(retryWith, func)
+    }
 
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
@@ -90,6 +97,6 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    @Deprecated("Will possibly be removed")
+    @Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
     public suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse // FIXME: is this still needed?
 }

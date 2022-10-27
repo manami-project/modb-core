@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.downloader
 import io.github.manamiproject.modb.core.config.AnimeId
 import io.github.manamiproject.modb.core.converter.AnimeConverter
 import io.github.manamiproject.modb.core.models.Anime
+import kotlinx.coroutines.runBlocking
 
 /**
  * Downloads raw content containing data which describes an anime
@@ -18,8 +19,10 @@ public interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
-    @Deprecated("Use coroutines")
-    public fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
+    @Deprecated("Use coroutines", ReplaceWith("downloadSuspendable()"))
+    public fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String = runBlocking {
+        downloadSuspendable(id, onDeadEntry)
+    }
 
     /**
      * Downloads raw data for a specific anime which then can be converted into an [Anime] using an [AnimeConverter]
