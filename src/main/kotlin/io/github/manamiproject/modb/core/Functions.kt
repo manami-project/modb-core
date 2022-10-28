@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core
 
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
+import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.runBlocking
@@ -118,6 +119,18 @@ public fun random(number1: Int, number2: Int): Long {
  * @param func Function to be executed if the current context is not the test context.
  */
 public fun excludeFromTestContext(config: MetaDataProviderConfig, func: () -> Unit) {
+    if (!config.isTestContext()) {
+        func.invoke()
+    }
+}
+
+/**
+ * Only executes the given function if the current context is not the test context.
+ * @since 8.0.0
+ * @param config Config of a meta data provider.
+ * @param func Function to be executed if the current context is not the test context.
+ */
+public suspend fun excludeFromTestContextSuspendable(config: MetaDataProviderConfig, func: suspend () -> Unit): Unit = withContext(LIMITED_CPU) {
     if (!config.isTestContext()) {
         func.invoke()
     }
