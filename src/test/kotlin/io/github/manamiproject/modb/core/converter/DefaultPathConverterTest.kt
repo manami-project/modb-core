@@ -1,12 +1,12 @@
 package io.github.manamiproject.modb.core.converter
 
 import io.github.manamiproject.modb.core.TestAnimeConverter
-import io.github.manamiproject.modb.core.extensions.writeToFile
+import io.github.manamiproject.modb.core.extensions.writeToFileSuspendable
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.io.path.createDirectory
@@ -38,7 +38,9 @@ internal class DefaultPathConverterTest {
         tempDirectory {
             // given
             val file = tempDir.resolve("test.txt").createFile()
-            "Correct file".writeToFile(file)
+            runBlocking {
+                "Correct file".writeToFileSuspendable(file)
+            }
 
             val expectedAnime =  Anime("Expected Anime")
 
@@ -66,9 +68,11 @@ internal class DefaultPathConverterTest {
     fun `successfully convert a whole directory`() {
         tempDirectory {
             // given
-            val directory = tempDir.resolve("dir").createDirectory().apply {
-                "accept 1".writeToFile(this.resolve("file1.txt"))
-                "accept 2".writeToFile(this.resolve("file2.txt"))
+            val directory = runBlocking {
+                tempDir.resolve("dir").createDirectory().apply {
+                    "accept 1".writeToFileSuspendable(this.resolve("file1.txt"))
+                    "accept 2".writeToFileSuspendable(this.resolve("file2.txt"))
+                }
             }
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
