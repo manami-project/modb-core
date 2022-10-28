@@ -32,5 +32,5 @@ public interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
-    public suspend fun downloadSuspendable(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String
+    public suspend fun downloadSuspendable(id: AnimeId, onDeadEntry: suspend (AnimeId) -> Unit = {}): String
 }
