@@ -1,24 +1,15 @@
 package io.github.manamiproject.modb.core.extensions
 
+import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Timeout
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.condition.DisabledOnOs
-import org.junit.jupiter.api.condition.OS.MAC
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.nio.file.FileSystems
-import java.nio.file.Path
-import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
-import java.nio.file.WatchEvent
-import java.util.concurrent.TimeUnit.MINUTES
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
-import kotlin.time.Duration
 
 internal class StringExtensionsKtTest {
 
@@ -32,8 +23,8 @@ internal class StringExtensionsKtTest {
                 val file = tempDir.resolve("test").createDirectory()
 
                 // when
-                val result = assertThrows<Exception> { //exception type varies depending on the OS
-                    "text".writeToFile(file, false)
+                val result = exceptionExpected<Exception> { //exception type varies depending on the OS
+                    "text".writeToFileSuspendable(file, false)
                 }
 
                 // then
@@ -48,8 +39,8 @@ internal class StringExtensionsKtTest {
                 val file = tempDir.resolve("test.txt")
 
                 // when
-                val result = assertThrows<IllegalStateException> {
-                    EMPTY.writeToFile(file, false)
+                val result = exceptionExpected<IllegalStateException> {
+                    EMPTY.writeToFileSuspendable(file, false)
                 }
 
                 // then
@@ -64,8 +55,8 @@ internal class StringExtensionsKtTest {
                 val file = tempDir.resolve("test.txt")
 
                 // when
-                val result = assertThrows<IllegalStateException> {
-                    "    ".writeToFile(file, false)
+                val result = exceptionExpected<IllegalStateException> {
+                    "    ".writeToFileSuspendable(file, false)
                 }
 
                 // then
@@ -81,7 +72,9 @@ internal class StringExtensionsKtTest {
                 val file = tempDir.resolve("test.txt")
 
                 // when
-                string.writeToFile(file, false)
+                runBlocking {
+                    string.writeToFileSuspendable(file, false)
+                }
 
                 // then
                 assertThat(file).exists()
@@ -94,12 +87,16 @@ internal class StringExtensionsKtTest {
             tempDirectory {
                 // given
                 val file = tempDir.resolve("test.txt").createFile()
-                "Some content\nfor a test file.".writeToFile(file)
+                runBlocking {
+                    "Some content\nfor a test file.".writeToFileSuspendable(file)
+                }
 
                 val string = "Some totally different content."
 
                 // when
-                string.writeToFile(file, false)
+                runBlocking {
+                    string.writeToFileSuspendable(file, false)
+                }
 
                 // then
                 assertThat(file).exists()
