@@ -6,6 +6,8 @@ import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.BufferedReader
 import java.nio.file.Paths
 import java.util.*
@@ -134,4 +136,16 @@ public suspend fun excludeFromTestContextSuspendable(config: MetaDataProviderCon
     if (!config.isTestContext()) {
         func.invoke()
     }
+}
+
+/**
+ * Parses a [String] into a [Document] on which data can be slected and returned.
+ * @since 8.0.0
+ * @param rawHtml Raw HTML as [String]
+ * @param selector Lets you select data in the DOM
+ * @return Selected data. Any type can be used.
+ */
+public suspend inline fun <reified T> parseHtml(rawHtml: String, noinline selector: suspend (Document) -> T): T = withContext(LIMITED_CPU) {
+    require(rawHtml.isNotBlank()) { "HTML must not be blank." }
+    selector.invoke(Jsoup.parse(rawHtml))
 }
