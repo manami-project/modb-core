@@ -3,7 +3,8 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
-import io.github.manamiproject.modb.core.httpclient.HttpProtocol.*
+import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
+import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
 import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import kotlinx.coroutines.delay
@@ -14,8 +15,10 @@ import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString.Companion.encodeUtf8
-import java.net.*
+import java.net.Proxy
 import java.net.Proxy.NO_PROXY
+import java.net.SocketTimeoutException
+import java.net.URL
 import kotlin.time.DurationUnit.SECONDS
 import kotlin.time.toDuration
 
@@ -40,11 +43,7 @@ public class DefaultHttpClient(
         }
     }
 
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { postSuspendable(url, requestBody, headers, retryWith) }",
-        "kotlinx.coroutines.runBlocking"
-    )
-    )
+    @Deprecated("Use coroutine", ReplaceWith("postSuspendable"))
     override fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
         postSuspendable(url, requestBody, headers, retryWith)
     }
@@ -111,17 +110,7 @@ public class DefaultHttpClient(
         }
     }
 
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { executeRetryableSuspendable(retryWith, func) }",
-        "kotlinx.coroutines.runBlocking"
-        )
-    )
-    override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
-        executeRetryableSuspendable(retryWith, func)
-    }
-
-    @Deprecated("Will possibly be removed")
-    override suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
+    private suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
         RetryableRegistry.fetch(retryWith)?.executeSuspendable(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
     }
