@@ -324,4 +324,49 @@ internal class FunctionsKtTest {
             assertThat(result).hasMessage("HTML must not be blank.")
         }
     }
+
+    @Nested
+    inner class ParseHtmlWithoutSelectionTests {
+
+        @Test
+        fun `correctly parses html`() {
+            runBlocking {
+                // given
+                val html = """
+                    <!DOCTYPE html>
+                    <html>
+                    <body>
+    
+                    <h2>An ordered HTML list</h2>
+    
+                    <ol>
+                      <li>Coffee</li>
+                      <li>Tea</li>
+                      <li>Milk</li>
+                    </ol>  
+    
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                // when
+                val result = parseHtml(html)
+
+                // then
+                assertThat(result).isNotNull()
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["", "  "])
+        fun `throws exception if rawHTML is blank`(value: String) {
+            // when
+            val result = exceptionExpected<IllegalArgumentException> {
+                parseHtml(value)
+            }
+
+            // then
+            assertThat(result).hasMessage("HTML must not be blank.")
+        }
+    }
 }
