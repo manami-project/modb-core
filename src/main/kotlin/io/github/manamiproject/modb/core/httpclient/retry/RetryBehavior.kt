@@ -18,13 +18,13 @@ public data class RetryBehavior(
     val isTestContext: Boolean = false,
 ) {
 
-    private val retryIfToExecuteBeforeRetry = mutableMapOf<(HttpResponse) -> Boolean, () -> Unit>()
+    private val retryIfToExecuteBeforeRetry = mutableMapOf<(HttpResponse) -> Boolean, suspend () -> Unit>()
 
     /**
      * A [Map] having the [HttpResponseCode] on which to execute the function before performing a retry as key and the function to execute as value.
      * @since 1.0.0
      */
-    val cases: Map<(HttpResponse) -> Boolean, () -> Unit>
+    val cases: Map<(HttpResponse) -> Boolean, suspend () -> Unit>
         get() = retryIfToExecuteBeforeRetry.toMap()
 
     /**
@@ -34,7 +34,7 @@ public data class RetryBehavior(
      * @param executeBeforeRetry Function to execute before performing the retry. Default value no operation.
      * @return `true` if the entry was added successfully or `false` if an entry for the given [retryIf] already exists.
      */
-    public fun addCase(executeBeforeRetry: () -> Unit = {}, retryIf: (HttpResponse) -> Boolean): Boolean {
+    public fun addCase(executeBeforeRetry: suspend () -> Unit = {}, retryIf: (HttpResponse) -> Boolean): Boolean {
         return if (retryIfToExecuteBeforeRetry.containsKey(retryIf)) {
             false
         } else {
