@@ -244,4 +244,84 @@ internal class FunctionsKtTest {
             assertThat(hasBeenInvoked).isFalse()
         }
     }
+
+    @Nested
+    inner class ParseHtmlTests {
+
+        @Test
+        fun `correctly returns data`() {
+            runBlocking {
+                // given
+                val html = """
+                    <!DOCTYPE html>
+                    <html>
+                    <body>
+    
+                    <h2>An ordered HTML list</h2>
+    
+                    <ol>
+                      <li>Coffee</li>
+                      <li>Tea</li>
+                      <li>Milk</li>
+                    </ol>  
+    
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                // when
+                val result = parseHtml(html) { document ->
+                    document.select("li")[1].text()
+                }
+
+                // then
+                assertThat(result).isEqualTo("Tea")
+            }
+        }
+
+        @Test
+        fun `can return any type`() {
+            runBlocking {
+                // given
+                val html = """
+                    <!DOCTYPE html>
+                    <html>
+                    <body>
+    
+                    <h2>An ordered HTML list</h2>
+    
+                    <ol>
+                      <li>1</li>
+                      <li>2</li>
+                      <li>3</li>
+                    </ol>  
+    
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                // when
+                val result = parseHtml(html) { document ->
+                    document.select("li")[1].text().toInt()
+                }
+
+                // then
+                assertThat(result).isEqualTo(2)
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["", "  "])
+        fun `throws exception if rawHTML is blank`(value: String) {
+            // when
+            val result = exceptionExpected<IllegalArgumentException> {
+                parseHtml(value) { document ->
+                    document.select(".li")[1].text()
+                }
+            }
+
+            // then
+            assertThat(result).hasMessage("HTML must not be blank.")
+        }
+    }
 }
