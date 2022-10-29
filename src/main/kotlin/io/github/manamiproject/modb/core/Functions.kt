@@ -139,6 +139,17 @@ public suspend fun excludeFromTestContextSuspendable(config: MetaDataProviderCon
 }
 
 /**
+ * Suspend function wrapper for parsing a [String] into a [Document].
+ * @since 8.0.0
+ * @param rawHtml Raw HTML as [String]
+ * @return [Document]
+ */
+public suspend fun parseHtml(rawHtml: String): Document = withContext(LIMITED_CPU) {
+    require(rawHtml.isNotBlank()) { "HTML must not be blank." }
+    Jsoup.parse(rawHtml)
+}
+
+/**
  * Parses a [String] into a [Document] on which data can be slected and returned.
  * @since 8.0.0
  * @param rawHtml Raw HTML as [String]
