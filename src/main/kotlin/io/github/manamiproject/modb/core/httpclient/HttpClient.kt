@@ -24,7 +24,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    @Deprecated("Use coroutine", ReplaceWith("postSuspendable()"))
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse = runBlocking {
         postSuspendable(url, requestBody, headers, retryWith)
     }
@@ -54,7 +54,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    @Deprecated("Use coroutine", ReplaceWith("getSuspedable()"))
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public fun get(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse = runBlocking {
         getSuspedable(url, headers, retryWith)
     }

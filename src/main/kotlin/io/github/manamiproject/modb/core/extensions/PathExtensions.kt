@@ -93,9 +93,7 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-@Deprecated("Use coroutine",
-    ReplaceWith("runBlocking { readFileSuspendable(charset) }", "kotlinx.coroutines.runBlocking")
-)
+@Deprecated("Use coroutine", ReplaceWith(EMPTY))
 public fun Path.readFile(charset: Charset = UTF_8): String = runBlocking {
     readFileSuspendable(charset)
 }
@@ -124,11 +122,7 @@ public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = 
  * @return The target as [Path] object
  * @throws FileAlreadyExistsException if the target already exists
  */
-@Deprecated("Use coroutine", ReplaceWith(
-    "runBlocking { copyToSuspedable(target, *copyOptions) }",
-    "kotlinx.coroutines.runBlocking"
-)
-)
+@Deprecated("Use coroutine", ReplaceWith(EMPTY))
 public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path = runBlocking {
     copyToSuspedable(target, *copyOptions)
 }

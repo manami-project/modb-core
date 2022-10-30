@@ -10,9 +10,7 @@ import java.security.SecureRandom
  * @since 1.0.0
  * @return The randomized list
  */
-@Deprecated("Use coroutines",
-    ReplaceWith("runBlocking { createShuffledListSuspendable() }", "kotlinx.coroutines.runBlocking")
-)
+@Deprecated("Use coroutines", ReplaceWith(EMPTY))
 public fun <T> List<T>.createShuffledList(): List<T> = runBlocking {
     createShuffledListSuspendable()
 }

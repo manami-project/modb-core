@@ -11,7 +11,7 @@ import java.nio.file.WatchService
  * @since 1.0.0
  * @return Either a [WatchKey] or `null`
  */
-@Deprecated("Use coroutines", ReplaceWith("runBlocking { takeOrNullSuspendable() }", "kotlinx.coroutines.runBlocking"))
+@Deprecated("Use coroutines", ReplaceWith(EMPTY))
 public fun WatchService.takeOrNull(): WatchKey? {
     return try {
         this.take()

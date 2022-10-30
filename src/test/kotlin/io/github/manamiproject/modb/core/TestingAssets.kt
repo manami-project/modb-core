@@ -5,6 +5,7 @@ import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.config.Hostname
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.converter.AnimeConverter
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import java.net.URI
@@ -18,9 +19,7 @@ internal object MetaDataProviderTestConfig : MetaDataProviderConfig {
 }
 
 internal object TestAnimeConverter : AnimeConverter {
-    @Deprecated("Use coroutines",
-        ReplaceWith("shouldNotBeInvoked()", "io.github.manamiproject.modb.test.shouldNotBeInvoked")
-    )
+    @Deprecated("Use coroutines", ReplaceWith(EMPTY))
     override fun convert(rawContent: String): Anime = shouldNotBeInvoked()
     override suspend fun convertSuspendable(rawContent: String) = shouldNotBeInvoked()
 }

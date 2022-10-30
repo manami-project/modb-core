@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -33,9 +34,7 @@ import java.util.*
  * @throws IllegalArgumentException If the given path is blank.
  * @throws IllegalStateException If the given path does not exist.
  */
-@Deprecated("Use coroutine",
-    ReplaceWith("runBlocking { loadResourceSuspendable(path) }", "kotlinx.coroutines.runBlocking")
-)
+@Deprecated("Use coroutine", ReplaceWith(EMPTY))
 public fun loadResource(path: String): String = runBlocking {
     loadResourceSuspendable(path)
 }

@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.converter
 
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
@@ -17,7 +18,7 @@ public interface PathConverter {
      * @return Converted [Anime]
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory
      */
-    @Deprecated("Use coroutines", ReplaceWith("convertSuspendable()"))
+    @Deprecated("Use coroutines", ReplaceWith(EMPTY))
     public fun convert(path: Path): List<Anime> = runBlocking {
         convertSuspendable(path).toList()
     }

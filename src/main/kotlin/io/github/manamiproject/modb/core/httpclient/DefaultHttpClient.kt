@@ -40,11 +40,7 @@ public class DefaultHttpClient(
         }
     }
 
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { postSuspendable(url, requestBody, headers, retryWith) }",
-        "kotlinx.coroutines.runBlocking"
-    )
-    )
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     override fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
         postSuspendable(url, requestBody, headers, retryWith)
     }
@@ -78,11 +74,7 @@ public class DefaultHttpClient(
         }
     }
 
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { getSuspedable(url, headers, retryWith) }",
-        "kotlinx.coroutines.runBlocking"
-        )
-    )
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     override fun get(url: URL, headers: Map<String, Collection<String>>, retryWith: String): HttpResponse = runBlocking {
         getSuspedable(url, headers, retryWith)
     }
@@ -111,16 +103,12 @@ public class DefaultHttpClient(
         }
     }
 
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { executeRetryableSuspendable(retryWith, func) }",
-        "kotlinx.coroutines.runBlocking"
-        )
-    )
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     override fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
         executeRetryableSuspendable(retryWith, func)
     }
 
-    @Deprecated("Will possibly be removed")
+    @Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
     override suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
         RetryableRegistry.fetch(retryWith)?.executeSuspendable(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")

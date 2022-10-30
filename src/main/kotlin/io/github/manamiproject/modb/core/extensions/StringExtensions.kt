@@ -28,7 +28,7 @@ public const val LOCK_FILE_SUFFIX: String = "lck"
  * **Default** is `false`.
  * @throws IllegalStateException if the given [String] is blank
  */
-@Deprecated("Use coroutine instead", ReplaceWith("writeToFileSuspendable()"))
+@Deprecated("Use coroutine instead", ReplaceWith(EMPTY))
 public fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false): Unit = runBlocking {
     writeToFileSuspendable(file, writeLockFile)
 }
