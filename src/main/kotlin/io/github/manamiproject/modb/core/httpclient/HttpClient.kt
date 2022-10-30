@@ -2,6 +2,7 @@ package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
+import io.github.manamiproject.modb.core.httpclient.retry.Retryable
 import kotlinx.coroutines.runBlocking
 import java.net.URL
 
@@ -70,4 +71,32 @@ public interface HttpClient {
      * @return The server's response.
      */
     public suspend fun getSuspedable(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+
+    /**
+     * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
+     * In comparison to [post] or [get] you can have multiple statements within the retry context.
+     * @since 1.0.0
+     * @param retryWith Name of the [Retryable] which should be used for this request. The name must not be blank.
+     * @param func Function which performs a request and returns an [HttpResponse]
+     * @return The actual HTTP response from a successful attempt
+     * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
+     * @throws IllegalArgumentException if [retryWith] is blank
+     */
+    @Deprecated("Will be removed", ReplaceWith(EMPTY))
+    public fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
+        executeRetryableSuspendable(retryWith, func)
+    }
+
+    /**
+     * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
+     * In comparison to [post] or [get] you can have multiple statements within the retry context.
+     * @since 8.0.0
+     * @param retryWith Name of the [Retryable] which should be used for this request. The name must not be blank.
+     * @param func Function which performs a request and returns an [HttpResponse]
+     * @return The actual HTTP response from a successful attempt
+     * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
+     * @throws IllegalArgumentException if [retryWith] is blank
+     */
+    @Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
+    public suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse // FIXME: is this still needed?
 }
