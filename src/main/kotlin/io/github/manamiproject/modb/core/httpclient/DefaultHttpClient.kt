@@ -108,7 +108,6 @@ public class DefaultHttpClient(
         executeRetryableSuspendable(retryWith, func)
     }
 
-    @Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
     override suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
         RetryableRegistry.fetch(retryWith)?.executeSuspendable(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")

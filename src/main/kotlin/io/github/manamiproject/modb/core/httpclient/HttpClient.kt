@@ -82,7 +82,7 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    @Deprecated("Will be removed", ReplaceWith(EMPTY))
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public fun executeRetryable(retryWith: String, func: () -> HttpResponse): HttpResponse = runBlocking {
         executeRetryableSuspendable(retryWith, func)
     }
@@ -90,6 +90,8 @@ public interface HttpClient {
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
      * In comparison to [post] or [get] you can have multiple statements within the retry context.
+     * This especially comes in handy if you have to dynamically change data in each request like settings tokens for
+     * example.
      * @since 8.0.0
      * @param retryWith Name of the [Retryable] which should be used for this request. The name must not be blank.
      * @param func Function which performs a request and returns an [HttpResponse]
@@ -97,6 +99,5 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    @Deprecated("Will possibly be removed", ReplaceWith(EMPTY))
-    public suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse // FIXME: is this still needed?
+    public suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse
 }
