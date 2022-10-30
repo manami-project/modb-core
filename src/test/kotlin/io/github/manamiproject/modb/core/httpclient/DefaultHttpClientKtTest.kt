@@ -731,4 +731,95 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             assertThat(result.body).isEmpty()
         }
     }
+
+    @Nested
+    inner class ExecuteRetryableTests {
+
+        @Test
+        fun `throws exception if execution failed despite retry attempts`() {
+            // given
+            val testRetryBehaviorName = "test"
+
+            val retryBehavior = RetryBehavior().apply {
+                addCase { true }
+            }
+
+            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+
+            // when
+            val result = exceptionExpected<FailedAfterRetryException> {
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).executeRetryableSuspendable(testRetryBehaviorName) {
+                    HttpResponse(200, EMPTY)
+                }
+            }
+
+            assertThat(result).hasMessage("Execution failed despite retry attempts.")
+        }
+
+        @Test
+        fun `successfully executes and returns result`() {
+            // given
+            val testRetryBehaviorName = "test"
+            val expectedResult = HttpResponse(200, EMPTY)
+
+            val retryBehavior = RetryBehavior()
+
+            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+
+            // when
+            val result = runBlocking {
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).executeRetryableSuspendable(testRetryBehaviorName) {
+                    expectedResult
+                }
+            }
+
+            assertThat(result).isEqualTo(expectedResult)
+        }
+
+        @Test
+        fun `throws exception if the retry can't be found`() {
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).executeRetryableSuspendable("test") {
+                    HttpResponse(200, EMPTY)
+                }
+            }
+
+            assertThat(result).hasMessage("Unable to find retry named [test]")
+        }
+
+        @Test
+        fun `throws exception if the name of the RetryBehavior is blank`() {
+            // when
+            val result = exceptionExpected<IllegalArgumentException> {
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).executeRetryableSuspendable("       ") {
+                    HttpResponse(200, EMPTY)
+                }
+            }
+
+            assertThat(result).hasMessage("retryWith must not be blank")
+        }
+
+        @Test
+        fun `throws exception if the name of the RetryBehavior is empty`() {
+            // when
+            val result = exceptionExpected<IllegalArgumentException> {
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).executeRetryableSuspendable("") {
+                    HttpResponse(200, EMPTY)
+                }
+            }
+
+            assertThat(result).hasMessage("retryWith must not be blank")
+        }
+    }
 }
