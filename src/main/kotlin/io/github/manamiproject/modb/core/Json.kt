@@ -7,6 +7,7 @@ import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SER
 import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.InputStream
@@ -36,12 +37,7 @@ public object Json {
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
      */
-    @Deprecated("Use coroutine", ReplaceWith(
-        "moshi.adapter<T>().nullSafe().fromJson(json)",
-        "io.github.manamiproject.modb.core.Json.moshi",
-        "com.squareup.moshi.adapter"
-    )
-    )
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public inline fun <reified T> parseJson(json: String): T? = runBlocking {
         return@runBlocking parseJsonSuspendable(json)
     }
@@ -67,13 +63,7 @@ public object Json {
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
      */
-    @Deprecated("Use coroutine", ReplaceWith(
-        "runBlocking { moshi.adapter<T>().fromJson(json.bufferedReader().readText()) }",
-        "kotlinx.coroutines.runBlocking",
-        "io.github.manamiproject.modb.core.Json.moshi",
-        "com.squareup.moshi.adapter"
-    )
-    )
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public inline fun <reified T> parseJson(json: InputStream): T? = runBlocking {
         return@runBlocking parseJsonSuspendable(json)
     }
@@ -98,7 +88,7 @@ public object Json {
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    @Deprecated("Use coroutine")
+    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
     public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String = runBlocking {
         return@runBlocking toJsonSuspendable(obj, *options)
     }

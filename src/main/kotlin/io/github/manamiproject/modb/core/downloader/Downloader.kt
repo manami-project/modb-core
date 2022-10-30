@@ -2,6 +2,7 @@ package io.github.manamiproject.modb.core.downloader
 
 import io.github.manamiproject.modb.core.config.AnimeId
 import io.github.manamiproject.modb.core.converter.AnimeConverter
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime
 import kotlinx.coroutines.runBlocking
 
@@ -19,7 +20,7 @@ public interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
-    @Deprecated("Use coroutines", ReplaceWith("downloadSuspendable()"))
+    @Deprecated("Use coroutines", ReplaceWith(EMPTY))
     public fun download(id: AnimeId, onDeadEntry: (AnimeId) -> Unit = {}): String = runBlocking {
         downloadSuspendable(id, onDeadEntry)
     }

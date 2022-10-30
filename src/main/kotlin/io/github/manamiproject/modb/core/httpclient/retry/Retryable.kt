@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.httpclient.retry
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import kotlinx.coroutines.*
@@ -30,11 +31,7 @@ public class Retryable(private val config: RetryBehavior) {
      * @param request Lambda which performs a HTTP request returning a [HttpResponse]
      * @return The actual [HttpResponse] of the request if the request was successful
      */
-    @Deprecated("Use coroutine instead", ReplaceWith(
-        "runBlocking { executeSuspendable { request.invoke() } }",
-        "kotlinx.coroutines.runBlocking"
-        )
-    )
+    @Deprecated("Use coroutine instead", ReplaceWith(EMPTY))
     public fun execute(request: () -> HttpResponse): HttpResponse {
         return runBlocking {
             executeSuspendable {

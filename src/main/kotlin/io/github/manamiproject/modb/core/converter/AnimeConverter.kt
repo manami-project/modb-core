@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.converter
 
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime
 import kotlinx.coroutines.runBlocking
 
@@ -15,7 +16,7 @@ public interface AnimeConverter {
      * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */
-    @Deprecated("Use coroutines", ReplaceWith("convertSuspendable()"))
+    @Deprecated("Use coroutines", ReplaceWith(EMPTY))
     public fun convert(rawContent: String): Anime = runBlocking {
         convertSuspendable(rawContent)
     }
