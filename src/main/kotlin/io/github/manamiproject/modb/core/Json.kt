@@ -7,8 +7,6 @@ import io.github.manamiproject.modb.core.JsonSerializationOptions.DEACTIVATE_SER
 import io.github.manamiproject.modb.core.collections.SortedList
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
-import io.github.manamiproject.modb.core.extensions.EMPTY
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.net.URI
@@ -33,19 +31,6 @@ public object Json {
      * Parse a [String] into an object.
      *
      * **WARNING** [Collection]s of a non-nullable type can still contain null.
-     * @since 1.0.0
-     * @param json Valid JSON as [String]
-     * @return Deserialzed JSON as object of given type [T]
-     */
-    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
-    public inline fun <reified T> parseJson(json: String): T? = runBlocking {
-        return@runBlocking parseJsonSuspendable(json)
-    }
-
-    /**
-     * Parse a [String] into an object.
-     *
-     * **WARNING** [Collection]s of a non-nullable type can still contain null.
      * @since 8.0.0
      * @param json Valid JSON as [String]
      * @return Deserialzed JSON as object of given type [T]
@@ -59,19 +44,6 @@ public object Json {
      * Parse an [InputStream] into an object.
      *
      * **WARNING** [Collection]s of a non-nullable type can still contain null.
-     * @since 1.0.0
-     * @param json Valid JSON as [InputStream]
-     * @return Deserialized JSON as object of given type [T]
-     */
-    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
-    public inline fun <reified T> parseJson(json: InputStream): T? = runBlocking {
-        return@runBlocking parseJsonSuspendable(json)
-    }
-
-    /**
-     * Parse an [InputStream] into an object.
-     *
-     * **WARNING** [Collection]s of a non-nullable type can still contain null.
      * @since 8.0.0
      * @param json Valid JSON as [InputStream]
      * @return Deserialized JSON as object of given type [T]
@@ -79,18 +51,6 @@ public object Json {
     @OptIn(ExperimentalStdlibApi::class)
     public suspend inline fun <reified T> parseJsonSuspendable(json: InputStream): T? = withContext(LIMITED_FS) {
         return@withContext moshi.adapter<T>().fromJson(json.bufferedReader().readText())
-    }
-
-    /**
-     * Serialize any object to JSON.
-     * @since 1.0.0
-     * @param obj Any object that is supposed to be serialized to JSON.
-     * @param options Options that can change the default behavior of the JSON serialization
-     * @return Given object serialized in JSON as [String]
-     */
-    @Deprecated("Use coroutine", ReplaceWith(EMPTY))
-    public fun toJson(obj: Any, vararg options: JsonSerializationOptions): String = runBlocking {
-        return@runBlocking toJsonSuspendable(obj, *options)
     }
 
     /**

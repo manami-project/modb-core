@@ -1,23 +1,12 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 
 /**
  * Randomizes the order of elements in a [List]
- * @since 1.0.0
- * @return The randomized list
- */
-@Deprecated("Use coroutines", ReplaceWith(EMPTY))
-public fun <T> List<T>.createShuffledList(): List<T> = runBlocking {
-    createShuffledListSuspendable()
-}
-
-/**
- * Randomizes the order of elements in a [List]
- * @since 1.0.0
+ * @since 8.0.0
  * @return The randomized list
  */
 public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
