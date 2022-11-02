@@ -1,7 +1,7 @@
 package io.github.manamiproject.modb.core.converter
 
 import io.github.manamiproject.modb.core.TestAnimeConverter
-import io.github.manamiproject.modb.core.extensions.writeToFileSuspendable
+import io.github.manamiproject.modb.core.extensions.writeToFile
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
@@ -25,7 +25,7 @@ internal class DefaultPathConverterTest {
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
-                converter.convertSuspendable(file)
+                converter.convert(file)
             }
 
             // then
@@ -39,13 +39,13 @@ internal class DefaultPathConverterTest {
             // given
             val file = tempDir.resolve("test.txt").createFile()
             runBlocking {
-                "Correct file".writeToFileSuspendable(file)
+                "Correct file".writeToFile(file)
             }
 
             val expectedAnime =  Anime("Expected Anime")
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
-                override suspend fun convertSuspendable(rawContent: String): Anime {
+                override suspend fun convert(rawContent: String): Anime {
                     return if (rawContent == "Correct file") {
                         expectedAnime
                     } else {
@@ -57,7 +57,7 @@ internal class DefaultPathConverterTest {
             val converter = DefaultPathConverter(specificTestConverter, "txt")
 
             // when
-            val result = runBlocking { converter.convertSuspendable(file) }
+            val result = runBlocking { converter.convert(file) }
 
             // then
             assertThat(result).containsExactly(expectedAnime)
@@ -70,13 +70,13 @@ internal class DefaultPathConverterTest {
             // given
             val directory = runBlocking {
                 tempDir.resolve("dir").createDirectory().apply {
-                    "accept 1".writeToFileSuspendable(this.resolve("file1.txt"))
-                    "accept 2".writeToFileSuspendable(this.resolve("file2.txt"))
+                    "accept 1".writeToFile(this.resolve("file1.txt"))
+                    "accept 2".writeToFile(this.resolve("file2.txt"))
                 }
             }
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
-                override suspend fun convertSuspendable(rawContent: String): Anime {
+                override suspend fun convert(rawContent: String): Anime {
                     return if (rawContent.startsWith("accept")) {
                         Anime(rawContent)
                     } else {
@@ -88,7 +88,7 @@ internal class DefaultPathConverterTest {
             val converter = DefaultPathConverter(specificTestConverter, "txt")
 
             // when
-            val result = runBlocking { converter.convertSuspendable(directory) }
+            val result = runBlocking { converter.convert(directory) }
 
             // then
             assertThat(result).containsExactlyInAnyOrder(

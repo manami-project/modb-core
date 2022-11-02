@@ -14,5 +14,5 @@ public interface AnimeConverter {
      * @param rawContent The raw content which will be converted to an [Anime]
      * @return Instance of [Anime]
      */
-    public suspend fun convertSuspendable(rawContent: String): Anime
+    public suspend fun convert(rawContent: String): Anime
 }

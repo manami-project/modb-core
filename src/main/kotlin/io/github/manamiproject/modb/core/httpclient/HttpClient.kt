@@ -3,7 +3,6 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.core.httpclient.retry.Retryable
-import kotlinx.coroutines.runBlocking
 import java.net.URL
 
 /**
@@ -24,7 +23,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    public suspend fun postSuspendable(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public suspend fun post(url: URL, requestBody: RequestBody, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Performs a HTTP GET request.
@@ -37,7 +36,7 @@ public interface HttpClient {
      * **Default**: is an empty [String]
      * @return The server's response.
      */
-    public suspend fun getSuspedable(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
+    public suspend fun get(url: URL, headers: Map<String, Collection<String>> = emptyMap(), retryWith: String = EMPTY): HttpResponse
 
     /**
      * Automatically performs a lookup for a specific [Retryable] and performs a lambda using it.
@@ -51,5 +50,5 @@ public interface HttpClient {
      * @throws IllegalStateException if a [RetryBehavior] hasn't been registered with the given [retryWith]
      * @throws IllegalArgumentException if [retryWith] is blank
      */
-    public suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse
+    public suspend fun executeRetryable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse
 }

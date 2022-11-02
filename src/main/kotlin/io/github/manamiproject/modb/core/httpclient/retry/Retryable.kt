@@ -32,7 +32,7 @@ public class Retryable(private val config: RetryBehavior) {
      * @param request Lambda which performs a HTTP request returning a [HttpResponse]
      * @return The actual [HttpResponse] of the request if the request was successful
      */
-    public suspend fun executeSuspendable(request: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
+    public suspend fun execute(request: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         var response = request.invoke()
         var attempt = 0
 

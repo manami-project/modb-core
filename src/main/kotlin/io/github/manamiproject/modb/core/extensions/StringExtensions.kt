@@ -27,7 +27,7 @@ public const val LOCK_FILE_SUFFIX: String = "lck"
  * **Default** is `false`.
  * @throws IllegalStateException if the given [String] is blank
  */
-public suspend fun String.writeToFileSuspendable(file: RegularFile, writeLockFile: Boolean = false) {
+public suspend fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false) {
     val content = this
 
     withContext(LIMITED_FS) {

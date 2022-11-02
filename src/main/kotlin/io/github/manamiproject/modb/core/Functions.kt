@@ -32,7 +32,7 @@ import java.util.*
  * @throws IllegalArgumentException If the given path is blank.
  * @throws IllegalStateException If the given path does not exist.
  */
-public suspend fun loadResourceSuspendable(path: String): String = withContext(LIMITED_FS) {
+public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) {
     require(path.isNotBlank()) { "Given path must not be blank" }
 
     return@withContext ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()

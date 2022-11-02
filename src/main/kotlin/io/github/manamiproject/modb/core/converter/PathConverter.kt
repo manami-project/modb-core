@@ -16,5 +16,5 @@ public interface PathConverter {
      * @return Converted [Anime]
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory
      */
-    public suspend fun convertSuspendable(path: Path): Collection<Anime>
+    public suspend fun convert(path: Path): Collection<Anime>
 }

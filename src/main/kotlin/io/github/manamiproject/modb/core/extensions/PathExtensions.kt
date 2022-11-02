@@ -92,7 +92,7 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
+public suspend fun Path.readFile(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
     if (regularFileExists()) {
         readLines(charset).joinToString("\n")
     } else {

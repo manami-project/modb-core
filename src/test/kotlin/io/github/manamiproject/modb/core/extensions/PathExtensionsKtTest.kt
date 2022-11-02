@@ -244,7 +244,7 @@ internal class PathExtensionsKtTest {
             tempDirectory {
                 // when
                 val result = exceptionExpected<NoSuchFileException> {
-                    tempDir.readFileSuspendable()
+                    tempDir.readFile()
                 }
 
                 // then
@@ -262,7 +262,7 @@ internal class PathExtensionsKtTest {
                 }
 
                 // when
-                val result = runBlocking { file.readFileSuspendable() }
+                val result = runBlocking { file.readFile() }
 
                 // then
                 assertThat(result).isEqualTo("""This file
@@ -281,7 +281,7 @@ carriage return line feed [CRLF]""")
                 }
 
                 // when
-                val result = runBlocking { file.readFileSuspendable() }
+                val result = runBlocking { file.readFile() }
 
                 // then
                 assertThat(result).isEqualTo("""This file

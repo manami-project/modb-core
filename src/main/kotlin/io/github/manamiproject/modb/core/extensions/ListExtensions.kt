@@ -9,7 +9,7 @@ import java.security.SecureRandom
  * @since 8.0.0
  * @return The randomized list
  */
-public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
+public suspend fun <T> List<T>.createShuffledList(): List<T> {
     val list = this
 
     return withContext(LIMITED_CPU) {
@@ -27,7 +27,7 @@ public suspend fun <T> List<T>.createShuffledListSuspendable(): List<T> {
         shuffledList.shuffle(SecureRandom())
 
         while (list.containsExactlyInTheSameOrder(shuffledList)) {
-            shuffledList = list.createShuffledListSuspendable().toMutableList()
+            shuffledList = list.createShuffledList().toMutableList()
         }
 
         return@withContext shuffledList
