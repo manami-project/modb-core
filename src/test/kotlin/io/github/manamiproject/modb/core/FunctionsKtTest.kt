@@ -19,7 +19,7 @@ internal class FunctionsKtTest {
         fun `load test resource from root directory`() {
             // when
             val result = runBlocking {
-                loadResourceSuspendable("load_resource_tests/test-file.txt")
+                loadResource("load_resource_tests/test-file.txt")
             }
 
             // then
@@ -30,7 +30,7 @@ internal class FunctionsKtTest {
         fun `load test resource from subdirectory`() {
             // when
             val result = runBlocking {
-                loadResourceSuspendable("load_resource_tests/subdirectory/other-test-file.txt")
+                loadResource("load_resource_tests/subdirectory/other-test-file.txt")
             }
 
             // then
@@ -43,7 +43,7 @@ internal class FunctionsKtTest {
 
             // when
             val result = runBlocking {
-                loadResourceSuspendable(path)
+                loadResource(path)
             }
 
             // then
@@ -56,7 +56,7 @@ internal class FunctionsKtTest {
 
             // when
             val result = exceptionExpected<IllegalStateException> {
-                loadResourceSuspendable(path)
+                loadResource(path)
             }
 
             // then
@@ -68,7 +68,7 @@ internal class FunctionsKtTest {
         fun `throws an exception if the the given path is blank or empty`(value: String) {
             // when
             val result = exceptionExpected<IllegalArgumentException> {
-                loadResourceSuspendable(value)
+                loadResource(value)
             }
 
             // then

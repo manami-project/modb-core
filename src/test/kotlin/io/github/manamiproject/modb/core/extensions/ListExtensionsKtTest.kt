@@ -16,7 +16,7 @@ internal class ListExtensionsKtTest {
             val sortedList = mutableListOf("A", "B", "C", "D")
 
             // when
-            val result = runBlocking { sortedList.createShuffledListSuspendable() }
+            val result = runBlocking { sortedList.createShuffledList() }
 
             // then
             assertThat(result).containsAll(sortedList)
@@ -29,7 +29,7 @@ internal class ListExtensionsKtTest {
             val sortedList = mutableListOf("A")
 
             // when
-            val result = runBlocking { sortedList.createShuffledListSuspendable() }
+            val result = runBlocking { sortedList.createShuffledList() }
 
             // then
             assertThat(result).containsExactly("A")
@@ -41,7 +41,7 @@ internal class ListExtensionsKtTest {
             val sortedList = emptyList<String>()
 
             // when
-            val result = runBlocking { sortedList.createShuffledListSuspendable() }
+            val result = runBlocking { sortedList.createShuffledList() }
 
             // then
             assertThat(result).isEmpty()

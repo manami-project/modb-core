@@ -55,7 +55,7 @@ internal class JsonKtTest {
 
             // when
             val result = runBlocking {
-                Json.parseJsonSuspendable<Anime>(inputStream)
+                Json.parseJson<Anime>(inputStream)
             }
 
             // then
@@ -93,7 +93,7 @@ internal class JsonKtTest {
 
             // when
             val result = runBlocking {
-                Json.parseJsonSuspendable<Anime>(json)
+                Json.parseJson<Anime>(json)
             }
 
             // then
@@ -109,7 +109,7 @@ internal class JsonKtTest {
 
             // when
             val result = runBlocking {
-                Json.parseJsonSuspendable<Anime>(json)
+                Json.parseJson<Anime>(json)
             }
 
             // then
@@ -128,7 +128,7 @@ internal class JsonKtTest {
 
             // when
             val result = exceptionExpected<JsonDataException> {
-                Json.parseJsonSuspendable<NullableTestClass>(json)?.copy()
+                Json.parseJson<NullableTestClass>(json)?.copy()
             }
 
             // then
@@ -150,7 +150,7 @@ internal class JsonKtTest {
 
             // when
             val result = runBlocking {
-                Json.parseJsonSuspendable<ClassWithList>(json)
+                Json.parseJson<ClassWithList>(json)
             }
 
             // then
@@ -172,7 +172,7 @@ internal class JsonKtTest {
 
             // when
             val result = runBlocking {
-                Json.parseJsonSuspendable<ClassWithList>(json)?.copy()!!
+                Json.parseJson<ClassWithList>(json)?.copy()!!
             }
 
             // then
@@ -249,7 +249,7 @@ internal class JsonKtTest {
 
                 // when
                 val result = runBlocking {
-                    Json.toJsonSuspendable(anime)
+                    Json.toJson(anime)
                 }
 
                 // then
@@ -286,7 +286,7 @@ internal class JsonKtTest {
 
                 // when
                 val result = runBlocking {
-                    Json.toJsonSuspendable(anime)
+                    Json.toJson(anime)
                 }
 
                 // then
@@ -306,7 +306,7 @@ internal class JsonKtTest {
 
                 // when
                 val result = runBlocking {
-                    Json.toJsonSuspendable(NullableTestClass())
+                    Json.toJson(NullableTestClass())
                 }
 
                 // then
@@ -348,7 +348,7 @@ internal class JsonKtTest {
 
                 // when
                 val result = runBlocking {
-                    Json.toJsonSuspendable(anime, DEACTIVATE_PRETTY_PRINT)
+                    Json.toJson(anime, DEACTIVATE_PRETTY_PRINT)
                 }
 
                 // then
@@ -367,7 +367,7 @@ internal class JsonKtTest {
 
                 // when
                 val result = runBlocking {
-                    Json.toJsonSuspendable(NullableTestClass(), DEACTIVATE_SERIALIZE_NULL)
+                    Json.toJson(NullableTestClass(), DEACTIVATE_SERIALIZE_NULL)
                 }
 
                 // then

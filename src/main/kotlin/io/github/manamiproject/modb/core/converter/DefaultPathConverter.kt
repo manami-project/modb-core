@@ -7,12 +7,9 @@ import io.github.manamiproject.modb.core.extensions.*
 import io.github.manamiproject.modb.core.models.Anime
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
-import kotlin.io.path.forEachDirectoryEntry
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.useDirectoryEntries
 
 /**
  * Uses an [AnimeConverter] to convert files and directories to [Anime]s
@@ -25,7 +22,7 @@ public class DefaultPathConverter(
     private val fileSuffix: FileSuffix,
 ) : PathConverter {
 
-    override suspend fun convertSuspendable(path: Path): List<Anime> = withContext(LIMITED_CPU) {
+    override suspend fun convert(path: Path): List<Anime> = withContext(LIMITED_CPU) {
         when{
             path.regularFileExists() -> convertSingleFile(path)
             path.directoryExists() -> convertAllFilesInADirectory(path)
@@ -34,7 +31,7 @@ public class DefaultPathConverter(
     }
 
     private suspend fun convertSingleFile(file: RegularFile) = withContext(LIMITED_CPU) {
-        listOf(animeConverter.convertSuspendable(file.readFileSuspendable()))
+        listOf(animeConverter.convert(file.readFile()))
     }
 
     private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(LIMITED_FS) {

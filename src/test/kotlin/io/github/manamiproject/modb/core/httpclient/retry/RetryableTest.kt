@@ -17,7 +17,7 @@ internal class RetryableTest {
 
         // when
         val result = runBlocking {
-            retryable.executeSuspendable { expectedResult }
+            retryable.execute { expectedResult }
         }
 
         // then
@@ -46,7 +46,7 @@ internal class RetryableTest {
 
         // when
         val result = runBlocking {
-            retryable.executeSuspendable {
+            retryable.execute {
                 if (currentAttempt != 3) {
                     HttpResponse(500, EMPTY)
                 } else {
@@ -79,7 +79,7 @@ internal class RetryableTest {
 
         // when
         val result = exceptionExpected<FailedAfterRetryException> {
-            retryable.executeSuspendable { HttpResponse(500, EMPTY) }
+            retryable.execute { HttpResponse(500, EMPTY) }
         }
 
         // then
@@ -113,7 +113,7 @@ internal class RetryableTest {
 
         // when
         runBlocking {
-            retryable.executeSuspendable {
+            retryable.execute {
                 if (currentAttempt != 3) {
                     HttpResponse(500, EMPTY)
                 } else {

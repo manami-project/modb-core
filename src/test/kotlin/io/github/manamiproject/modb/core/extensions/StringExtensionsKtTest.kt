@@ -24,7 +24,7 @@ internal class StringExtensionsKtTest {
 
                 // when
                 val result = exceptionExpected<Exception> { //exception type varies depending on the OS
-                    "text".writeToFileSuspendable(file, false)
+                    "text".writeToFile(file, false)
                 }
 
                 // then
@@ -40,7 +40,7 @@ internal class StringExtensionsKtTest {
 
                 // when
                 val result = exceptionExpected<IllegalStateException> {
-                    EMPTY.writeToFileSuspendable(file, false)
+                    EMPTY.writeToFile(file, false)
                 }
 
                 // then
@@ -56,7 +56,7 @@ internal class StringExtensionsKtTest {
 
                 // when
                 val result = exceptionExpected<IllegalStateException> {
-                    "    ".writeToFileSuspendable(file, false)
+                    "    ".writeToFile(file, false)
                 }
 
                 // then
@@ -73,12 +73,12 @@ internal class StringExtensionsKtTest {
 
                 // when
                 runBlocking {
-                    string.writeToFileSuspendable(file, false)
+                    string.writeToFile(file, false)
                 }
 
                 // then
                 assertThat(file).exists()
-                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
+                assertThat(runBlocking { file.readFile() }).isEqualTo(string)
             }
         }
 
@@ -88,19 +88,19 @@ internal class StringExtensionsKtTest {
                 // given
                 val file = tempDir.resolve("test.txt").createFile()
                 runBlocking {
-                    "Some content\nfor a test file.".writeToFileSuspendable(file)
+                    "Some content\nfor a test file.".writeToFile(file)
                 }
 
                 val string = "Some totally different content."
 
                 // when
                 runBlocking {
-                    string.writeToFileSuspendable(file, false)
+                    string.writeToFile(file, false)
                 }
 
                 // then
                 assertThat(file).exists()
-                assertThat(runBlocking { file.readFileSuspendable() }).isEqualTo(string)
+                assertThat(runBlocking { file.readFile() }).isEqualTo(string)
             }
         }
     }

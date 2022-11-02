@@ -42,7 +42,7 @@ public class DefaultHttpClient(
         }
     }
 
-    override suspend fun postSuspendable(
+    override suspend fun post(
         url: URL,
         requestBody: RequestBody,
         headers: Map<String, Collection<String>>,
@@ -63,7 +63,7 @@ public class DefaultHttpClient(
             .build()
 
         if (retryWith.isNotBlank()) {
-            executeRetryableSuspendable(retryWith) {
+            executeRetryable(retryWith) {
                 executeRequest(request)
             }
         } else {
@@ -71,7 +71,7 @@ public class DefaultHttpClient(
         }
     }
 
-    override suspend fun getSuspedable(
+    override suspend fun get(
         url: URL,
         headers: Map<String, Collection<String>>,
         retryWith: String,
@@ -87,7 +87,7 @@ public class DefaultHttpClient(
             .build()
 
         if (retryWith.isNotBlank()) {
-            executeRetryableSuspendable(retryWith) {
+            executeRetryable(retryWith) {
                 executeRequest(request)
             }
         } else {
@@ -95,9 +95,9 @@ public class DefaultHttpClient(
         }
     }
 
-    override suspend fun executeRetryableSuspendable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
+    override suspend fun executeRetryable(retryWith: String, func: suspend () -> HttpResponse): HttpResponse = withContext(LIMITED_NETWORK) {
         require(retryWith.isNotBlank()) { "retryWith must not be blank" }
-        RetryableRegistry.fetch(retryWith)?.executeSuspendable(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
+        RetryableRegistry.fetch(retryWith)?.execute(func) ?: throw IllegalStateException("Unable to find retry named [$retryWith]")
     }
 
     private fun mapHttpProtocols(): List<Protocol> {

@@ -77,7 +77,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(url)
+                ).get(url)
             }
 
             // then
@@ -107,7 +107,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(url)
+                ).get(url)
             }
 
             // then
@@ -133,7 +133,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
            runBlocking {
                DefaultHttpClient(
                    isTestContext = true,
-               ).getSuspedable(URL("http://localhost:$port/test"), header)
+               ).get(URL("http://localhost:$port/test"), header)
            }
 
             // then
@@ -161,7 +161,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(
+                ).get(
                     url = URL("http://localhost:$port/test"),
                     headers = header,
                 )
@@ -190,7 +190,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(
+                ).get(
                     url = URL("http://localhost:$port/test"),
                     headers = headers,
                 )
@@ -209,7 +209,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(
+                ).get(
                     url = URL("http://localhost:$port/test"),
                     retryWith = "unknown",
                 )
@@ -238,7 +238,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(
+                ).get(
                     url = URL("http://localhost:$port/test"),
                     retryWith = testRetryBehaviorName,
                 )
@@ -270,7 +270,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).getSuspedable(
+                ).get(
                     url = URL("http://localhost:$port/test"),
                     retryWith = testRetryBehaviorName
                 )
@@ -320,7 +320,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                     okhttpClient = testOkHttpClient,
-                ).getSuspedable(
+                ).get(
                     url = url,
                 )
             }
@@ -354,7 +354,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = url,
                     headers = mapOf("test-header" to listOf("headervalue")),
                     requestBody = RequestBody(
@@ -387,7 +387,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     headers = header,
                     requestBody = RequestBody(
@@ -418,7 +418,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -448,7 +448,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(
                         mediaType = "application/xml",
@@ -482,7 +482,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     headers = header,
                     requestBody = RequestBody(
@@ -513,7 +513,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -540,7 +540,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
-                client.postSuspendable(
+                client.post(
                         url = URL("http://localhost:$port/test"),
                         requestBody = requestBody,
                     )
@@ -561,7 +561,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
-                client.postSuspendable(
+                client.post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = requestBody,
                 )
@@ -587,7 +587,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     headers = headers
@@ -607,7 +607,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     retryWith = "unknown",
@@ -637,7 +637,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     retryWith = testRetryBehaviorName
@@ -670,7 +670,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).postSuspendable(
+                ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     retryWith = testRetryBehaviorName,
@@ -721,7 +721,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                     okhttpClient = testOkHttpClient,
-                ).postSuspendable(
+                ).post(
                     url = url,
                     requestBody = RequestBody("application/json", "{}"),
                 )
@@ -750,7 +750,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<FailedAfterRetryException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).executeRetryableSuspendable(testRetryBehaviorName) {
+                ).executeRetryable(testRetryBehaviorName) {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -772,7 +772,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = runBlocking {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).executeRetryableSuspendable(testRetryBehaviorName) {
+                ).executeRetryable(testRetryBehaviorName) {
                     expectedResult
                 }
             }
@@ -786,7 +786,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<IllegalStateException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).executeRetryableSuspendable("test") {
+                ).executeRetryable("test") {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -800,7 +800,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<IllegalArgumentException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).executeRetryableSuspendable("       ") {
+                ).executeRetryable("       ") {
                     HttpResponse(200, EMPTY)
                 }
             }
@@ -814,7 +814,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val result = exceptionExpected<IllegalArgumentException> {
                 DefaultHttpClient(
                     isTestContext = true,
-                ).executeRetryableSuspendable("") {
+                ).executeRetryable("") {
                     HttpResponse(200, EMPTY)
                 }
             }

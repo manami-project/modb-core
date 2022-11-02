@@ -36,7 +36,7 @@ public object Json {
      * @return Deserialzed JSON as object of given type [T]
      */
     @OptIn(ExperimentalStdlibApi::class)
-    public suspend inline fun <reified T> parseJsonSuspendable(json: String): T? = withContext(LIMITED_CPU) {
+    public suspend inline fun <reified T> parseJson(json: String): T? = withContext(LIMITED_CPU) {
         return@withContext moshi.adapter<T>().nullSafe().fromJson(json)
     }
 
@@ -49,7 +49,7 @@ public object Json {
      * @return Deserialized JSON as object of given type [T]
      */
     @OptIn(ExperimentalStdlibApi::class)
-    public suspend inline fun <reified T> parseJsonSuspendable(json: InputStream): T? = withContext(LIMITED_FS) {
+    public suspend inline fun <reified T> parseJson(json: InputStream): T? = withContext(LIMITED_FS) {
         return@withContext moshi.adapter<T>().fromJson(json.bufferedReader().readText())
     }
 
@@ -60,7 +60,7 @@ public object Json {
      * @param options Options that can change the default behavior of the JSON serialization
      * @return Given object serialized in JSON as [String]
      */
-    public suspend fun toJsonSuspendable(obj: Any, vararg options: JsonSerializationOptions): String = withContext(LIMITED_CPU) {
+    public suspend fun toJson(obj: Any, vararg options: JsonSerializationOptions): String = withContext(LIMITED_CPU) {
         return@withContext configureJsonAdapter(JsonSerializationSettings(options.toSet())).toJson(obj)
     }
 

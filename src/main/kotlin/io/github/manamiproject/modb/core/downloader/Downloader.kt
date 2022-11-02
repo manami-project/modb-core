@@ -2,9 +2,7 @@ package io.github.manamiproject.modb.core.downloader
 
 import io.github.manamiproject.modb.core.config.AnimeId
 import io.github.manamiproject.modb.core.converter.AnimeConverter
-import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Anime
-import kotlinx.coroutines.runBlocking
 
 /**
  * Downloads raw content containing data which describes an anime
@@ -20,5 +18,5 @@ public interface Downloader {
      * of the metadata provider when it is downloaded. **Default:** is no action
      * @return Raw data
      */
-    public suspend fun downloadSuspendable(id: AnimeId, onDeadEntry: suspend (AnimeId) -> Unit = {}): String
+    public suspend fun download(id: AnimeId, onDeadEntry: suspend (AnimeId) -> Unit = {}): String
 }
