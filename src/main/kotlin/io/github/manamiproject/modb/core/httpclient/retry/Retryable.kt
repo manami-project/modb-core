@@ -1,10 +1,11 @@
 package io.github.manamiproject.modb.core.httpclient.retry
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
-import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 
 /**
  * Handles individual retry behavior for a HTTP request.
@@ -24,21 +25,6 @@ import kotlinx.coroutines.*
  * @throws FailedAfterRetryException if the request has been retried the [RetryBehavior.maxAttempts] number of times, but failed anyway.
  */
 public class Retryable(private val config: RetryBehavior) {
-
-    /**
-     * Executes a request and retries it if necessary.
-     * @since 1.0.0
-     * @param request Lambda which performs a HTTP request returning a [HttpResponse]
-     * @return The actual [HttpResponse] of the request if the request was successful
-     */
-    @Deprecated("Use coroutine instead", ReplaceWith(EMPTY))
-    public fun execute(request: () -> HttpResponse): HttpResponse {
-        return runBlocking {
-            executeSuspendable {
-                request.invoke()
-            }
-        }
-    }
 
     /**
      * Executes a request and retries it if necessary.

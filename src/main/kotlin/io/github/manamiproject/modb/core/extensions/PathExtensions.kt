@@ -3,7 +3,6 @@ package io.github.manamiproject.modb.core.extensions
 import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
@@ -88,18 +87,6 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
 
 /**
  * Read the content of a file to a [String]
- * @since 1.0.0
- * @param charset The charset to use for decoding. **Default** is [UTF_8]
- * @return The file's content
- * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
- */
-@Deprecated("Use coroutine", ReplaceWith(EMPTY))
-public fun Path.readFile(charset: Charset = UTF_8): String = runBlocking {
-    readFileSuspendable(charset)
-}
-
-/**
- * Read the content of a file to a [String]
  * @since 8.0.0
  * @param charset The charset to use for decoding. **Default** is [UTF_8]
  * @return The file's content
@@ -111,20 +98,6 @@ public suspend fun Path.readFileSuspendable(charset: Charset = UTF_8): String = 
     } else {
         throw NoSuchFileException(this.toString())
     }
-}
-
-/**
- * Can copy file to file, directory to directory or a file into a directory.
- * Does not copy the content of directory.
- * @since 1.0.0
- * @param target Target to copy the given [Path] to
- * @param copyOptions Specifying how the copy should be done
- * @return The target as [Path] object
- * @throws FileAlreadyExistsException if the target already exists
- */
-@Deprecated("Use coroutine", ReplaceWith(EMPTY))
-public fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path = runBlocking {
-    copyToSuspedable(target, *copyOptions)
 }
 
 /**
