@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
+import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.readLines
 import kotlin.io.path.Path as PathCreator
 
@@ -92,7 +93,7 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
  */
-public suspend fun Path.readFile(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
+public suspend fun RegularFile.readFile(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
     if (regularFileExists()) {
         readLines(charset).joinToString("\n")
     } else {
@@ -140,12 +141,31 @@ public fun Path.fileName(): String = this.fileName.toString()
  * @since 2.2.0
  * @return Either the file suffix or the full file name
  */
-public fun Path.fileSuffix(): FileSuffix {
+public fun RegularFile.fileSuffix(): FileSuffix {
     val fileName = this.fileName.toString()
 
     return if (fileName.startsWith('.')) {
         fileName
     } else {
         fileName.substringAfterLast('.')
+    }
+}
+
+/**
+ * Returns a list of the files in this directory optionally filtered by matching against the specified glob pattern.
+ * @since 8.0.0
+ * @param glob the globbing pattern. The syntax is specified by the [FileSystem.getPathMatcher] method.
+ * @return Files matching the [glob] pattern.
+ * @receiver A directory
+ * @throws java.util.regex.PatternSyntaxException if the glob pattern is invalid.
+ * @throws NotDirectoryException If this path does not refer to a directory.
+ * @throws java.io.IOException - If an I/O error occurs.
+ */
+public suspend fun Directory.listRegularFiles(glob: String = "*"): Collection<RegularFile> {
+    val dir = this
+
+    return withContext(LIMITED_FS) {
+        dir.listDirectoryEntries(glob = glob)
+            .filter { it.regularFileExists() }
     }
 }
