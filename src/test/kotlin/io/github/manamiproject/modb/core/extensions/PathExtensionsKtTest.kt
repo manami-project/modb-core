@@ -6,10 +6,7 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.nio.file.FileAlreadyExistsException
-import java.nio.file.Files
-import java.nio.file.NoSuchFileException
-import java.nio.file.Paths
+import java.nio.file.*
 
 internal class PathExtensionsKtTest {
 
@@ -179,6 +176,46 @@ internal class PathExtensionsKtTest {
 
                 // when
                 val result = existingPath.regularFileExists()
+
+                // then
+                assertThat(result).isTrue()
+            }
+        }
+
+        @Test
+        fun `returns true if the given path is a link`() {
+            tempDirectory {
+                // given
+                val file = tempDir.resolve("test.json").apply {
+                    Files.createFile(this)
+                }
+
+                val link = tempDir.resolve("a-link").apply {
+                    Files.createLink(this, file)
+                }
+
+                // when
+                val result = link.regularFileExists()
+
+                // then
+                assertThat(result).isTrue()
+            }
+        }
+
+        @Test
+        fun `returns true if the given path is a symlink`() {
+            tempDirectory {
+                // given
+                val file = tempDir.resolve("test.json").apply {
+                    Files.createFile(this)
+                }
+
+                val symlink = tempDir.resolve("a-symlink").apply {
+                    Files.createSymbolicLink(this, file)
+                }
+
+                // when
+                val result = symlink.regularFileExists()
 
                 // then
                 assertThat(result).isTrue()
@@ -442,8 +479,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = "test.json"
-                val file = tempDir.resolve(expectedName)
-                Files.createFile(file)
+                val file = tempDir.resolve(expectedName).apply {
+                    Files.createFile(this)
+                }
 
                 // when
                 val result = file.fileName()
@@ -458,8 +496,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = ".gitignore"
-                val file = tempDir.resolve(expectedName)
-                Files.createFile(file)
+                val file = tempDir.resolve(expectedName).apply {
+                    Files.createFile(this)
+                }
 
                 // when
                 val result = file.fileName()
@@ -474,8 +513,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = "subdir"
-                val dir = tempDir.resolve(expectedName)
-                Files.createDirectory(dir)
+                val dir = tempDir.resolve(expectedName).apply {
+                    Files.createDirectory(this)
+                }
 
                 // when
                 val result = dir.fileName()
@@ -493,8 +533,9 @@ line feed [LF]""")
         fun `correctly return the file suffix`() {
             tempDirectory {
                 // given
-                val file = tempDir.resolve("test.json")
-                Files.createFile(file)
+                val file = tempDir.resolve("test.json").apply {
+                    Files.createFile(this)
+                }
 
                 // when
                 val result = file.fileSuffix()
@@ -509,8 +550,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = ".gitignore"
-                val file = tempDir.resolve(expectedName)
-                Files.createFile(file)
+                val file = tempDir.resolve(expectedName).apply {
+                    Files.createFile(this)
+                }
 
                 // when
                 val result = file.fileSuffix()
@@ -525,8 +567,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = "test"
-                val file = tempDir.resolve(expectedName)
-                Files.createFile(file)
+                val file = tempDir.resolve(expectedName).apply {
+                    Files.createFile(this)
+                }
 
                 // when
                 val result = file.fileSuffix()
@@ -541,8 +584,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = "subdir.more"
-                val dir = tempDir.resolve(expectedName)
-                Files.createDirectory(dir)
+                val dir = tempDir.resolve(expectedName).apply {
+                    Files.createDirectory(this)
+                }
 
                 // when
                 val result = dir.fileSuffix()
@@ -557,8 +601,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = "subdir"
-                val dir = tempDir.resolve(expectedName)
-                Files.createDirectory(dir)
+                val dir = tempDir.resolve(expectedName).apply {
+                    Files.createDirectory(this)
+                }
 
                 // when
                 val result = dir.fileSuffix()
@@ -573,8 +618,9 @@ line feed [LF]""")
             tempDirectory {
                 // given
                 val expectedName = ".git"
-                val dir = tempDir.resolve(expectedName)
-                Files.createDirectory(dir)
+                val dir = tempDir.resolve(expectedName).apply {
+                    Files.createDirectory(this)
+                }
 
                 // when
                 val result = dir.fileSuffix()
@@ -588,14 +634,97 @@ line feed [LF]""")
         fun `return correct suffix from a file having a dot within the name`() {
             tempDirectory {
                 // given
-                val dir = tempDir.resolve("a_name_with_version_2.x.xml")
-                Files.createDirectory(dir)
+                val dir = tempDir.resolve("a_name_with_version_2.x.xml").apply {
+                    Files.createDirectory(this)
+                }
 
                 // when
                 val result = dir.fileSuffix()
 
                 // then
                 assertThat(result).isEqualTo("xml")
+            }
+        }
+    }
+
+    @Nested
+    inner class ListRegularFilesTests {
+
+        @Test
+        fun `correctly return all regular files in a directory`() {
+            tempDirectory {
+                // given
+                val file1 = tempDir.resolve("test1.json").apply {
+                    Files.createFile(this)
+                }
+
+                val file2 = tempDir.resolve("test2.txt").apply {
+                    Files.createFile(this)
+                }
+
+                tempDir.resolve("a-directory").apply {
+                    Files.createDirectory(this)
+                }
+
+                val link = tempDir.resolve("a-link").apply {
+                    Files.createLink(this, file1)
+                }
+
+                val symlink = tempDir.resolve("a-symlink").apply {
+                    Files.createSymbolicLink(this, file1)
+                }
+
+                // when
+                val result = tempDir.listRegularFiles()
+
+                // then
+                assertThat(result).containsExactlyInAnyOrder(file1, file2, link, symlink)
+            }
+        }
+
+        @Test
+        fun `correctly filters by glob`() {
+            tempDirectory {
+                // given
+                tempDir.resolve("test1.json").apply {
+                    Files.createFile(this)
+                }
+
+                val file2 = tempDir.resolve("test2.txt").apply {
+                    Files.createFile(this)
+                }
+
+                tempDir.resolve("test3.yaml").apply {
+                    Files.createFile(this)
+                }
+
+                val file4 = tempDir.resolve("test4.txt").apply {
+                    Files.createFile(this)
+                }
+
+                // when
+                val result = tempDir.listRegularFiles("*.txt")
+
+                // then
+                assertThat(result).containsExactlyInAnyOrder(file2, file4)
+            }
+        }
+
+        @Test
+        fun `throws exception if receiver is not a directory`() {
+            tempDirectory {
+                // given
+                val file = tempDir.resolve("test1.json").apply {
+                    Files.createFile(this)
+                }
+
+                // when
+                val result = exceptionExpected<NotDirectoryException> {
+                    file.listRegularFiles()
+                }
+
+                // then
+                assertThat(result).hasMessageContaining(file.fileName.toString())
             }
         }
     }

@@ -9,7 +9,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
-import kotlin.io.path.listDirectoryEntries
 
 /**
  * Uses an [AnimeConverter] to convert files and directories to [Anime]s
@@ -35,8 +34,7 @@ public class DefaultPathConverter(
     }
 
     private suspend fun convertAllFilesInADirectory(path: Directory): List<Anime> = withContext(LIMITED_FS) {
-        val jobs = path.listDirectoryEntries(glob = "*$fileSuffix")
-            .filter { it.regularFileExists() }
+        val jobs = path.listRegularFiles(glob = "*$fileSuffix")
             .map {
                 async {
                     convertSingleFile(it)
