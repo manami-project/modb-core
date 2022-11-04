@@ -35,7 +35,7 @@ internal class CollectionExtensionsKtTest {
         @Test
         fun `pick random element`() {
             // given
-            val list = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
+            val list = (1..25).toList()
 
             // when
             val result = listOf(list.pickRandom(), list.pickRandom(), list.pickRandom(), list.pickRandom())
