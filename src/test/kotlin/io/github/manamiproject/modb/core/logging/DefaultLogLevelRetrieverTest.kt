@@ -4,7 +4,7 @@ import io.github.manamiproject.modb.core.logging.DefaultLogLevelRetriever.Compan
 import io.github.manamiproject.modb.core.logging.LogLevel.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class DefaultLogLevelRetrieverTest {
 

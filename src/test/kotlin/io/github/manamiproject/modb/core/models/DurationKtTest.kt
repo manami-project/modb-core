@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.models
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class DurationKtTest {
 

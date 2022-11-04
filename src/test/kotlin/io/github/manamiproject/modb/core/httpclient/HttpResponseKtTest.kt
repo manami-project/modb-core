@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class HttpResponseKtTest {
 

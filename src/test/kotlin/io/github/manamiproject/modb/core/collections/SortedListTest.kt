@@ -2,7 +2,7 @@ package io.github.manamiproject.modb.core.collections
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class SortedListTest {
 

@@ -21,7 +21,7 @@ import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.SocketTimeoutException
 import java.net.URL

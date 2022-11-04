@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.logging
 import io.github.manamiproject.modb.core.logging.LogLevel.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.ValueSource

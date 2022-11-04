@@ -3,7 +3,7 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import java.net.URL
 
 internal class DefaultHeaderCreatorTest {
