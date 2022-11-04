@@ -28,6 +28,7 @@ public interface MetaDataProviderConfig {
      * Distinguish between a test context and production context
      * @since 1.0.0
      * @return **true** if the current context is a test context. This is the case for unit tests for example.
+     * @see io.github.manamiproject.modb.core.excludeFromTestContext
      */
     public fun isTestContext(): Boolean = false
 
@@ -43,6 +44,7 @@ public interface MetaDataProviderConfig {
      * @since 3.0.0
      * @param id Id of the anime on the meta data provider's website
      * @return Direct link to the anime on the website of the meta data provider
+     * @see extractAnimeId
      */
     public fun buildAnimeLink(id: AnimeId): URI = URI("https://${hostname()}/anime/$id")
 
@@ -58,9 +60,10 @@ public interface MetaDataProviderConfig {
     /**
      * Extracts the [AnimeId] from a given [URI].
      * @since 3.0.0
-     * @param uri Anime link uri. Could've been previously created using [buildAnimeLink]
+     * @param uri Anime link URI. Could've been previously created using [buildAnimeLink]
      * @return The ID for the anime.
      * @throws IllegalArgumentException if the given [URI] does not contain the hostname.
+     * @see buildAnimeLink
      */
     public fun extractAnimeId(uri: URI): AnimeId {
         require(uri.toString().contains(hostname())) { "URI doesn't contain hostname [${hostname()}]" }

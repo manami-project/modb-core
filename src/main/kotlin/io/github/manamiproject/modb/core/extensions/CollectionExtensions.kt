@@ -7,6 +7,7 @@ import java.security.SecureRandom
  * @since 4.0.0
  * @return A random element from the given [Collection].
  * @throws IllegalStateException if the collection is empty
+ * @receiver Any collection.
  */
 public fun <T> Collection<T>.pickRandom(): T {
     val internal = this.toList()

@@ -4,6 +4,11 @@ import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
+/**
+ * Provides coroutine dispatchers for various use cases.
+ * Because these dispatchers are backed by custom thread pools you have to close them yourself.
+ * @since 8.0.0
+ */
 public object ModbDispatchers {
 
     private val availableProcessors = Runtime.getRuntime().availableProcessors()
