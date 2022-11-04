@@ -6,11 +6,10 @@ import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import kotlin.test.Test
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
+import kotlin.test.Test
 
 internal class DefaultPathConverterTest {
 
@@ -38,13 +37,11 @@ internal class DefaultPathConverterTest {
         tempDirectory {
             // given
             val file = tempDir.resolve("test.txt").createFile()
-            runBlocking {
-                "Correct file".writeToFile(file)
-            }
+            "Correct file".writeToFile(file)
 
-            val expectedAnime =  Anime("Expected Anime")
+            val expectedAnime = Anime("Expected Anime")
 
-            val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
+            val specificTestConverter = object : AnimeConverter by TestAnimeConverter {
                 override suspend fun convert(rawContent: String): Anime {
                     return if (rawContent == "Correct file") {
                         expectedAnime
@@ -57,7 +54,7 @@ internal class DefaultPathConverterTest {
             val converter = DefaultPathConverter(specificTestConverter, "txt")
 
             // when
-            val result = runBlocking { converter.convert(file) }
+            val result = converter.convert(file)
 
             // then
             assertThat(result).containsExactly(expectedAnime)
@@ -68,11 +65,9 @@ internal class DefaultPathConverterTest {
     fun `successfully convert a whole directory`() {
         tempDirectory {
             // given
-            val directory = runBlocking {
-                tempDir.resolve("dir").createDirectory().apply {
-                    "accept 1".writeToFile(this.resolve("file1.txt"))
-                    "accept 2".writeToFile(this.resolve("file2.txt"))
-                }
+            val directory = tempDir.resolve("dir").createDirectory().apply {
+                "accept 1".writeToFile(this.resolve("file1.txt"))
+                "accept 2".writeToFile(this.resolve("file2.txt"))
             }
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
@@ -88,7 +83,7 @@ internal class DefaultPathConverterTest {
             val converter = DefaultPathConverter(specificTestConverter, "txt")
 
             // when
-            val result = runBlocking { converter.convert(directory) }
+            val result = converter.convert(directory)
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
