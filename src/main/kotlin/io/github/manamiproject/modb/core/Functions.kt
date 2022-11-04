@@ -9,7 +9,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.BufferedReader
 import java.nio.file.Paths
-import java.util.*
+import java.security.SecureRandom
 
 /**
  * During development: Reads the content of a file from _src/main/resources_ into a [String].
@@ -82,7 +82,7 @@ public fun random(number1: Int, number2: Int): Long {
     val min = if (number1 < number2) number1 else number2
     val max = if (number1 > number2) number1 else number2
 
-    return (Random().nextInt((max - min) + 1) + min).toLong()
+    return (SecureRandom().nextInt((max - min) + 1) + min).toLong()
 }
 
 /**
