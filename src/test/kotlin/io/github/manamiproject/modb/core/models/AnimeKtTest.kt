@@ -10,7 +10,7 @@ import io.github.manamiproject.modb.core.models.AnimeSeason.Season.*
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.URI
 

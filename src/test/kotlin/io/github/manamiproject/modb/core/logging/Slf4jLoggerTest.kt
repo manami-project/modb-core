@@ -2,7 +2,7 @@ package io.github.manamiproject.modb.core.logging
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.slf4j.Logger
 import java.net.SocketTimeoutException
 
