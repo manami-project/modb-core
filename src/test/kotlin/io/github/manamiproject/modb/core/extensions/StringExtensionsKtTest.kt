@@ -2,7 +2,6 @@ package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
@@ -72,13 +71,11 @@ internal class StringExtensionsKtTest {
                 val file = tempDir.resolve("test.txt")
 
                 // when
-                runBlocking {
-                    string.writeToFile(file, false)
-                }
+                string.writeToFile(file, false)
 
                 // then
                 assertThat(file).exists()
-                assertThat(runBlocking { file.readFile() }).isEqualTo(string)
+                assertThat(file.readFile()).isEqualTo(string)
             }
         }
 
@@ -87,20 +84,16 @@ internal class StringExtensionsKtTest {
             tempDirectory {
                 // given
                 val file = tempDir.resolve("test.txt").createFile()
-                runBlocking {
-                    "Some content\nfor a test file.".writeToFile(file)
-                }
+                "Some content\nfor a test file.".writeToFile(file)
 
                 val string = "Some totally different content."
 
                 // when
-                runBlocking {
-                    string.writeToFile(file, false)
-                }
+                string.writeToFile(file, false)
 
                 // then
                 assertThat(file).exists()
-                assertThat(runBlocking { file.readFile() }).isEqualTo(string)
+                assertThat(file.readFile()).isEqualTo(string)
             }
         }
     }

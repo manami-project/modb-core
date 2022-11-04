@@ -12,39 +12,45 @@ internal class ListExtensionsKtTest {
 
         @Test
         fun `create a shuffled list`() {
-            // given
-            val sortedList = mutableListOf("A", "B", "C", "D")
+            runBlocking {
+                // given
+                val sortedList = mutableListOf("A", "B", "C", "D")
 
-            // when
-            val result = runBlocking { sortedList.createShuffledList() }
+                // when
+                val result = sortedList.createShuffledList()
 
-            // then
-            assertThat(result).containsAll(sortedList)
-            assertThat(result).doesNotContainSequence(sortedList)
+                // then
+                assertThat(result).containsAll(sortedList)
+                assertThat(result).doesNotContainSequence(sortedList)
+            }
         }
 
         @Test
         fun `list having only one element`() {
-            // given
-            val sortedList = mutableListOf("A")
+            runBlocking {
+                // given
+                val sortedList = mutableListOf("A")
 
-            // when
-            val result = runBlocking { sortedList.createShuffledList() }
+                // when
+                val result = sortedList.createShuffledList()
 
-            // then
-            assertThat(result).containsExactly("A")
+                // then
+                assertThat(result).containsExactly("A")
+            }
         }
 
         @Test
         fun `empty list`() {
-            // given
-            val sortedList = emptyList<String>()
+            runBlocking {
+                // given
+                val sortedList = emptyList<String>()
 
-            // when
-            val result = runBlocking { sortedList.createShuffledList() }
+                // when
+                val result = sortedList.createShuffledList()
 
-            // then
-            assertThat(result).isEmpty()
+                // then
+                assertThat(result).isEmpty()
+            }
         }
     }
 

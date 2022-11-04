@@ -2,7 +2,6 @@ package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.tempDirectory
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
@@ -299,7 +298,7 @@ internal class PathExtensionsKtTest {
                 }
 
                 // when
-                val result = runBlocking { file.readFile() }
+                val result = file.readFile()
 
                 // then
                 assertThat(result).isEqualTo("""This file
@@ -318,7 +317,7 @@ carriage return line feed [CRLF]""")
                 }
 
                 // when
-                val result = runBlocking { file.readFile() }
+                val result = file.readFile()
 
                 // then
                 assertThat(result).isEqualTo("""This file
@@ -346,7 +345,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = runBlocking { srcFile.copyToSuspedable(target) }
+                val result = srcFile.copyToSuspedable(target)
 
                 // then
                 assertThat(tempDir.resolve("target").resolve(fileName)).exists()
@@ -370,7 +369,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = runBlocking { srcFile.copyToSuspedable(target.resolve(expectedFileName)) }
+                val result = srcFile.copyToSuspedable(target.resolve(expectedFileName))
 
                 // then
                 assertThat(target.resolve(expectedFileName)).exists()
@@ -416,7 +415,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = runBlocking { srcDirectory.copyToSuspedable(targetDirectory) }
+                val result = srcDirectory.copyToSuspedable(targetDirectory)
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
@@ -438,7 +437,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = runBlocking { srcDirectory.copyToSuspedable(targetDirectory.resolve("src")) }
+                val result = srcDirectory.copyToSuspedable(targetDirectory.resolve("src"))
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
