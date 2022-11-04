@@ -16,7 +16,7 @@ public typealias Seconds = Int
  */
 public data class Duration(
     private val value: Int,
-    private val unit: TimeUnit
+    private val unit: TimeUnit,
 ) {
     /**
      * @since 1.0.0

@@ -35,11 +35,11 @@ internal class JsonKtTest {
                 status = FINISHED,
                 animeSeason = AnimeSeason(
                     season = SUMMER,
-                    year = 2009
+                    year = 2009,
                 ),
                 picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
                 thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-                duration = Duration(24, MINUTES)
+                duration = Duration(24, MINUTES),
             ).addSources(URI("https://myanimelist.net/anime/6351"))
                 .addRelations(URI("https://myanimelist.net/anime/2167"))
                 .addSynonyms(
@@ -72,11 +72,11 @@ internal class JsonKtTest {
                 status = FINISHED,
                 animeSeason = AnimeSeason(
                     season = SUMMER,
-                    year = 2009
+                    year = 2009,
                 ),
                 picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
                 thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-                duration = Duration(24, MINUTES)
+                duration = Duration(24, MINUTES),
             ).addSources(URI("https://myanimelist.net/anime/6351"))
                 .addRelations(URI("https://myanimelist.net/anime/2167"))
                 .addSynonyms(
@@ -327,11 +327,11 @@ internal class JsonKtTest {
                     status = FINISHED,
                     animeSeason = AnimeSeason(
                         season = SUMMER,
-                        year = 2009
+                        year = 2009,
                     ),
                     picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
                     thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-                    duration = Duration(24, MINUTES)
+                    duration = Duration(24, MINUTES),
                 ).addSources(URI("https://myanimelist.net/anime/6351"))
                     .addRelations(URI("https://myanimelist.net/anime/2167"))
                     .addSynonyms(

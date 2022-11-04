@@ -18,7 +18,7 @@ internal object DefaultHeaderCreator: HeaderCreator {
                 Pair("Upgrade-Insecure-Requests", "1"),
                 Pair("Pragma", "no-cache"),
                 Pair("Cache-Control", "no-cache"),
-                Pair("TE", "Trailers")
+                Pair("TE", "Trailers"),
         )
         headers.putAll(addBrowserUnspecificHeaders())
 

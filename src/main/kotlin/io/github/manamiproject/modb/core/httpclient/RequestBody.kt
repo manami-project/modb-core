@@ -13,5 +13,5 @@ public const val APPLICATION_JSON: String = "application/json"
  */
 public data class RequestBody(
     val mediaType: String,
-    val body: String
+    val body: String,
 )

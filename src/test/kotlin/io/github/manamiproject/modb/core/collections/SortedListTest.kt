@@ -156,7 +156,7 @@ internal class SortedListTest {
                 "Chihayafuru",
                 "Gintama",
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -175,7 +175,7 @@ internal class SortedListTest {
         // then
         assertThat(list.toList()).containsExactly(
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -197,7 +197,7 @@ internal class SortedListTest {
         assertThat(list.toList()).containsExactly(
                 "Chihayafuru",
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -220,7 +220,7 @@ internal class SortedListTest {
                 "Ashita no Joe 2",
                 "Chihayafuru",
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -243,7 +243,7 @@ internal class SortedListTest {
                 "Ashita no Joe 2",
                 "Chihayafuru",
                 "Natsume Yuujinchou Roku",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -267,7 +267,7 @@ internal class SortedListTest {
                 "Chihayafuru",
                 "Natsume Yuujinchou Roku",
                 "Suzumiya Haruhi no Shoushitsu",
-                "Zankyou no Terror"
+                "Zankyou no Terror",
         )
     }
 
@@ -288,7 +288,7 @@ internal class SortedListTest {
         // then
         assertThat(list.toList()).containsExactly(
                 "Chihayafuru",
-                "Natsume Yuujinchou Roku"
+                "Natsume Yuujinchou Roku",
         )
     }
 
