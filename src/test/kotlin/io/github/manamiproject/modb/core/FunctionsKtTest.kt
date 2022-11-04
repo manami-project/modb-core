@@ -174,42 +174,6 @@ internal class FunctionsKtTest {
 
         @Test
         fun `execute code if current context is not test context`() {
-            // given
-            var hasBeenInvoked = false
-
-            val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
-                override fun isTestContext(): Boolean = false
-            }
-
-            // when
-            excludeFromTestContext(testConfig) { hasBeenInvoked = true }
-
-            // then
-            assertThat(hasBeenInvoked).isTrue()
-        }
-
-        @Test
-        fun `don't execute code if current context is test context`() {
-            // given
-            var hasBeenInvoked = false
-
-            val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
-                override fun isTestContext(): Boolean = true
-            }
-
-            // when
-            excludeFromTestContext(testConfig) { hasBeenInvoked = true }
-
-            // then
-            assertThat(hasBeenInvoked).isFalse()
-        }
-    }
-
-    @Nested
-    inner class ExcludeFromTestContextSuspendableTests {
-
-        @Test
-        fun `execute code if current context is not test context`() {
             runBlocking {
                 // given
                 var hasBeenInvoked = false
@@ -219,7 +183,7 @@ internal class FunctionsKtTest {
                 }
 
                 // when
-                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
+                excludeFromTestContext(testConfig) { hasBeenInvoked = true }
 
                 // then
                 assertThat(hasBeenInvoked).isTrue()
@@ -237,7 +201,7 @@ internal class FunctionsKtTest {
                 }
 
                 // when
-                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
+                excludeFromTestContext(testConfig) { hasBeenInvoked = true }
 
                 // then
                 assertThat(hasBeenInvoked).isFalse()
