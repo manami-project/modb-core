@@ -35,7 +35,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     testImplementation("ch.qos.logback:logback-classic:1.4.4")
-    testImplementation("io.github.manamiproject:modb-test:1.4.0-beta.4")
+    testImplementation("io.github.manamiproject:modb-test:1.4.0-beta.5")
 }
 
 kotlin {
