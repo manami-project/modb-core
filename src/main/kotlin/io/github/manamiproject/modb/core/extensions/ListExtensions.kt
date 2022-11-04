@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 
@@ -26,7 +27,7 @@ public suspend fun <T> List<T>.createShuffledList(): List<T> {
         shuffledList.shuffle(SecureRandom())
         shuffledList.shuffle(SecureRandom())
 
-        while (list.containsExactlyInTheSameOrder(shuffledList)) {
+        while (list.containsExactlyInTheSameOrder(shuffledList) && isActive) {
             shuffledList = list.createShuffledList().toMutableList()
         }
 
