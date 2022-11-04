@@ -16,12 +16,14 @@ import kotlin.io.path.Path as PathCreator
 /**
  * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a directory.
  * @since 1.0.0
+ * @see RegularFile
  */
 public typealias Directory = Path
 
 /**
- * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a file.
+ * A [Path] can represent a directory, file or a link. This typealias is used to specify the usage of a file, link or a symbolic link.
  * @since 1.0.0
+ * @see Directory
  */
 public typealias RegularFile = Path
 
@@ -92,6 +94,7 @@ public fun Path.directoryExists(vararg linkOption: LinkOption): Boolean = this.e
  * @param charset The charset to use for decoding. **Default** is [UTF_8]
  * @return The file's content
  * @throws NoSuchFileException if the given [Path] doesn't exist or is not a file.
+ * @receiver Any regular file.
  */
 public suspend fun RegularFile.readFile(charset: Charset = UTF_8): String = withContext(LIMITED_FS) {
     if (regularFileExists()) {
@@ -109,8 +112,9 @@ public suspend fun RegularFile.readFile(charset: Charset = UTF_8): String = with
  * @param copyOptions Specifying how the copy should be done
  * @return The target as [Path] object
  * @throws FileAlreadyExistsException if the target already exists
+ * @receiver Any regular file or directory.
  */
-public suspend fun Path.copyToSuspedable(target: Path, vararg copyOptions: CopyOption): Path {
+public suspend fun Path.copyTo(target: Path, vararg copyOptions: CopyOption): Path {
     val source = this
 
     return withContext(IO) {
@@ -128,6 +132,7 @@ public suspend fun Path.copyToSuspedable(target: Path, vararg copyOptions: CopyO
  * Will return the name of either a [RegularFile] or a [Directory].
  * @since 2.2.0
  * @return The file name as a [String]
+ * @receiver Any regular file.
  */
 public fun Path.fileName(): String = this.fileName.toString()
 
@@ -140,6 +145,7 @@ public fun Path.fileName(): String = this.fileName.toString()
  * Behaves the same for a directory.
  * @since 2.2.0
  * @return Either the file suffix or the full file name
+ * @receiver Any regular file.
  */
 public fun RegularFile.fileSuffix(): FileSuffix {
     val fileName = this.fileName.toString()

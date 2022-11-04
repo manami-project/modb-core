@@ -328,7 +328,7 @@ line feed [LF]""")
     }
 
     @Nested
-    inner class CopyTests {
+    inner class CopyToTests {
 
         @Test
         fun `successfully copy a single file by passing an existing directory`() {
@@ -345,7 +345,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcFile.copyToSuspedable(target)
+                val result = srcFile.copyTo(target)
 
                 // then
                 assertThat(tempDir.resolve("target").resolve(fileName)).exists()
@@ -369,7 +369,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcFile.copyToSuspedable(target.resolve(expectedFileName))
+                val result = srcFile.copyTo(target.resolve(expectedFileName))
 
                 // then
                 assertThat(target.resolve(expectedFileName)).exists()
@@ -394,7 +394,7 @@ line feed [LF]""")
 
                 // when
                 val result = exceptionExpected<FileAlreadyExistsException> {
-                    srcFile.copyToSuspedable(target)
+                    srcFile.copyTo(target)
                 }
 
                 // then
@@ -415,7 +415,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcDirectory.copyToSuspedable(targetDirectory)
+                val result = srcDirectory.copyTo(targetDirectory)
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
@@ -437,7 +437,7 @@ line feed [LF]""")
                 }
 
                 // when
-                val result = srcDirectory.copyToSuspedable(targetDirectory.resolve("src"))
+                val result = srcDirectory.copyTo(targetDirectory.resolve("src"))
 
                 // then
                 assertThat(tempDir.resolve("src")).exists()
@@ -461,7 +461,7 @@ line feed [LF]""")
 
                 // when
                 val result = exceptionExpected<FileAlreadyExistsException> {
-                    srcDirectory.copyToSuspedable(targetDirectory)
+                    srcDirectory.copyTo(targetDirectory)
                 }
 
                 // then

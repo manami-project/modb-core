@@ -10,8 +10,8 @@ import java.util.function.Predicate
  * @property comparator Comparator used to sort the elements. **Default:** Simple call of `compareTo`
  */
 public class SortedList<T: Comparable<T>>(
-        private val list: MutableList<T> = mutableListOf(),
-        private val comparator: Comparator<T> = Comparator { o1, o2 -> o1.compareTo(o2) },
+    private val list: MutableList<T> = mutableListOf(),
+    private val comparator: Comparator<T> = Comparator { o1, o2 -> o1.compareTo(o2) },
 ) : MutableList<T> by list {
 
     /**

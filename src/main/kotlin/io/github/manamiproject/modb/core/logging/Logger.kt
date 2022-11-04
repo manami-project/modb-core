@@ -35,7 +35,7 @@ public interface Logger {
     public fun debug(message: () -> String)
 
     /**
-     * Log a trace statement..
+     * Log a trace statement.
      * @since 7.0.0
      * @param message Message that will be logged.
      */

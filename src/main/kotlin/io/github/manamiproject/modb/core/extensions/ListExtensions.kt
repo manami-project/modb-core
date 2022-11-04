@@ -9,6 +9,7 @@ import java.security.SecureRandom
  * Randomizes the order of elements in a [List]
  * @since 8.0.0
  * @return The randomized list
+ * @receiver Any list.
  */
 public suspend fun <T> List<T>.createShuffledList(): List<T> {
     val list = this
@@ -39,6 +40,7 @@ public suspend fun <T> List<T>.createShuffledList(): List<T> {
  * Check whether two lists are completely identical including the order of elements.
  * @since 1.0.0
  * @return `true` if both lists are completely identical.
+ * @receiver Any list.
  */
 public fun <T> List<T>.containsExactlyInTheSameOrder(otherList: List<T>): Boolean {
     if (this.size != otherList.size) return false

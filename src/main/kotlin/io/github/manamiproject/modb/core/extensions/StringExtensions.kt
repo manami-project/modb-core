@@ -26,6 +26,7 @@ public const val LOCK_FILE_SUFFIX: String = "lck"
  * First the empty lock file is created using [LOCK_FILE_SUFFIX]. Then the actual file is being written. After that the lock file is deleted again.
  * **Default** is `false`.
  * @throws IllegalStateException if the given [String] is blank
+ * @receiver Any non-nullable [String]
  */
 public suspend fun String.writeToFile(file: RegularFile, writeLockFile: Boolean = false) {
     val content = this
@@ -54,6 +55,7 @@ public suspend fun String.writeToFile(file: RegularFile, writeLockFile: Boolean 
  * @param ignoreCase Whether to operate case sensitive or not. **Default:** `false`
  * @param normalizeWhitespaces If set to true multiple consective whitespaces will be replaced with a single one.
  * @return The [String] without the occurrences of [value]
+ * @receiver Any non-nullable [String]
  */
 public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWhitespaces: Boolean = false): String {
     var cleanedValue = this.replace(value, EMPTY, ignoreCase)
@@ -69,5 +71,6 @@ public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWh
  * Replaces multiple consecutive whitespaces with a single one.
  * @since 5.3.0
  * @return The original [String] having a single whitespace in places where it had multiple consecutive whitespaces before.
+ * @receiver Any non-nullable [String]
  */
 public fun String.normalizeWhitespaces(): String = this.replace(Regex(" {2,}"), " ")
