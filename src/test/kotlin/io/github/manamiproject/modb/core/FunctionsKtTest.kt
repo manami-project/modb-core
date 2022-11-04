@@ -17,37 +17,37 @@ internal class FunctionsKtTest {
 
         @Test
         fun `load test resource from root directory`() {
-            // when
-            val result = runBlocking {
-                loadResource("load_resource_tests/test-file.txt")
-            }
+            runBlocking {
+                // when
+                val result = loadResource("load_resource_tests/test-file.txt")
 
-            // then
-            assertThat(result).isEqualTo("File in\n\nroot directory.")
+                // then
+                assertThat(result).isEqualTo("File in\n\nroot directory.")
+            }
         }
 
         @Test
         fun `load test resource from subdirectory`() {
-            // when
-            val result = runBlocking {
-                loadResource("load_resource_tests/subdirectory/other-test-file.txt")
-            }
+            runBlocking {
+                // when
+                val result = loadResource("load_resource_tests/subdirectory/other-test-file.txt")
 
-            // then
-            assertThat(result).isEqualTo("File in\nsubdirectory.")
+                // then
+                assertThat(result).isEqualTo("File in\nsubdirectory.")
+            }
         }
 
         @Test
         fun `returns a list of the names of the elements if the given path is a directory`() {
-            val path = "load_resource_tests"
+            runBlocking {
+                val path = "load_resource_tests"
 
-            // when
-            val result = runBlocking {
-                loadResource(path)
+                // when
+                val result = loadResource(path)
+
+                // then
+                assertThat(result).isEqualTo("subdirectory\ntest-file.txt\n")
             }
-
-            // then
-            assertThat(result).isEqualTo("subdirectory\ntest-file.txt\n")
         }
 
         @Test
@@ -210,38 +210,38 @@ internal class FunctionsKtTest {
 
         @Test
         fun `execute code if current context is not test context`() {
-            // given
-            var hasBeenInvoked = false
-
-            val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
-                override fun isTestContext(): Boolean = false
-            }
-
-            // when
             runBlocking {
-                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
-            }
+                // given
+                var hasBeenInvoked = false
 
-            // then
-            assertThat(hasBeenInvoked).isTrue()
+                val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
+                    override fun isTestContext(): Boolean = false
+                }
+
+                // when
+                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
+
+                // then
+                assertThat(hasBeenInvoked).isTrue()
+            }
         }
 
         @Test
         fun `don't execute code if current context is test context`() {
-            // given
-            var hasBeenInvoked = false
-
-            val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
-                override fun isTestContext(): Boolean = true
-            }
-
-            // when
             runBlocking {
-                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
-            }
+                // given
+                var hasBeenInvoked = false
 
-            // then
-            assertThat(hasBeenInvoked).isFalse()
+                val testConfig = object: MetaDataProviderConfig by MetaDataProviderTestConfig {
+                    override fun isTestContext(): Boolean = true
+                }
+
+                // when
+                excludeFromTestContextSuspendable(testConfig) { hasBeenInvoked = true }
+
+                // then
+                assertThat(hasBeenInvoked).isFalse()
+            }
         }
     }
 

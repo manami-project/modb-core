@@ -11,52 +11,52 @@ internal class RetryableTest {
 
     @Test
     fun `no retry necessary, return the result`() {
-        // given
-        val expectedResult = HttpResponse(200, EMPTY)
-        val retryable = Retryable(RetryBehavior())
+        runBlocking {
+            // given
+            val expectedResult = HttpResponse(200, EMPTY)
+            val retryable = Retryable(RetryBehavior())
 
-        // when
-        val result = runBlocking {
-            retryable.execute { expectedResult }
+            // when
+            val result = retryable.execute { expectedResult }
+
+            // then
+            assertThat(result).isEqualTo(expectedResult)
         }
-
-        // then
-        assertThat(result).isEqualTo(expectedResult)
     }
 
     @Test
     fun `initial execution fails, 2 retries fail, third -and last- retry is successful`() {
-        // given
-        val expectedResult = HttpResponse(200, EMPTY)
+        runBlocking {
+            // given
+            val expectedResult = HttpResponse(200, EMPTY)
 
-        var currentAttempt = 0
-        val retryBehavior = RetryBehavior(maxAttempts = 3).apply {
-            addCase(
-                retryIf = { httpResponse -> httpResponse.code != 200 },
-                executeBeforeRetry = {
-                    ++currentAttempt
+            var currentAttempt = 0
+            val retryBehavior = RetryBehavior(maxAttempts = 3).apply {
+                addCase(
+                    retryIf = { httpResponse -> httpResponse.code != 200 },
+                    executeBeforeRetry = {
+                        ++currentAttempt
 
-                    if (currentAttempt > 4) {
-                        throw IllegalStateException("too many invocations")
+                        if (currentAttempt > 4) {
+                            throw IllegalStateException("too many invocations")
+                        }
                     }
-                }
-            )
-        }
-        val retryable = Retryable(retryBehavior)
+                )
+            }
+            val retryable = Retryable(retryBehavior)
 
-        // when
-        val result = runBlocking {
-            retryable.execute {
+            // when
+            val result = retryable.execute {
                 if (currentAttempt != 3) {
                     HttpResponse(500, EMPTY)
                 } else {
                     expectedResult
                 }
             }
-        }
 
-        // then
-        assertThat(result).isEqualTo(expectedResult)
+            // then
+            assertThat(result).isEqualTo(expectedResult)
+        }
     }
 
     @Test
@@ -88,31 +88,31 @@ internal class RetryableTest {
 
     @Test
     fun `uses only the first matching RetryBehavior`() {
-        // given
-        val expectedResult = HttpResponse(200, EMPTY)
-
-        var currentAttempt = 0
-        val retryBehaviorUsed = mutableListOf<Int>()
-        val retryBehavior = RetryBehavior(maxAttempts = 3).apply {
-            addCase(
-                retryIf = { httpResponse -> httpResponse.code != 200 },
-                executeBeforeRetry = {
-                    currentAttempt++
-                    retryBehaviorUsed.add(1)
-                }
-            )
-            addCase(
-                retryIf = { httpResponse -> httpResponse.code != 200 },
-                executeBeforeRetry = {
-                    currentAttempt++
-                    retryBehaviorUsed.add(2)
-                }
-            )
-        }
-        val retryable = Retryable(retryBehavior)
-
-        // when
         runBlocking {
+            // given
+            val expectedResult = HttpResponse(200, EMPTY)
+
+            var currentAttempt = 0
+            val retryBehaviorUsed = mutableListOf<Int>()
+            val retryBehavior = RetryBehavior(maxAttempts = 3).apply {
+                addCase(
+                    retryIf = { httpResponse -> httpResponse.code != 200 },
+                    executeBeforeRetry = {
+                        currentAttempt++
+                        retryBehaviorUsed.add(1)
+                    }
+                )
+                addCase(
+                    retryIf = { httpResponse -> httpResponse.code != 200 },
+                    executeBeforeRetry = {
+                        currentAttempt++
+                        retryBehaviorUsed.add(2)
+                    }
+                )
+            }
+            val retryable = Retryable(retryBehavior)
+
+            // when
             retryable.execute {
                 if (currentAttempt != 3) {
                     HttpResponse(500, EMPTY)
@@ -120,9 +120,9 @@ internal class RetryableTest {
                     expectedResult
                 }
             }
-        }
 
-        // then
-        assertThat(retryBehaviorUsed).containsOnly(1)
+            // then
+            assertThat(retryBehaviorUsed).containsOnly(1)
+        }
     }
 }

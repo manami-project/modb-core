@@ -57,150 +57,150 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `successful retrieve response via http method GET`() {
-            // given
-            val path = "anime/1535"
-            val httpResponseCode = 200
-            val body = "Successful"
+            runBlocking {
+                // given
+                val path = "anime/1535"
+                val httpResponseCode = 200
+                val body = "Successful"
 
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/$path")).willReturn(
-                        aResponse()
-                            .withHeader("Content-Type", "text/plain")
-                            .withStatus(httpResponseCode)
-                            .withBody(body)
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path")).willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(httpResponseCode)
+                                .withBody(body)
+                    )
                 )
-            )
 
-            val url = URL("http://localhost:$port/$path")
+                val url = URL("http://localhost:$port/$path")
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).get(url)
-            }
 
-            // then
-            assertThat(result.code).isEqualTo(httpResponseCode)
-            assertThat(result.body).isEqualTo(body)
+                // then
+                assertThat(result.code).isEqualTo(httpResponseCode)
+                assertThat(result.body).isEqualTo(body)
+            }
         }
 
         @Test
         fun `receive an error retrieve response via http method GET`() {
-            // given
-            val path = "anime/1535"
-            val httpResponseCode = 500
-            val body = "Internal Server Error"
+            runBlocking {
+                // given
+                val path = "anime/1535"
+                val httpResponseCode = 500
+                val body = "Internal Server Error"
 
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/$path")).willReturn(
-                    aResponse()
-                        .withHeader("Content-Type", "text/plain")
-                        .withStatus(httpResponseCode)
-                        .withBody(body)
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withHeader("Content-Type", "text/plain")
+                            .withStatus(httpResponseCode)
+                            .withBody(body)
+                    )
                 )
-            )
 
-            val url = URL("http://localhost:$port/$path")
+                val url = URL("http://localhost:$port/$path")
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).get(url)
-            }
 
-            // then
-            assertThat(result.code).isEqualTo(httpResponseCode)
-            assertThat(result.body).isEqualTo(body)
+                // then
+                assertThat(result.code).isEqualTo(httpResponseCode)
+                assertThat(result.body).isEqualTo(body)
+            }
         }
 
         @Test
         fun `headers can be overridden using GET - override User-Agent`() {
-            // given
-            val header = mapOf(
-                "User-Agent" to listOf("Test-Agent")
-            )
-
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
+            runBlocking {
+                // given
+                val header = mapOf(
+                    "User-Agent" to listOf("Test-Agent")
                 )
-            )
 
-            // when
-           runBlocking {
-               DefaultHttpClient(
-                   isTestContext = true,
-               ).get(URL("http://localhost:$port/test"), header)
-           }
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
 
-            // then
-            serverInstance.verify(
+                // when
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).get(URL("http://localhost:$port/test"), header)
+
+                // then
+                serverInstance.verify(
                 getRequestedFor(urlEqualTo("/test"))
                     .withHeader("User-Agent", equalTo("Test-Agent"))
-            )
+                )
+            }
         }
 
         @Test
         fun `add additional header to GET request`() {
-            // given
-            val header = mapOf(
-                "Additional-Header" to listOf("Some value")
-            )
-
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                val header = mapOf(
+                    "Additional-Header" to listOf("Some value")
+                )
+
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).get(
                     url = URL("http://localhost:$port/test"),
                     headers = header,
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                getRequestedFor(urlEqualTo("/test"))
-                    .withHeader("Additional-Header", equalTo("Some value"))
-            )
+                // then
+                serverInstance.verify(
+                    getRequestedFor(urlEqualTo("/test"))
+                        .withHeader("Additional-Header", equalTo("Some value"))
+                )
+            }
         }
 
         @Test
         fun `multiple values of a header are joined by a comma`() {
-            // given
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
-
-            // when
             runBlocking {
+                // given
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).get(
                     url = URL("http://localhost:$port/test"),
                     headers = headers,
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                getRequestedFor(urlEqualTo("/test"))
-                    .withHeader("multi-value-key", equalTo("value1,value2"))
-            )
+                // then
+                serverInstance.verify(
+                    getRequestedFor(urlEqualTo("/test"))
+                        .withHeader("multi-value-key", equalTo("value1,value2"))
+                )
+            }
         }
 
         @Test
@@ -220,32 +220,32 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `successfully executes and returns result being decorated with retry`() {
-            // given
-            val testRetryBehaviorName = "test"
+            runBlocking {
+                // given
+                val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior()
+                val retryBehavior = RetryBehavior()
 
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
                 )
-            )
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).get(
                     url = URL("http://localhost:$port/test"),
                     retryWith = testRetryBehaviorName,
                 )
-            }
 
-            assertThat(result.code).isEqualTo(200)
-            assertThat(result.body).isEmpty()
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.body).isEmpty()
+            }
         }
 
         @Test
@@ -281,52 +281,52 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
-            // given
-            val url = URL("http://localhost:$port/test")
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/test")
 
-            val testCall = object: Call {
-                override fun cancel() = shouldNotBeInvoked()
-                override fun clone(): Call = shouldNotBeInvoked()
-                override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
-                override fun isCanceled(): Boolean = shouldNotBeInvoked()
-                override fun isExecuted(): Boolean = shouldNotBeInvoked()
-                override fun request(): Request = shouldNotBeInvoked()
-                override fun timeout(): Timeout = shouldNotBeInvoked()
-                override fun execute(): Response = Response.Builder()
-                    .protocol(HTTP_2)
-                    .message(EMPTY)
-                    .request(
-                        Request.Builder()
-                            .url(url)
-                            .build()
-                    )
-                    .code(200)
-                    .build()
-            }
-
-            var invocations = 0
-            val testOkHttpClient = Call.Factory {
-                invocations++
-
-                return@Factory when(invocations) {
-                    1 -> throw SocketTimeoutException("invoked by test")
-                    2 -> testCall
-                    else -> shouldNotBeInvoked()
+                val testCall = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(HTTP_2)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(200)
+                        .build()
                 }
-            }
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                var invocations = 0
+                val testOkHttpClient = Call.Factory {
+                    invocations++
+
+                    return@Factory when (invocations) {
+                        1 -> throw SocketTimeoutException("invoked by test")
+                        2 -> testCall
+                        else -> shouldNotBeInvoked()
+                    }
+                }
+
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                     okhttpClient = testOkHttpClient,
                 ).get(
                     url = url,
                 )
-            }
 
-            assertThat(result.code).isEqualTo(200)
-            assertThat(result.body).isEmpty()
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.body).isEmpty()
+            }
         }
     }
 
@@ -335,24 +335,24 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `successfully retrieve response via http method POST`() {
-            // given
-            val path = "graphql"
-            val httpResponseCode = 200
-            val body = "{ \"key\": \"some-value\" }"
+            runBlocking {
+                // given
+                val path = "graphql"
+                val httpResponseCode = 200
+                val body = "{ \"key\": \"some-value\" }"
 
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/$path")).willReturn(
-                    aResponse()
-                        .withStatus(httpResponseCode)
-                        .withBody("{{request.body}}")
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withStatus(httpResponseCode)
+                            .withBody("{{request.body}}")
+                    )
                 )
-            )
 
-            val url = URL("http://localhost:$port/$path")
+                val url = URL("http://localhost:$port/$path")
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).post(
                     url = url,
@@ -362,29 +362,29 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = body
                     )
                 )
-            }
 
-            // then
-            assertThat(result.code).isEqualTo(httpResponseCode)
-            assertThat(result.body).isEqualTo("{ &quot;key&quot;: &quot;some-value&quot; }")
+                // then
+                assertThat(result.code).isEqualTo(httpResponseCode)
+                assertThat(result.body).isEqualTo("{ &quot;key&quot;: &quot;some-value&quot; }")
+            }
         }
 
         @Test
         fun `headers can be overridden using POST - override User-Agent`() {
-            // given
-            val header = mapOf(
-                "User-Agent" to listOf("Test-Agent")
-            )
-
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                val header = mapOf(
+                    "User-Agent" to listOf("Test-Agent")
+                )
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
@@ -395,27 +395,27 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = "{ \"key\": \"some-value\" }"
                     )
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withHeader("User-Agent", equalTo("Test-Agent"))
-            )
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("User-Agent", equalTo("Test-Agent"))
+                )
+            }
         }
 
         @Test
         fun `send accept encoding gzip for POST requests`() {
-            // given
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
@@ -425,27 +425,27 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = "{ \"id\": 1 }"
                     )
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withHeader("accept-encoding", equalTo("gzip"))
-            )
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("accept-encoding", equalTo("gzip"))
+                )
+            }
         }
 
         @Test
         fun `headers can be overridden using POST - override content-type`() {
-            // given
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
@@ -455,31 +455,31 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = "<element>content<element>"
                     )
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withHeader("content-type", equalTo("application/xml"))
-            )
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("content-type", equalTo("application/xml"))
+                )
+            }
         }
 
         @Test
         fun `add additional header to POST request`() {
-            // given
-            val header = mapOf(
-                "Additional-Header" to listOf("Some value")
-            )
-
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                val header = mapOf(
+                    "Additional-Header" to listOf("Some value")
+                )
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
@@ -490,27 +490,27 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = "{ \"id\": 1 }"
                     )
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withHeader("Additional-Header", equalTo("Some value"))
-            )
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("Additional-Header", equalTo("Some value"))
+                )
+            }
         }
 
         @Test
         fun `body is sent correctly for POST request`() {
-            // given
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            // when
             runBlocking {
+                // given
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
@@ -520,13 +520,13 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         body = "{ \"property\": \"value\" }"
                     )
                 )
-            }
 
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withRequestBody(EqualToJsonPattern("{ \"property\": \"value\" }", true, true))
-            )
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withRequestBody(EqualToJsonPattern("{ \"property\": \"value\" }", true, true))
+                )
+            }
         }
 
         @Test
@@ -535,15 +535,15 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val client = DefaultHttpClient(isTestContext = true)
             val requestBody = RequestBody(
                 mediaType = EMPTY,
-                body = "{ \"property\": \"value\" }"
+                body = "{ \"property\": \"value\" }",
             )
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
                 client.post(
-                        url = URL("http://localhost:$port/test"),
-                        requestBody = requestBody,
-                    )
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = requestBody,
+                )
             }
 
             // then
@@ -556,7 +556,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             val client = DefaultHttpClient(isTestContext = true)
             val requestBody = RequestBody(
                 mediaType = APPLICATION_JSON,
-                body = EMPTY
+                body = EMPTY,
             )
 
             // when
@@ -573,32 +573,32 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `multiple values of a header are joined by a comma`() {
-            // given
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
-                )
-            )
-
-            val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
-
-            // when
             runBlocking {
+                // given
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
+
+                // when
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    headers = headers
+                    headers = headers,
+                )
+
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("multi-value-key", equalTo("value1,value2"))
                 )
             }
-
-            // then
-            serverInstance.verify(
-                postRequestedFor(urlEqualTo("/test"))
-                    .withHeader("multi-value-key", equalTo("value1,value2"))
-            )
         }
 
         @Test
@@ -619,33 +619,33 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `successfully executes and returns result being decorated with retry`() {
-            // given
-            val testRetryBehaviorName = "test"
+            runBlocking {
+                // given
+                val testRetryBehaviorName = "test"
 
-            val retryBehavior = RetryBehavior()
+                val retryBehavior = RetryBehavior()
 
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
                 )
-            )
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).post(
                     url = URL("http://localhost:$port/test"),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     retryWith = testRetryBehaviorName
                 )
-            }
 
-            assertThat(result.code).isEqualTo(200)
-            assertThat(result.body).isEmpty()
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.body).isEmpty()
+            }
         }
 
         @Test
@@ -682,53 +682,53 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
-            // given
-            val url = URL("http://localhost:$port/test")
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/test")
 
-            val testCall = object: Call {
-                override fun cancel() = shouldNotBeInvoked()
-                override fun clone(): Call = shouldNotBeInvoked()
-                override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
-                override fun isCanceled(): Boolean = shouldNotBeInvoked()
-                override fun isExecuted(): Boolean = shouldNotBeInvoked()
-                override fun request(): Request = shouldNotBeInvoked()
-                override fun timeout(): Timeout = shouldNotBeInvoked()
-                override fun execute(): Response = Response.Builder()
-                    .protocol(HTTP_2)
-                    .message(EMPTY)
-                    .request(
-                        Request.Builder()
-                            .url(url)
-                            .build()
-                    )
-                    .code(200)
-                    .build()
-            }
-
-            var invocations = 0
-            val testOkHttpClient = Call.Factory {
-                invocations++
-
-                return@Factory when(invocations) {
-                    1 -> throw SocketTimeoutException("invoked by test")
-                    2 -> testCall
-                    else -> shouldNotBeInvoked()
+                val testCall = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(HTTP_2)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(200)
+                        .build()
                 }
-            }
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                var invocations = 0
+                val testOkHttpClient = Call.Factory {
+                    invocations++
+
+                    return@Factory when (invocations) {
+                        1 -> throw SocketTimeoutException("invoked by test")
+                        2 -> testCall
+                        else -> shouldNotBeInvoked()
+                    }
+                }
+
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                     okhttpClient = testOkHttpClient,
                 ).post(
                     url = url,
                     requestBody = RequestBody("application/json", "{}"),
                 )
-            }
 
-            assertThat(result.code).isEqualTo(200)
-            assertThat(result.body).isEmpty()
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.body).isEmpty()
+            }
         }
     }
 
@@ -760,24 +760,24 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
         @Test
         fun `successfully executes and returns result`() {
-            // given
-            val testRetryBehaviorName = "test"
-            val expectedResult = HttpResponse(200, EMPTY)
+            runBlocking {
+                // given
+                val testRetryBehaviorName = "test"
+                val expectedResult = HttpResponse(200, EMPTY)
 
-            val retryBehavior = RetryBehavior()
+                val retryBehavior = RetryBehavior()
 
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
 
-            // when
-            val result = runBlocking {
-                DefaultHttpClient(
+                // when
+                val result = DefaultHttpClient(
                     isTestContext = true,
                 ).executeRetryable(testRetryBehaviorName) {
                     expectedResult
                 }
-            }
 
-            assertThat(result).isEqualTo(expectedResult)
+                assertThat(result).isEqualTo(expectedResult)
+            }
         }
 
         @Test
