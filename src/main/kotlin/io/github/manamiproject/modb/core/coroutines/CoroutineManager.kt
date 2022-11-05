@@ -23,6 +23,9 @@ public object CoroutineManager {
     /**
      * Wraps [runBlocking] and executes an [action] in a try-catch block. In case any [Throwable] is thrown it will be
      * logged and the dispatcher pools from [ModbDispatchers] will be shut down.
+     *
+     * It' recommended to only use this function at the highest level when starting coroutines from main thread.
+     *
      * @since 8.0.0
      * @param isTestContext Set this to true in case you use this in unit tests. Otherwise the tests will fail with a task rejected exception.
      * @param action Any function containing suspend function calls.
@@ -37,9 +40,13 @@ public object CoroutineManager {
             if (!isTestContext) {
                 log.info { "Shutting down coroutine dispatchers." }
                 setOf(LIMITED_NETWORK, LIMITED_CPU, LIMITED_FS).forEach {
-                    log.debug { "$it" }
-                    it.close()
-                    (it.asExecutor() as ExecutorService).awaitTermination(10, SECONDS)
+                    if (!(it.asExecutor() as ExecutorService).isShutdown) {
+                        log.debug { "Shutting down:\n$it" }
+                        it.close()
+                        (it.asExecutor() as ExecutorService).awaitTermination(10, SECONDS)
+                    } else {
+                        log.debug { "Doing nothing, because shutdown process has already been initiated or dispatcher is already terminated:\n$it" }
+                    }
                 }
             }
         }
