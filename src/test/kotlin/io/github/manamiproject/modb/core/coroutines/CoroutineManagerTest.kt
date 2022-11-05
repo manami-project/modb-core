@@ -21,7 +21,7 @@ internal class CoroutineManagerTest {
             }
 
             // when
-            val result = runCoroutine {
+            val result = runCoroutine(isTestContext = true) {
                 testFunction()
             }
 
@@ -39,7 +39,7 @@ internal class CoroutineManagerTest {
 
             // when
             val result = assertThrows<IllegalStateException> {
-                runCoroutine {
+                runCoroutine(isTestContext = true) {
                     testFunction()
                 }
             }

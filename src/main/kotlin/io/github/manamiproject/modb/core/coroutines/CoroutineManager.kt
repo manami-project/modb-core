@@ -22,24 +22,25 @@ public object CoroutineManager {
 
     /**
      * Wraps [runBlocking] and executes an [action] in a try-catch block. In case any [Throwable] is thrown it will be
-     * logged and the dispatcher pools from [ModbDispatchers] will be shut down. Because of that it cannot be used
-     * in unit tests. It would make the tests fail with a task rejected exception, because the global dispatchers
-     * have already been shut down.
+     * logged and the dispatcher pools from [ModbDispatchers] will be shut down.
      * @since 8.0.0
+     * @param isTestContext Set this to true in case you use this in unit tests. Otherwise the tests will fail with a task rejected exception.
      * @param action Any function containing suspend function calls.
      */
-    public inline fun <reified T> runCoroutine(noinline action: suspend CoroutineScope.() -> T): T = runBlocking {
+    public inline fun <reified T> runCoroutine(isTestContext: Boolean = false, noinline action: suspend CoroutineScope.() -> T): T = runBlocking {
         try {
             action.invoke(this)
         } catch(e: Throwable) {
             log.error(e) { "An error occurred!" }
             throw e
         } finally {
-            log.info { "Shutting down coroutine dispatchers." }
-            setOf(LIMITED_NETWORK, LIMITED_CPU, LIMITED_FS).forEach {
-                log.debug { "$it" }
-                it.close()
-                (it.asExecutor() as ExecutorService).awaitTermination(10, SECONDS)
+            if (!isTestContext) {
+                log.info { "Shutting down coroutine dispatchers." }
+                setOf(LIMITED_NETWORK, LIMITED_CPU, LIMITED_FS).forEach {
+                    log.debug { "$it" }
+                    it.close()
+                    (it.asExecutor() as ExecutorService).awaitTermination(10, SECONDS)
+                }
             }
         }
     }
