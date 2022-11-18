@@ -28,7 +28,7 @@ dependencies {
     api(kotlin("stdlib-jdk8"))
 
     implementation(platform(kotlin("bom")))
-    implementation("org.slf4j:slf4j-api:2.0.3")
+    implementation("org.slf4j:slf4j-api:2.0.4")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
