@@ -31,7 +31,7 @@ dependencies {
     api("org.jsoup:jsoup:1.15.4")
 
     implementation(platform(kotlin("bom")))
-    implementation("org.slf4j:slf4j-api:2.0.6")
+    implementation("org.slf4j:slf4j-api:2.0.7")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     testImplementation("ch.qos.logback:logback-classic:1.4.6")
