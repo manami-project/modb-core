@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.collections.SortedList
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.models.Anime.Type.TV
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
@@ -62,8 +63,8 @@ public data class Anime(
         get() = _title
 
     init {
-        require(_title.isNotBlank()) { "Title cannot be blank." }
         _title = cleanupTitle(_title)
+        require(_title.isNotBlank() && _title != "‌") { "Title cannot be blank." }
 
         require(episodes >= 0) { "Episodes cannot have a negative value." }
 
@@ -290,7 +291,7 @@ public data class Anime(
             log.debug { "To     : [$editedTitle]" }
         }
 
-        return editedTitle
+        return editedTitle.replace("‌", EMPTY) // remove zero-width non-joiner
     }
 
     override fun toString(): String {

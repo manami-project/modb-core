@@ -92,6 +92,15 @@ internal class AnimeKtTest {
         }
 
         @Test
+        fun `remove zero-width non-joiner`() {
+            // when
+            val result = Anime("Death\u200CNote")
+
+            // then
+            assertThat(result.title).isEqualTo("DeathNote")
+        }
+
+        @Test
         fun `throw exception if title is empty`() {
             // when
             val result = assertThrows<IllegalArgumentException> {
@@ -107,6 +116,17 @@ internal class AnimeKtTest {
             // when
             val result = assertThrows<IllegalArgumentException> {
                 Anime("     ")
+            }
+
+            // then
+            assertThat(result).hasMessage("Title cannot be blank.")
+        }
+
+        @Test
+        fun `throw exception contains only zero-width non-joiner`() {
+            // when
+            val result = assertThrows<IllegalArgumentException> {
+                Anime("\u200C\u200C")
             }
 
             // then
@@ -141,6 +161,18 @@ internal class AnimeKtTest {
                 val result = Anime(
                     _title = "Death Note",
                     synonyms = SortedList("         "),
+                )
+
+                // then
+                assertThat(result.synonyms).isEmpty()
+            }
+
+            @Test
+            fun `must not add zero-width non-joiner synonym`() {
+                // when
+                val result = Anime(
+                    _title = "Death Note",
+                    synonyms = SortedList("\u200C"),
                 )
 
                 // then
@@ -346,6 +378,25 @@ internal class AnimeKtTest {
                 // then
                 assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
+
+            @Test
+            fun `replace zero-width non-joiner character in synonyms`() {
+                // given
+                val expectedTitleOne = "DeathNote"
+                val expectedTitleTwo = "MadeinAbyss"
+
+                // when
+                val result = Anime(
+                    _title = "Title",
+                    synonyms = SortedList(
+                        "Death\u200CNote",
+                        "Made\u200Cin\u200CAbyss",
+                    ),
+                )
+
+                // then
+                assertThat(result.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
         }
 
         @Nested
@@ -370,6 +421,18 @@ internal class AnimeKtTest {
 
                 // when
                 anime.addSynonyms(listOf("         "))
+
+                // then
+                assertThat(anime.synonyms).isEmpty()
+            }
+
+            @Test
+            fun `must not add zero-width non-joiner synonym`() {
+                // given
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms(listOf("\u200C"))
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -542,6 +605,23 @@ internal class AnimeKtTest {
                 // then
                 assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
             }
+
+            @Test
+            fun `replace zero-width non-joiner character in synonyms`() {
+                // given
+                val expectedTitleOne = "DeathNote"
+                val expectedTitleTwo = "MadeinAbyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms(listOf(
+                    "Death\u200CNote",
+                    "Made\u200Cin\u200CAbyss",
+                ))
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
         }
 
         @Nested
@@ -566,6 +646,18 @@ internal class AnimeKtTest {
 
                 // when
                 anime.addSynonyms("         ")
+
+                // then
+                assertThat(anime.synonyms).isEmpty()
+            }
+
+            @Test
+            fun `must not add zero-width non-joiner synonym`() {
+                // given
+                val anime = Anime("Death Note")
+
+                // when
+                anime.addSynonyms("\u200C")
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -727,6 +819,23 @@ internal class AnimeKtTest {
 
                 // when
                 anime.addSynonyms("Death\r\nNote", "Made\r\nin\r\nAbyss")
+
+                // then
+                assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
+            }
+
+            @Test
+            fun `replace zero-width non-joiner character in synonyms`() {
+                // given
+                val expectedTitleOne = "DeathNote"
+                val expectedTitleTwo = "MadeinAbyss"
+                val anime = Anime("Title")
+
+                // when
+                anime.addSynonyms(
+                    "Death\u200CNote",
+                    "Made\u200Cin\u200CAbyss",
+                )
 
                 // then
                 assertThat(anime.synonyms).containsExactly(expectedTitleOne, expectedTitleTwo)
