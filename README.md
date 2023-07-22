@@ -18,8 +18,7 @@ This lib contains the following features.
 + Default implementation for `PathConverter`. Takes an `AnimeConverter` as delegate and can convert files and directories
 
 ## HttpClient
-+ A client for HTTP requests based on [okhttp](https://github.com/square/okhttp)
-+ Can use individual retries if a request fails
++ Leightweight interface for creating HTTP calls including helpers for creating headers and setting user agents
 + Constants for the name of the property which can contain the path to a file providing possible user agents:
   + `FIREFOX_DESKTOP_USER_AGENTS_FILE_PROPERTY_NAME`
   + `FIREFOX_MOBILE_USER_AGENT_PROPERTY_NAME`
@@ -31,10 +30,10 @@ This lib contains the following features.
   + `CHROME_DESKTOP_USER_AGENT_RESOURCE_FILE`
   + `CHROME_MOBILE_USER_AGENT_RESOURCE_FILE`
 
-### Retryables
-+ Offers `Retryable`s inspired by [resilience4j](https://github.com/resilience4j/resilience4j)
-+ `Retryable`s are individualized by `RetryBehavior`s
-+ `RetryBehavior`s can be stored in a `RetryableRegistry` to be able to simply reuse specific `RetryableBehavior`
+### DefaultHttpClient
++ Implementation of `HttpClient`
++ A client for HTTP requests based on [okhttp](https://github.com/square/okhttp)
++ Offers retry behavior which can be individualized
 
 ## Logger
 + Delegate for [SLF4J](https://github.com/qos-ch/slf4j) logger

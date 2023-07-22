@@ -3,10 +3,9 @@ package io.github.manamiproject.modb.core.httpclient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
+import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.FailedAfterRetryException
-import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
-import io.github.manamiproject.modb.core.httpclient.retry.RetryableRegistry
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
 import io.github.manamiproject.modb.test.exceptionExpected
@@ -19,7 +18,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
@@ -27,12 +25,6 @@ import java.net.SocketTimeoutException
 import java.net.URL
 
 internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by WireMockServerCreator() {
-
-    @AfterEach
-    override fun afterEach() {
-        serverInstance.stop()
-        RetryableRegistry.clear()
-    }
 
     @Nested
     inner class ConstructorTests {
@@ -56,7 +48,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
     inner class GetTests {
 
         @Test
-        fun `successful retrieve response via http method GET`() {
+        fun `successful retrieve response`() {
             runBlocking {
                 // given
                 val path = "anime/1535"
@@ -86,12 +78,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `receive an error retrieve response via http method GET`() {
+        fun `receive an error`() {
             runBlocking {
                 // given
                 val path = "anime/1535"
-                val httpResponseCode = 500
-                val body = "Internal Server Error"
+                val httpResponseCode = 400
+                val body = "Bad request"
 
                 serverInstance.stubFor(
                     get(urlPathEqualTo("/$path")).willReturn(
@@ -116,7 +108,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `headers can be overridden using GET - override User-Agent`() {
+        fun `headers can be overridden - override User-Agent`() {
             runBlocking {
                 // given
                 val header = mapOf(
@@ -204,86 +196,131 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `throws exception if the retry behavior can't be found`() {
-            // when
-            val result = exceptionExpected<IllegalStateException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).get(
-                    url = URL("http://localhost:$port/test"),
-                    retryWith = "unknown",
-                )
-            }
-
-            assertThat(result).hasMessage("Unable to find retry named [unknown]")
-        }
-
-        @Test
-        fun `successfully executes and returns result being decorated with retry`() {
+        fun `status code - initial execution fails, all retries fail except the last retry which is successful`() {
             runBlocking {
                 // given
-                val testRetryBehaviorName = "test"
-
-                val retryBehavior = RetryBehavior()
-
-                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                val path = "anime/1535"
 
                 serverInstance.stubFor(
-                    get(urlPathEqualTo("/test")).willReturn(
-                        aResponse()
-                            .withStatus(200)
-                    )
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 1")
                 )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 1")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 2")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 2")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 3")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 3")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 4")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 4")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 5")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 5")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URL("http://localhost:$port/$path")
 
                 // when
                 val result = DefaultHttpClient(
                     isTestContext = true,
-                ).get(
-                    url = URL("http://localhost:$port/test"),
-                    retryWith = testRetryBehaviorName,
-                )
+                ).get(url)
 
+                // then
                 assertThat(result.code).isEqualTo(200)
-                assertThat(result.body).isEmpty()
             }
         }
 
         @Test
-        fun `throws exception if execution failed despite retry attempts`() {
-            // given
-            val testRetryBehaviorName = "test"
+        fun `status code - throws exception, because it still fails after max attempts retries`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
 
-            val retryBehavior = RetryBehavior().apply {
-                addCase { true }
-            }
-
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
-
-            serverInstance.stubFor(
-                get(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withHeader("Content-Type", "text/plain")
+                            .withStatus(429)
+                            .withBody(EMPTY)
+                    )
                 )
-            )
 
-            // when
-            val result = exceptionExpected<FailedAfterRetryException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).get(
-                    url = URL("http://localhost:$port/test"),
-                    retryWith = testRetryBehaviorName
-                )
+                val url = URL("http://localhost:$port/$path")
+
+                // when
+                val result = exceptionExpected<FailedAfterRetryException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                    ).get(url)
+                }
+
+                // then
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation returned http status code [429]")
+                assertThat(result.cause).hasNoCause()
             }
-
-            assertThat(result).hasMessage("Execution failed despite retry attempts.")
         }
 
         @Test
-        fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
+        fun `exception - initial execution fails, all retries fail except the last retry which is successful`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
+                val exception = SocketTimeoutException("invoked by test")
 
                 val testCall = object : Call {
                     override fun cancel() = shouldNotBeInvoked()
@@ -305,14 +342,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         .build()
                 }
 
-                var invocations = 0
+                var currentAttempt = -1
                 val testOkHttpClient = Call.Factory {
-                    invocations++
-
-                    return@Factory when (invocations) {
-                        1 -> throw SocketTimeoutException("invoked by test")
-                        2 -> testCall
-                        else -> shouldNotBeInvoked()
+                    currentAttempt++
+                    when (currentAttempt) {
+                        5 -> testCall
+                        else -> throw exception
                     }
                 }
 
@@ -325,7 +360,30 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 assertThat(result.code).isEqualTo(200)
-                assertThat(result.body).isEmpty()
+            }
+        }
+
+        @Test
+        fun `exception - throws exception, because it still fails after max attempts retries`() {
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/test")
+                val exception = SocketTimeoutException("invoked by test")
+
+                val testOkHttpClient = Call.Factory { throw exception }
+
+                // when
+                val result = exceptionExpected<FailedAfterRetryException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                        okhttpClient = testOkHttpClient,
+                    ).get(
+                        url = url,
+                    )
+                }
+
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
+                assertThat(result.cause).hasCause(exception)
             }
         }
     }
@@ -334,7 +392,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
     inner class PostTests {
 
         @Test
-        fun `successfully retrieve response via http method POST`() {
+        fun `successfully retrieve response`() {
             runBlocking {
                 // given
                 val path = "graphql"
@@ -360,7 +418,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
                         body = body
-                    )
+                    ),
                 )
 
                 // then
@@ -370,7 +428,43 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `headers can be overridden using POST - override User-Agent`() {
+        fun `receive an error`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+                val httpResponseCode = 400
+                val body = "Bad request"
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withStatus(httpResponseCode)
+                            .withBody(body)
+                    )
+                )
+
+                val url = URL("http://localhost:$port/$path")
+
+                // when
+                val result = DefaultHttpClient(
+                    isTestContext = true,
+                ).post(
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    )
+                )
+
+                // then
+                assertThat(result.code).isEqualTo(httpResponseCode)
+                assertThat(result.body).isEqualTo(body)
+            }
+        }
+
+        @Test
+        fun `headers can be overridden - override User-Agent`() {
             runBlocking {
                 // given
                 val header = mapOf(
@@ -435,7 +529,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `headers can be overridden using POST - override content-type`() {
+        fun `headers can be overridden - override content-type`() {
             runBlocking {
                 // given
                 serverInstance.stubFor(
@@ -495,6 +589,36 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 serverInstance.verify(
                     postRequestedFor(urlEqualTo("/test"))
                         .withHeader("Additional-Header", equalTo("Some value"))
+                )
+            }
+        }
+
+        @Test
+        fun `multiple values of a header are joined by a comma`() {
+            runBlocking {
+                // given
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                    )
+                )
+
+                val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
+
+                // when
+                DefaultHttpClient(
+                    isTestContext = true,
+                ).post(
+                    url = URL("http://localhost:$port/test"),
+                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
+                    headers = headers,
+                )
+
+                // then
+                serverInstance.verify(
+                    postRequestedFor(urlEqualTo("/test"))
+                        .withHeader("multi-value-key", equalTo("value1,value2"))
                 )
             }
         }
@@ -572,119 +696,148 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `multiple values of a header are joined by a comma`() {
+        fun `status code - initial execution fails, all retries fail except the last retry which is successful`() {
             runBlocking {
                 // given
-                serverInstance.stubFor(
-                    post(urlPathEqualTo("/test")).willReturn(
-                        aResponse()
-                            .withStatus(200)
-                    )
-                )
-
-                val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
-
-                // when
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
-                    url = URL("http://localhost:$port/test"),
-                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    headers = headers,
-                )
-
-                // then
-                serverInstance.verify(
-                    postRequestedFor(urlEqualTo("/test"))
-                        .withHeader("multi-value-key", equalTo("value1,value2"))
-                )
-            }
-        }
-
-        @Test
-        fun `throws exception if the retry behavior can't be found`() {
-            // when
-            val result = exceptionExpected<IllegalStateException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
-                    url = URL("http://localhost:$port/test"),
-                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    retryWith = "unknown",
-                )
-            }
-
-            assertThat(result).hasMessage("Unable to find retry named [unknown]")
-        }
-
-        @Test
-        fun `successfully executes and returns result being decorated with retry`() {
-            runBlocking {
-                // given
-                val testRetryBehaviorName = "test"
-
-                val retryBehavior = RetryBehavior()
-
-                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                val path = "graphql"
+                val body = "{ \"key\": \"some-value\" }"
 
                 serverInstance.stubFor(
-                    post(urlPathEqualTo("/test")).willReturn(
-                        aResponse()
-                            .withStatus(200)
-                    )
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 1")
                 )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 1")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 2")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 2")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 3")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 3")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 4")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 4")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 5")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 5")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URL("http://localhost:$port/$path")
 
                 // when
                 val result = DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
-                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    retryWith = testRetryBehaviorName
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    )
                 )
 
+                // then
                 assertThat(result.code).isEqualTo(200)
-                assertThat(result.body).isEmpty()
             }
         }
 
         @Test
-        fun `throws exception if execution failed despite retry attempts`() {
-            // given
-            val testRetryBehaviorName = "test"
+        fun `status code - throws exception, because it still fails after max attempts retries`() {
+            runBlocking {
+                // given
+                val path = "graphql"
+                val body = "{ \"key\": \"some-value\" }"
 
-            val retryBehavior = RetryBehavior().apply {
-                addCase { true }
-            }
-
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
-
-            serverInstance.stubFor(
-                post(urlPathEqualTo("/test")).willReturn(
-                    aResponse()
-                        .withStatus(200)
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withHeader("Content-Type", "text/plain")
+                            .withStatus(429)
+                            .withBody(EMPTY)
+                    )
                 )
-            )
 
-            // when
-            val result = exceptionExpected<FailedAfterRetryException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
-                    url = URL("http://localhost:$port/test"),
-                    requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
-                    retryWith = testRetryBehaviorName,
-                )
+                val url = URL("http://localhost:$port/$path")
+
+                // when
+                val result = exceptionExpected<FailedAfterRetryException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                    ).post(
+                        url = url,
+                        headers = mapOf("test-header" to listOf("headervalue")),
+                        requestBody = RequestBody(
+                            mediaType = APPLICATION_JSON,
+                            body = body
+                        )
+                    )
+                }
+
+                // then
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation returned http status code [429]")
+                assertThat(result.cause).hasNoCause()
             }
-
-            assertThat(result).hasMessage("Execution failed despite retry attempts.")
         }
 
         @Test
-        fun `automatically retries on SocketTimeoutException even if no RetryBehavior has been registered`() {
+        fun `exception - initial execution fails, all retries fail except the last retry which is successful`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
+                val exception = SocketTimeoutException("invoked by test")
+                val body = "{ \"key\": \"some-value\" }"
 
                 val testCall = object : Call {
                     override fun cancel() = shouldNotBeInvoked()
@@ -706,120 +859,60 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         .build()
                 }
 
-                var invocations = 0
+                var currentAttempt = -1
                 val testOkHttpClient = Call.Factory {
-                    invocations++
-
-                    return@Factory when (invocations) {
-                        1 -> throw SocketTimeoutException("invoked by test")
-                        2 -> testCall
-                        else -> shouldNotBeInvoked()
+                    currentAttempt++
+                    when (currentAttempt) {
+                        5 -> testCall
+                        else -> throw exception
                     }
                 }
 
                 // when
                 val result = DefaultHttpClient(
                     isTestContext = true,
-                    okhttpClient = testOkHttpClient,
+                    okhttpClient = testOkHttpClient
                 ).post(
                     url = url,
-                    requestBody = RequestBody("application/json", "{}"),
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    ),
                 )
 
                 assertThat(result.code).isEqualTo(200)
-                assertThat(result.body).isEmpty()
             }
-        }
-    }
-
-    @Nested
-    inner class ExecuteRetryableTests {
-
-        @Test
-        fun `throws exception if execution failed despite retry attempts`() {
-            // given
-            val testRetryBehaviorName = "test"
-
-            val retryBehavior = RetryBehavior().apply {
-                addCase { true }
-            }
-
-            RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
-
-            // when
-            val result = exceptionExpected<FailedAfterRetryException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).executeRetryable(testRetryBehaviorName) {
-                    HttpResponse(200, EMPTY)
-                }
-            }
-
-            assertThat(result).hasMessage("Execution failed despite retry attempts.")
         }
 
         @Test
-        fun `successfully executes and returns result`() {
+        fun `exception - throws exception, because it still fails after max attempts retries`() {
             runBlocking {
                 // given
-                val testRetryBehaviorName = "test"
-                val expectedResult = HttpResponse(200, EMPTY)
+                val url = URL("http://localhost:$port/test")
+                val exception = SocketTimeoutException("invoked by test")
+                val body = "{ \"key\": \"some-value\" }"
 
-                val retryBehavior = RetryBehavior()
-
-                RetryableRegistry.register(testRetryBehaviorName, retryBehavior)
+                val testOkHttpClient = Call.Factory { throw exception }
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).executeRetryable(testRetryBehaviorName) {
-                    expectedResult
+                val result = exceptionExpected<FailedAfterRetryException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                        okhttpClient = testOkHttpClient
+                    ).post(
+                        url = url,
+                        headers = mapOf("test-header" to listOf("headervalue")),
+                        requestBody = RequestBody(
+                            mediaType = APPLICATION_JSON,
+                            body = body
+                        ),
+                    )
                 }
 
-                assertThat(result).isEqualTo(expectedResult)
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
+                assertThat(result.cause).hasCause(exception)
             }
-        }
-
-        @Test
-        fun `throws exception if the retry can't be found`() {
-            // when
-            val result = exceptionExpected<IllegalStateException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).executeRetryable("test") {
-                    HttpResponse(200, EMPTY)
-                }
-            }
-
-            assertThat(result).hasMessage("Unable to find retry named [test]")
-        }
-
-        @Test
-        fun `throws exception if the name of the RetryBehavior is blank`() {
-            // when
-            val result = exceptionExpected<IllegalArgumentException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).executeRetryable("       ") {
-                    HttpResponse(200, EMPTY)
-                }
-            }
-
-            assertThat(result).hasMessage("retryWith must not be blank")
-        }
-
-        @Test
-        fun `throws exception if the name of the RetryBehavior is empty`() {
-            // when
-            val result = exceptionExpected<IllegalArgumentException> {
-                DefaultHttpClient(
-                    isTestContext = true,
-                ).executeRetryable("") {
-                    HttpResponse(200, EMPTY)
-                }
-            }
-
-            assertThat(result).hasMessage("retryWith must not be blank")
         }
     }
 }
