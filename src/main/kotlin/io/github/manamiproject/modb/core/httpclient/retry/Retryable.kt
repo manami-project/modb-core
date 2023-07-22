@@ -40,7 +40,7 @@ public class Retryable(private val config: RetryBehavior) {
             log.info { "Performing retry [${attempt+1}/${config.maxAttempts}]" }
 
             if (!config.isTestContext) {
-                delay(config.waitDuration.invoke().inWholeMilliseconds)
+                delay(config.waitDuration.invoke(attempt).inWholeMilliseconds)
             }
 
             val currentCase = config.cases.keys.find { it.invoke(response) }

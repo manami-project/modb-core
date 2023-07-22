@@ -2,19 +2,23 @@ package io.github.manamiproject.modb.core.httpclient.retry
 
 import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import io.github.manamiproject.modb.core.httpclient.HttpResponseCode
+import io.github.manamiproject.modb.core.random
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.DurationUnit.MILLISECONDS
+import kotlin.time.toDuration
 
 /**
  * Configuration to individualize the behavior of a [Retryable].
  * Apart from the parameters you can also add additional functions which will be executes before a retry based on the response code.
- * @since 1.0.0
+ * @since 9.0.0
  * @param maxAttempts Number of times a request should be retried before failing completly.
  * @param waitDuration Number milliseconds to wait before the retry is actually executed.
  */
 public data class RetryBehavior(
-    val maxAttempts: Int = 3,
-    val waitDuration: () -> Duration = { ZERO },
+    val maxAttempts: Int = 5,
+    val waitDuration: (Int) -> Duration = { currentAttempt ->
+        (random(2000, 4000) * currentAttempt).toDuration(MILLISECONDS)
+    },
     val isTestContext: Boolean = false,
 ) {
 
