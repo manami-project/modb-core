@@ -12,7 +12,7 @@ public enum class Browser {
 
     public companion object {
         public fun random(): Browser {
-            return values().toList().pickRandom()
+            return entries.pickRandom()
         }
     }
 }

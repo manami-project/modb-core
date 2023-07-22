@@ -137,7 +137,7 @@ private fun Response.toHttpResponse() = HttpResponse(
 )
 
 /**
- * Shared [OkHttpClient]. Useful, because this will result in a sharedthread pool between different instances of [DefaultHttpClient].
+ * Shared [OkHttpClient]. Useful, because this will result in a shared thread pool between different instances of [DefaultHttpClient].
  * [see](https://square.github.io/okhttp/4.x/okhttp/okhttp3/-ok-http-client/#customize-your-client-with-newbuilder)
  */
 private val sharedOkHttpClient: Call.Factory by lazy {

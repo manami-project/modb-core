@@ -67,7 +67,7 @@ public data class AnimeSeason(
 
         public companion object {
             public fun of(value: String): Season {
-                return values().find { it.toString().trim().equals(value, ignoreCase = true) } ?: UNDEFINED
+                return entries.find { it.toString().trim().equals(value, ignoreCase = true) } ?: UNDEFINED
             }
         }
     }

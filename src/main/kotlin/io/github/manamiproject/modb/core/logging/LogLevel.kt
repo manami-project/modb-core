@@ -56,7 +56,7 @@ public enum class LogLevel {
          * @return The respective log level that matches the [value] or `null` if there is no match for the [value].
          */
         public fun of(value: String): LogLevel? {
-            return values().find { it.toString() == value.uppercase() }
+            return entries.find { it.toString() == value.uppercase() }
         }
     }
 }

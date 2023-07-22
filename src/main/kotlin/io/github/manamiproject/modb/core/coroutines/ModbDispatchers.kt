@@ -19,7 +19,8 @@ public object ModbDispatchers {
      * @since 8.0.0
      */
     public val LIMITED_FS: ExecutorCoroutineDispatcher by lazy {
-        Executors.newFixedThreadPool(availableProcessors, DefaultThreadFactory("Filesystem-Dispatcher")).asCoroutineDispatcher()
+        Executors.newFixedThreadPool(availableProcessors, DefaultThreadFactory("Filesystem-Dispatcher"))
+            .asCoroutineDispatcher()
     }
 
     /**
@@ -38,6 +39,7 @@ public object ModbDispatchers {
      * @since 8.0.0
      */
     public val LIMITED_CPU: ExecutorCoroutineDispatcher by lazy {
-        Executors.newFixedThreadPool(availableProcessors, DefaultThreadFactory("CPU-Dispatcher")).asCoroutineDispatcher()
+        Executors.newFixedThreadPool(availableProcessors, DefaultThreadFactory("CPU-Dispatcher"))
+            .asCoroutineDispatcher()
     }
 }
