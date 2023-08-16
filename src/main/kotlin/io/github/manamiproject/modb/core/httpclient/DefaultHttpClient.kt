@@ -43,7 +43,7 @@ import java.net.URL
  */
 public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
-    private val protocols: List<HttpProtocol> = listOf(HTTP_2, HTTP_1_1),
+    private val protocols: MutableList<HttpProtocol> = mutableListOf(HTTP_2, HTTP_1_1),
     private var okhttpClient: Call.Factory = sharedOkHttpClient,
     private val retryBehavior: RetryBehavior = defaultRetryBehavior,
     private val isTestContext: Boolean = false,
@@ -114,6 +114,11 @@ public class DefaultHttpClient(
                 delay(retryBehavior.waitDuration.invoke(attempt).inWholeMilliseconds)
             }
 
+            if (response.code == 103) {
+                log.warn { "Received HTTP status code 103. Deactivating HTTP/2." }
+                protocols.remove(HTTP_2)
+            }
+
             val currentCase = retryBehavior.cases.keys.find { it.invoke(response) }
 
             attempt++
@@ -173,4 +178,5 @@ private val defaultRetryBehavior = RetryBehavior().apply {
     addCase { it.code in 500..599 }
     addCase { it.code == 425 }
     addCase { it.code == 429 }
+    addCase { it.code == 103 }
 }

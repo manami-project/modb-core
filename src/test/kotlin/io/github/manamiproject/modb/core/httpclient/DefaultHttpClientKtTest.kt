@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.retry.FailedAfterRetryException
+import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
 import io.github.manamiproject.modb.test.exceptionExpected
@@ -19,10 +20,11 @@ import okhttp3.Response
 import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.SocketTimeoutException
 import java.net.URL
+import kotlin.test.Test
+
 
 internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by WireMockServerCreator() {
 
@@ -34,7 +36,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // when
             val result = assertThrows<IllegalArgumentException> {
                 DefaultHttpClient(
-                    protocols = emptyList(),
+                    protocols = mutableListOf(),
                     isTestContext = true,
                 )
             }
@@ -384,6 +386,58 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
                 assertThat(result.cause).hasCause(exception)
+            }
+        }
+
+        @Test
+        fun `always uses first retryable that matches`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 1")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 1")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URL("http://localhost:$port/$path")
+
+                var executedCase = EMPTY
+                val testRetryBehavior = RetryBehavior().apply {
+                    addCase({ executedCase = "case1"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case2"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case3"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case4"}) { response -> response.code == 429 }
+                }
+
+                // when
+                val result = DefaultHttpClient(
+                    isTestContext = true,
+                    retryBehavior = testRetryBehavior,
+                ).get(url)
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                assertThat(executedCase).isEqualTo("case1")
             }
         }
     }
@@ -912,6 +966,58 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
                 assertThat(result.cause).hasCause(exception)
+            }
+        }
+
+        @Test
+        fun `always uses first retryable that matches`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(429)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry 1")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry 1")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URL("http://localhost:$port/$path")
+
+                var executedCase = EMPTY
+                val testRetryBehavior = RetryBehavior().apply {
+                    addCase({ executedCase = "case1"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case2"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case3"}) { response -> response.code == 429 }
+                    addCase({ executedCase = "case4"}) { response -> response.code == 429 }
+                }
+
+                // when
+                val result = DefaultHttpClient(
+                    isTestContext = true,
+                    retryBehavior = testRetryBehavior,
+                ).get(url)
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                assertThat(executedCase).isEqualTo("case1")
             }
         }
     }
