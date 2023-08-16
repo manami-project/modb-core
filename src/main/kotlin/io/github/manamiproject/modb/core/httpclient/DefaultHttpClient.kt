@@ -5,8 +5,6 @@ import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
-import io.github.manamiproject.modb.core.httpclient.retry.FailedAfterRetryException
-import io.github.manamiproject.modb.core.httpclient.retry.RetryBehavior
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

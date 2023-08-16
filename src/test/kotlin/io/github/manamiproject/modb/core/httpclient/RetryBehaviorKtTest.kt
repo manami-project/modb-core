@@ -1,6 +1,5 @@
-package io.github.manamiproject.modb.core.httpclient.retry
+package io.github.manamiproject.modb.core.httpclient
 
-import io.github.manamiproject.modb.core.httpclient.HttpResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test

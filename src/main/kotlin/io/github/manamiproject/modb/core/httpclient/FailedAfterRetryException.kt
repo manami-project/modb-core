@@ -1,4 +1,4 @@
-package io.github.manamiproject.modb.core.httpclient.retry
+package io.github.manamiproject.modb.core.httpclient
 
 /**
  * Maximum number of retries performed, but the request still failed.

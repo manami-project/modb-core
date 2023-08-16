@@ -1,8 +1,5 @@
-package io.github.manamiproject.modb.core.httpclient.retry
+package io.github.manamiproject.modb.core.httpclient
 
-import io.github.manamiproject.modb.core.httpclient.DefaultHttpClient
-import io.github.manamiproject.modb.core.httpclient.HttpResponse
-import io.github.manamiproject.modb.core.httpclient.HttpResponseCode
 import io.github.manamiproject.modb.core.random
 import kotlin.time.Duration
 import kotlin.time.DurationUnit.MILLISECONDS
