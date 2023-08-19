@@ -5,16 +5,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import io.github.manamiproject.modb.core.extensions.EMPTY
+import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.test.MockServerTestCase
 import io.github.manamiproject.modb.test.WireMockServerCreator
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import kotlinx.coroutines.runBlocking
-import okhttp3.Call
-import okhttp3.Callback
+import okhttp3.*
 import okhttp3.Protocol.HTTP_2
-import okhttp3.Request
-import okhttp3.Response
 import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -384,6 +382,78 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
                 assertThat(result.cause).hasCause(exception)
+            }
+        }
+
+        @Test
+        fun `status code 103 - leads to removing HTTP 2 from protocols and performs a retry`() {
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/anime/1535")
+
+                val testCall103 = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(HTTP_2)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(103)
+                        .build()
+                }
+
+                val testCall200 = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(Protocol.HTTP_1_1)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(200)
+                        .build()
+                }
+
+                var currentAttempt = 0
+                val testOkHttpClient = Call.Factory {
+                    currentAttempt++
+                    when (currentAttempt) {
+                        1 -> testCall103
+                        else -> testCall200
+                    }
+                }
+
+                val defaultHttpClient = DefaultHttpClient(
+                    okhttpClient = testOkHttpClient,
+                    isTestContext = true,
+                )
+
+                // when
+                val result = defaultHttpClient.get(url)
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                val protocols = defaultHttpClient.javaClass.getDeclaredField("protocols")
+                protocols.isAccessible = true
+                val value = protocols.get(defaultHttpClient) as (ArrayList<*>)
+                assertThat(value).containsExactlyInAnyOrder(HTTP_1_1)
             }
         }
     }
@@ -912,6 +982,86 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
                 assertThat(result.cause).hasCause(exception)
+            }
+        }
+
+        @Test
+        fun `status code 103 - leads to removing HTTP 2 from protocols and performs a retry`() {
+            runBlocking {
+                // given
+                val body = "{ \"key\": \"some-value\" }"
+                val url = URL("http://localhost:$port/graphql")
+
+                val testCall103 = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(HTTP_2)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(103)
+                        .build()
+                }
+
+                val testCall200 = object : Call {
+                    override fun cancel() = shouldNotBeInvoked()
+                    override fun clone(): Call = shouldNotBeInvoked()
+                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
+                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
+                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
+                    override fun request(): Request = shouldNotBeInvoked()
+                    override fun timeout(): Timeout = shouldNotBeInvoked()
+                    override fun execute(): Response = Response.Builder()
+                        .protocol(Protocol.HTTP_1_1)
+                        .message(EMPTY)
+                        .request(
+                            Request.Builder()
+                                .url(url)
+                                .build()
+                        )
+                        .code(200)
+                        .build()
+                }
+
+                var currentAttempt = 0
+                val testOkHttpClient = Call.Factory {
+                    currentAttempt++
+                    when (currentAttempt) {
+                        1 -> testCall103
+                        else -> testCall200
+                    }
+                }
+
+                val defaultHttpClient = DefaultHttpClient(
+                    okhttpClient = testOkHttpClient,
+                    isTestContext = true,
+                )
+
+                // when
+                val result = defaultHttpClient.post(
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    )
+                )
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                val protocols = defaultHttpClient.javaClass.getDeclaredField("protocols")
+                protocols.isAccessible = true
+                val value = protocols.get(defaultHttpClient) as (ArrayList<*>)
+                assertThat(value).containsExactlyInAnyOrder(HTTP_1_1)
             }
         }
     }
