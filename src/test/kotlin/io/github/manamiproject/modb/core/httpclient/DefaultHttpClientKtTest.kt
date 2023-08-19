@@ -386,58 +386,6 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 assertThat(result.cause).hasCause(exception)
             }
         }
-
-        @Test
-        fun `always uses first retryable that matches`() {
-            runBlocking {
-                // given
-                val path = "anime/1535"
-
-                serverInstance.stubFor(
-                    get(urlPathEqualTo("/$path"))
-                        .inScenario("Fail until last retry")
-                        .whenScenarioStateIs(STARTED)
-                        .willReturn(
-                            aResponse()
-                                .withHeader("Content-Type", "text/plain")
-                                .withStatus(429)
-                                .withBody(EMPTY)
-                        )
-                        .willSetStateTo("Retry 1")
-                )
-                serverInstance.stubFor(
-                    get(urlPathEqualTo("/$path"))
-                        .inScenario("Fail until last retry")
-                        .whenScenarioStateIs("Retry 1")
-                        .willReturn(
-                            aResponse()
-                                .withHeader("Content-Type", "text/plain")
-                                .withStatus(200)
-                                .withBody(EMPTY)
-                        )
-                )
-
-                val url = URL("http://localhost:$port/$path")
-
-                var executedCase = EMPTY
-                val testRetryBehavior = RetryBehavior().apply {
-                    addCase({ executedCase = "case1"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case2"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case3"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case4"}) { response -> response.code == 429 }
-                }
-
-                // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                    retryBehavior = testRetryBehavior,
-                ).get(url)
-
-                // then
-                assertThat(result.code).isEqualTo(200)
-                assertThat(executedCase).isEqualTo("case1")
-            }
-        }
     }
 
     @Nested
@@ -964,58 +912,6 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
                 assertThat(result.cause).hasCause(exception)
-            }
-        }
-
-        @Test
-        fun `always uses first retryable that matches`() {
-            runBlocking {
-                // given
-                val path = "anime/1535"
-
-                serverInstance.stubFor(
-                    get(urlPathEqualTo("/$path"))
-                        .inScenario("Fail until last retry")
-                        .whenScenarioStateIs(STARTED)
-                        .willReturn(
-                            aResponse()
-                                .withHeader("Content-Type", "text/plain")
-                                .withStatus(429)
-                                .withBody(EMPTY)
-                        )
-                        .willSetStateTo("Retry 1")
-                )
-                serverInstance.stubFor(
-                    get(urlPathEqualTo("/$path"))
-                        .inScenario("Fail until last retry")
-                        .whenScenarioStateIs("Retry 1")
-                        .willReturn(
-                            aResponse()
-                                .withHeader("Content-Type", "text/plain")
-                                .withStatus(200)
-                                .withBody(EMPTY)
-                        )
-                )
-
-                val url = URL("http://localhost:$port/$path")
-
-                var executedCase = EMPTY
-                val testRetryBehavior = RetryBehavior().apply {
-                    addCase({ executedCase = "case1"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case2"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case3"}) { response -> response.code == 429 }
-                    addCase({ executedCase = "case4"}) { response -> response.code == 429 }
-                }
-
-                // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                    retryBehavior = testRetryBehavior,
-                ).get(url)
-
-                // then
-                assertThat(result.code).isEqualTo(200)
-                assertThat(executedCase).isEqualTo("case1")
             }
         }
     }
