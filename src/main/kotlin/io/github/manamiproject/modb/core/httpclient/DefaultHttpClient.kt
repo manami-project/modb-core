@@ -6,6 +6,7 @@ import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createH
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
+import io.github.manamiproject.modb.core.random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -17,6 +18,9 @@ import okio.ByteString.Companion.encodeUtf8
 import java.net.Proxy
 import java.net.Proxy.NO_PROXY
 import java.net.URL
+import kotlin.time.DurationUnit
+import kotlin.time.DurationUnit.MILLISECONDS
+import kotlin.time.toDuration
 
 /**
  * Default HTTP client based on OKHTTP.
@@ -29,12 +33,11 @@ import java.net.URL
  * **Example:** if [RetryBehavior.maxAttempts] is set to `3` worst case would be `4` executions in total.
  *
  * # Retry
- * + Waits for the amount of time defined in [RetryBehavior.waitDuration]
- * + Checks if some other code has to be executed prior to the retry and executes it.
+ * + Waits for the amount of time defined in [RetryCase.waitDuration]
  * + Executes request again
  * @since 9.0.0
  * @param proxy **Default** is [NO_PROXY]
- * @param protocols List of supported HTTP protocol versions in the order of preference.
+ * @param protocols List of supported HTTP protocol versions in the order of preference. Default is HTTP/2, HTTP/1.1
  * @param okhttpClient Instance of the OKHTTP client on which this client is based.
  * @param retryBehavior [RetryBehavior] to use for each request.
  * @param isTestContext Whether this runs in the unit test context or not.
@@ -105,11 +108,14 @@ public class DefaultHttpClient(
             log.warn { "Initial request resulted in [${e.javaClass.canonicalName}]. Performing retry." }
         }
 
-        while (attempt < retryBehavior.maxAttempts && isActive && (response.code == 0 || retryBehavior.cases.keys.any { it.invoke(response) })) {
+        while (attempt < retryBehavior.maxAttempts && isActive && (response.code == 0 || retryBehavior.requiresRetry(response))) {
             log.info { "Performing retry [${attempt+1}/${retryBehavior.maxAttempts}]" }
 
-            if (!isTestContext) {
-                delay(retryBehavior.waitDuration.invoke(attempt).inWholeMilliseconds)
+            if (!isTestContext && response.code != 0) {
+                val retryCase = retryBehavior.retryCase(response)
+                delay(retryCase.waitDuration.invoke(attempt).inWholeMilliseconds)
+            } else if (!isTestContext) {
+                delay(random(2000, 5000).toDuration(MILLISECONDS))
             }
 
             if (response.code == 103) {
@@ -117,12 +123,9 @@ public class DefaultHttpClient(
                 protocols.remove(HTTP_2)
             }
 
-            val currentCase = retryBehavior.cases.keys.find { it.invoke(response) }
-
             attempt++
 
             try {
-                retryBehavior.cases[currentCase]?.invoke() // invoke executeBeforeRetry
                 response = okhttpClient.newCall(request).execute().toHttpResponse()
             } catch (e: Throwable) {
                 if (attempt == retryBehavior.maxAttempts) {
@@ -133,7 +136,7 @@ public class DefaultHttpClient(
             }
         }
 
-        if (retryBehavior.cases.keys.any { it.invoke(response) }) {
+        if (retryBehavior.requiresRetry(response)) {
             throw FailedAfterRetryException("Execution failed despite [$attempt] retry attempts. Last invocation returned http status code [${response.code}]")
         }
 
@@ -173,8 +176,10 @@ private val sharedOkHttpClient: Call.Factory by lazy {
 }
 
 private val defaultRetryBehavior = RetryBehavior().apply {
-    addCase { it.code in 500..599 }
-    addCase { it.code == 425 }
-    addCase { it.code == 429 }
-    addCase { it.code == 103 }
+    addCases(
+        RetryCase { it.code in 500..599 },
+        RetryCase { it.code == 425 },
+        RetryCase { it.code == 429 },
+        RetryCase { it.code == 103 },
+    )
 }
