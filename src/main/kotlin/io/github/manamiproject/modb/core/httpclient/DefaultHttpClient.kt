@@ -18,7 +18,6 @@ import okio.ByteString.Companion.encodeUtf8
 import java.net.Proxy
 import java.net.Proxy.NO_PROXY
 import java.net.URL
-import kotlin.time.DurationUnit
 import kotlin.time.DurationUnit.MILLISECONDS
 import kotlin.time.toDuration
 
@@ -46,8 +45,8 @@ public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
     private val protocols: MutableList<HttpProtocol> = mutableListOf(HTTP_2, HTTP_1_1),
     private var okhttpClient: Call.Factory = sharedOkHttpClient,
-    private val retryBehavior: RetryBehavior = defaultRetryBehavior,
     private val isTestContext: Boolean = false,
+    public val retryBehavior: RetryBehavior = defaultRetryBehavior,
 ) : HttpClient {
 
     init {
