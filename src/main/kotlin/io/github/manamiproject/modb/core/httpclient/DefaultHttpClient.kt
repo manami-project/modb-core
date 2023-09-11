@@ -17,6 +17,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString.Companion.encodeUtf8
 import java.net.Proxy
 import java.net.Proxy.NO_PROXY
+import java.net.SocketTimeoutException
 import java.net.URL
 import kotlin.time.DurationUnit.MILLISECONDS
 import kotlin.time.toDuration
@@ -99,22 +100,21 @@ public class DefaultHttpClient(
 
     private suspend fun executeRetryable(request: Request): HttpResponse = withContext(LIMITED_NETWORK) {
         var attempt = 0
-        var response = HttpResponse(0, EMPTY)
 
-        try {
-            response = okhttpClient.newCall(request).execute().toHttpResponse()
-        } catch (e: Throwable) {
-            log.warn { "Initial request resulted in [${e.javaClass.canonicalName}]. Performing retry." }
+        var response = try {
+            okhttpClient.newCall(request).execute().toHttpResponse()
+        } catch (e: SocketTimeoutException) {
+            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Waiting 8 minutes for a single retry." }
+            if (!isTestContext) delay(480000)
+            okhttpClient.newCall(request).execute().toHttpResponse()
         }
 
         while (attempt < retryBehavior.maxAttempts && isActive && (response.code == 0 || retryBehavior.requiresRetry(response))) {
             log.info { "Performing retry [${attempt+1}/${retryBehavior.maxAttempts}]" }
 
-            if (!isTestContext && response.code != 0) {
+            if (!isTestContext) {
                 val retryCase = retryBehavior.retryCase(response)
                 delay(retryCase.waitDuration.invoke(attempt).inWholeMilliseconds)
-            } else if (!isTestContext) {
-                delay(random(2000, 5000).toDuration(MILLISECONDS))
             }
 
             if (response.code == 103) {

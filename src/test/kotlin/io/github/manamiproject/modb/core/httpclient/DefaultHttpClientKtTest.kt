@@ -17,8 +17,10 @@ import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.URL
+import java.net.UnknownHostException
 import kotlin.test.Test
 
 
@@ -314,7 +316,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `exception - initial execution fails, all retries fail except the last retry which is successful`() {
+        fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
@@ -344,7 +346,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 val testOkHttpClient = Call.Factory {
                     currentAttempt++
                     when (currentAttempt) {
-                        5 -> testCall
+                        1 -> testCall
                         else -> throw exception
                     }
                 }
@@ -362,16 +364,23 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `exception - throws exception, because it still fails after max attempts retries`() {
+        fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
                 val exception = SocketTimeoutException("invoked by test")
 
-                val testOkHttpClient = Call.Factory { throw exception }
+                var currentAttempt = -1
+                val testOkHttpClient = Call.Factory {
+                    currentAttempt++
+                    when {
+                        currentAttempt < 2 -> throw exception
+                        else -> shouldNotBeInvoked()
+                    }
+                }
 
                 // when
-                val result = exceptionExpected<FailedAfterRetryException> {
+                val result = exceptionExpected<SocketTimeoutException> {
                     DefaultHttpClient(
                         isTestContext = true,
                         okhttpClient = testOkHttpClient,
@@ -380,8 +389,30 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 }
 
-                assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
-                assertThat(result.cause).hasCause(exception)
+                assertThat(result).hasMessage("invoked by test")
+            }
+        }
+
+        @Test
+        fun `exception - any exception except SocketTimeoutException is thrown as-is`() {
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/test")
+                val exception = UnknownHostException("invoked by test")
+
+                val testOkHttpClient = Call.Factory { throw exception }
+
+                // when
+                val result = exceptionExpected<UnknownHostException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                        okhttpClient = testOkHttpClient,
+                    ).get(
+                        url = url,
+                    )
+                }
+
+                assertThat(result).hasMessage("invoked by test")
             }
         }
 
@@ -902,7 +933,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `exception - initial execution fails, all retries fail except the last retry which is successful`() {
+        fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
@@ -933,7 +964,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 val testOkHttpClient = Call.Factory {
                     currentAttempt++
                     when (currentAttempt) {
-                        5 -> testCall
+                        1 -> testCall
                         else -> throw exception
                     }
                 }
@@ -956,17 +987,24 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `exception - throws exception, because it still fails after max attempts retries`() {
+        fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
             runBlocking {
                 // given
                 val url = URL("http://localhost:$port/test")
                 val exception = SocketTimeoutException("invoked by test")
                 val body = "{ \"key\": \"some-value\" }"
 
-                val testOkHttpClient = Call.Factory { throw exception }
+                var currentAttempt = -1
+                val testOkHttpClient = Call.Factory {
+                    currentAttempt++
+                    when {
+                        currentAttempt < 2 -> throw exception
+                        else -> shouldNotBeInvoked()
+                    }
+                }
 
                 // when
-                val result = exceptionExpected<FailedAfterRetryException> {
+                val result = exceptionExpected<SocketTimeoutException> {
                     DefaultHttpClient(
                         isTestContext = true,
                         okhttpClient = testOkHttpClient
@@ -980,8 +1018,36 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 }
 
-                assertThat(result).hasMessage("Execution failed despite [5] retry attempts.")
-                assertThat(result.cause).hasCause(exception)
+                assertThat(result).hasMessage("invoked by test")
+            }
+        }
+
+        @Test
+        fun `exception - any exception except SocketTimeoutException is thrown as-is`() {
+            runBlocking {
+                // given
+                val url = URL("http://localhost:$port/test")
+                val exception = UnknownHostException("invoked by test")
+                val body = "{ \"key\": \"some-value\" }"
+
+                val testOkHttpClient = Call.Factory { throw exception }
+
+                // when
+                val result = exceptionExpected<UnknownHostException> {
+                    DefaultHttpClient(
+                        isTestContext = true,
+                        okhttpClient = testOkHttpClient
+                    ).post(
+                        url = url,
+                        headers = mapOf("test-header" to listOf("headervalue")),
+                        requestBody = RequestBody(
+                            mediaType = APPLICATION_JSON,
+                            body = body
+                        ),
+                    )
+                }
+
+                assertThat(result).hasMessage("invoked by test")
             }
         }
 
