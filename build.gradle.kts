@@ -125,7 +125,7 @@ tasks.jacocoTestReport {
 }
 
 object Versions {
-    const val JVM_TARGET = "17"
+    const val JVM_TARGET = "21"
 }
 
 fun parameter(name: String, default: String = ""): String {
