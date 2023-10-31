@@ -521,7 +521,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
-                assertThat(result.body).isEqualTo("{ &quot;key&quot;: &quot;some-value&quot; }")
+                assertThat(result.body).isEqualTo(body)
             }
         }
 
