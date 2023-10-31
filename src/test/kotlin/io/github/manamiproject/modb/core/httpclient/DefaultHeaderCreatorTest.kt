@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.httpclient
 import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import org.assertj.core.api.Assertions.assertThat
+import java.net.URI
 import kotlin.test.Test
 import java.net.URL
 
@@ -11,7 +12,7 @@ internal class DefaultHeaderCreatorTest {
     @Test
     fun `check header for firefox`() {
         // given
-        val url = URL("http://localhost:8080")
+        val url = URI("http://localhost:8080").toURL()
 
         //when
         val result = DefaultHeaderCreator.createHeadersFor(url, FIREFOX)
@@ -42,7 +43,7 @@ internal class DefaultHeaderCreatorTest {
     @Test
     fun `check header for chrome`() {
         // given
-        val url = URL("http://localhost:8080")
+        val url = URI("http://localhost:8080").toURL()
 
         //when
         val result = DefaultHeaderCreator.createHeadersFor(url, CHROME)

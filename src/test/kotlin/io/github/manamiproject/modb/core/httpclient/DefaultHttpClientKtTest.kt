@@ -17,10 +17,7 @@ import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.URL
-import java.net.UnknownHostException
+import java.net.*
 import kotlin.test.Test
 
 
@@ -64,7 +61,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -94,7 +91,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -125,7 +122,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 // when
                 DefaultHttpClient(
                     isTestContext = true,
-                ).get(URL("http://localhost:$port/test"), header)
+                ).get(URI("http://localhost:$port/test").toURL(), header)
 
                 // then
                 serverInstance.verify(
@@ -154,7 +151,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).get(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                 )
 
@@ -183,7 +180,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).get(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     headers = headers,
                 )
 
@@ -273,7 +270,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -300,7 +297,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = exceptionExpected<FailedAfterRetryException> {
@@ -319,7 +316,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = SocketTimeoutException("invoked by test")
 
                 val testCall = object : Call {
@@ -367,7 +364,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = SocketTimeoutException("invoked by test")
 
                 var currentAttempt = -1
@@ -397,7 +394,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `exception - any exception except SocketTimeoutException is thrown as-is`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = UnknownHostException("invoked by test")
 
                 val testOkHttpClient = Call.Factory { throw exception }
@@ -420,7 +417,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `status code 103 - leads to removing HTTP 2 from protocols and performs a retry`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/anime/1535")
+                val url = URI("http://localhost:$port/anime/1535").toURL()
 
                 val testCall103 = object : Call {
                     override fun cancel() = shouldNotBeInvoked()
@@ -508,7 +505,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -544,7 +541,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -583,7 +580,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -614,7 +611,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
                         body = "{ \"id\": 1 }"
@@ -644,7 +641,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = "application/xml",
                         body = "<element>content<element>"
@@ -678,7 +675,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -711,7 +708,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     headers = headers,
                 )
@@ -739,7 +736,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 DefaultHttpClient(
                     isTestContext = true,
                 ).post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
                         body = "{ \"property\": \"value\" }"
@@ -766,7 +763,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // when
             val result = exceptionExpected<IllegalArgumentException> {
                 client.post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = requestBody,
                 )
             }
@@ -787,7 +784,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             // when
             val result = exceptionExpected<IllegalArgumentException> {
                 client.post(
-                    url = URL("http://localhost:$port/test"),
+                    url = URI("http://localhost:$port/test").toURL(),
                     requestBody = requestBody,
                 )
             }
@@ -875,7 +872,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                         )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = DefaultHttpClient(
@@ -910,7 +907,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                val url = URL("http://localhost:$port/$path")
+                val url = URI("http://localhost:$port/$path").toURL()
 
                 // when
                 val result = exceptionExpected<FailedAfterRetryException> {
@@ -936,7 +933,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = SocketTimeoutException("invoked by test")
                 val body = "{ \"key\": \"some-value\" }"
 
@@ -990,7 +987,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = SocketTimeoutException("invoked by test")
                 val body = "{ \"key\": \"some-value\" }"
 
@@ -1026,7 +1023,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         fun `exception - any exception except SocketTimeoutException is thrown as-is`() {
             runBlocking {
                 // given
-                val url = URL("http://localhost:$port/test")
+                val url = URI("http://localhost:$port/test").toURL()
                 val exception = UnknownHostException("invoked by test")
                 val body = "{ \"key\": \"some-value\" }"
 
@@ -1056,7 +1053,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
             runBlocking {
                 // given
                 val body = "{ \"key\": \"some-value\" }"
-                val url = URL("http://localhost:$port/graphql")
+                val url = URI("http://localhost:$port/graphql").toURL()
 
                 val testCall103 = object : Call {
                     override fun cancel() = shouldNotBeInvoked()
