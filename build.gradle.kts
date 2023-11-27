@@ -28,7 +28,7 @@ dependencies {
     api(kotlin("stdlib"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3")
     api("com.squareup.okhttp3:okhttp:4.12.0")
-    api("org.jsoup:jsoup:1.16.2")
+    api("org.jsoup:jsoup:1.17.1")
 
     implementation(platform(kotlin("bom")))
     implementation("org.slf4j:slf4j-api:2.0.9")
