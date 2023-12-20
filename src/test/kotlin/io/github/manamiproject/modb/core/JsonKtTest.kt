@@ -274,8 +274,8 @@ internal class JsonKtTest {
             "season": "UNDEFINED",
             "year": 0
           },
-          "picture": "https://cdn.myanimelist.net/images/qm_50.gif",
-          "thumbnail": "https://cdn.myanimelist.net/images/qm_50.gif",
+          "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
+          "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
           "duration": {
             "value": 0,
             "unit": "SECONDS"
