@@ -6,7 +6,6 @@ import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createH
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
-import io.github.manamiproject.modb.core.random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -19,8 +18,6 @@ import java.net.Proxy
 import java.net.Proxy.NO_PROXY
 import java.net.SocketTimeoutException
 import java.net.URL
-import kotlin.time.DurationUnit.MILLISECONDS
-import kotlin.time.toDuration
 
 /**
  * Default HTTP client based on OKHTTP.
@@ -37,10 +34,10 @@ import kotlin.time.toDuration
  * + Executes request again
  * @since 9.0.0
  * @param proxy **Default** is [NO_PROXY]
- * @param protocols List of supported HTTP protocol versions in the order of preference. Default is HTTP/2, HTTP/1.1
- * @param okhttpClient Instance of the OKHTTP client on which this client is based.
- * @param retryBehavior [RetryBehavior] to use for each request.
- * @param isTestContext Whether this runs in the unit test context or not.
+ * @property protocols List of supported HTTP protocol versions in the order of preference. Default is HTTP/2, HTTP/1.1
+ * @property okhttpClient Instance of the OKHTTP client on which this client is based.
+ * @property retryBehavior [RetryBehavior] to use for each request.
+ * @property isTestContext Whether this runs in the unit test context or not.
  */
 public class DefaultHttpClient(
     proxy: Proxy = NO_PROXY,
@@ -160,7 +157,7 @@ public class DefaultHttpClient(
 
 private fun Response.toHttpResponse() = HttpResponse(
     code = this.code,
-    body = this.body?.string() ?: EMPTY,
+    body = this.body?.bytes() ?: EMPTY.toByteArray(),
     _headers = this.headers.toMultimap().toMutableMap()
 )
 

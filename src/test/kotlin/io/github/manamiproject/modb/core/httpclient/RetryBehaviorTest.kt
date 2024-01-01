@@ -29,7 +29,7 @@ internal class RetryBehaviorTest {
             )
 
             // then
-            val value = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY)).waitDuration.invoke(1)
+            val value = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY.toByteArray())).waitDuration.invoke(1)
             assertThat(value).isEqualTo(2.toDuration(SECONDS))
         }
 
@@ -46,7 +46,7 @@ internal class RetryBehaviorTest {
             )
 
             // then
-            val value = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY)).waitDuration.invoke(1)
+            val value = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY.toByteArray())).waitDuration.invoke(1)
             assertThat(value).isEqualTo(2.toDuration(SECONDS))
         }
     }
@@ -65,7 +65,7 @@ internal class RetryBehaviorTest {
             }
 
             // when
-            val result = retryBehavior.requiresRetry(HttpResponse(code = 403, body = EMPTY))
+            val result = retryBehavior.requiresRetry(HttpResponse(code = 403, body = EMPTY.toByteArray()))
 
             // then
             assertThat(result).isTrue()
@@ -77,7 +77,7 @@ internal class RetryBehaviorTest {
             val retryBehavior = RetryBehavior()
 
             // when
-            val result = retryBehavior.requiresRetry(HttpResponse(code = 403, body = EMPTY))
+            val result = retryBehavior.requiresRetry(HttpResponse(code = 403, body = EMPTY.toByteArray()))
 
             // then
             assertThat(result).isFalse()
@@ -97,7 +97,7 @@ internal class RetryBehaviorTest {
             }
 
             // when
-            val result = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY))
+            val result = retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY.toByteArray()))
 
             // then
             assertThat(result).isEqualTo(retryCase)
@@ -110,7 +110,7 @@ internal class RetryBehaviorTest {
 
             // when
             val result = exceptionExpected<NoSuchElementException> {
-                retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY))
+                retryBehavior.retryCase(HttpResponse(code = 403, body = EMPTY.toByteArray()))
             }
 
             // then

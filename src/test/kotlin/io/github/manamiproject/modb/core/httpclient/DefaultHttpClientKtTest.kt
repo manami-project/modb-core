@@ -70,7 +70,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
-                assertThat(result.body).isEqualTo(body)
+                assertThat(result.bodyAsText).isEqualTo(body)
             }
         }
 
@@ -100,7 +100,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
-                assertThat(result.body).isEqualTo(body)
+                assertThat(result.bodyAsText).isEqualTo(body)
             }
         }
 
@@ -521,7 +521,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
-                assertThat(result.body).isEqualTo(body)
+                assertThat(result.bodyAsText).isEqualTo(body)
             }
         }
 
@@ -557,7 +557,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
-                assertThat(result.body).isEqualTo(body)
+                assertThat(result.bodyAsText).isEqualTo(body)
             }
         }
 
