@@ -18,8 +18,8 @@ internal class HttpResponseKtTest {
         // when
         val result = HttpResponse(
             code = 200,
-            body = EMPTY,
-            _headers = responseHeaders
+            body = EMPTY.toByteArray(),
+            _headers = responseHeaders,
         )
 
         // then
@@ -37,7 +37,7 @@ internal class HttpResponseKtTest {
             // given
             val httpResponse = HttpResponse(
                 code = 200,
-                body = EMPTY
+                body = EMPTY.toByteArray(),
             )
 
             // when
@@ -52,7 +52,7 @@ internal class HttpResponseKtTest {
             // given
             val httpResponse = HttpResponse(
                 code = 201,
-                body = EMPTY
+                body = EMPTY.toByteArray(),
             )
 
             // when
@@ -61,5 +61,43 @@ internal class HttpResponseKtTest {
             // then
             assertThat(result).isFalse()
         }
+    }
+
+    @Test
+    fun `equals and hashCode are working properly`() {
+        // given
+        val obj1 = HttpResponse(
+            code = 200,
+            body = "<html></html>".toByteArray(),
+            _headers = mutableMapOf("content-type" to listOf("text/html")),
+        )
+
+        val obj2 = HttpResponse(
+            code = 200,
+            body = "<html></html>".toByteArray(),
+            _headers = mutableMapOf("content-type" to listOf("text/html")),
+        )
+
+        // when
+        val result = obj1 == obj2
+
+        // then
+        assertThat(result).isTrue()
+        assertThat(obj1.hashCode()).isEqualTo(obj2.hashCode())
+    }
+
+    @Test
+    fun `bodyAsText returns the correct value`() {
+        // given
+        val bodyValue = "<html></html>"
+
+        // when
+        val result = HttpResponse(
+            code = 200,
+            body = bodyValue.toByteArray(),
+        )
+
+        // then
+        assertThat(result.bodyAsText).isEqualTo(bodyValue)
     }
 }

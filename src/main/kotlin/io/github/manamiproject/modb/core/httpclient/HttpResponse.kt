@@ -1,36 +1,48 @@
 package io.github.manamiproject.modb.core.httpclient
 
+import okio.ByteString.Companion.toByteString
+
 /**
  * @since 1.0.0
  */
 public typealias HttpResponseCode = Int
 
 /**
- * @since 1.0.0
- */
-public typealias ResponseBody = String
-
-/**
  * Data representing a HTTP response.
- * @since 1.0.0
+ * @since 10.0.0
  * @property code Numerical HTTP response code
- * @property body Raw response body
+ * @property body Raw response body as [ByteArray]. You can access this property for binary payload. Alternatively use [HttpResponse.bodyAsText].
  * @property _headers All HTTP header sent by the server
  */
 public data class HttpResponse(
-        val code: HttpResponseCode,
-        val body: ResponseBody,
-        private val _headers: MutableMap<String, Collection<String>> = mutableMapOf(),
+    public val code: HttpResponseCode,
+    public val body: ByteArray,
+    private val _headers: MutableMap<String, Collection<String>> = mutableMapOf(),
 ) {
     /**
-     * All HTTP header sent by the server in lower case.
+     * HTTP headers sent by the server in lower case.
      * @since 1.0.0
      */
-    val headers: Map<String, Collection<String>>
+    public val headers: Map<String, Collection<String>>
         get() = _headers
+
+    /**
+     * Returns the respone body as text. Use this to retrieve JSON or HTML as [String]. To retrieve binary payload use [HttpResponse.body].
+     * @since 10.0.0
+     */
+    public val bodyAsText: String = body.toByteString().utf8()
 
     init {
         lowerCaseHeaders()
+    }
+
+    private fun lowerCaseHeaders() {
+        val lowerCaseKeyMap = _headers.map {
+            it.key.lowercase() to it.value
+        }
+
+        _headers.clear()
+        _headers.putAll(lowerCaseKeyMap)
     }
 
     /**
@@ -40,12 +52,24 @@ public data class HttpResponse(
      */
     public fun isOk(): Boolean = code == 200
 
-    private fun lowerCaseHeaders() {
-        val lowerCaseKeyMap = _headers.map {
-            it.key.lowercase() to it.value
-        }
 
-        _headers.clear()
-        _headers.putAll(lowerCaseKeyMap)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HttpResponse
+
+        if (code != other.code) return false
+        if (!body.contentEquals(other.body)) return false
+        if (_headers != other._headers) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = code
+        result = 31 * result + body.contentHashCode()
+        result = 31 * result + _headers.hashCode()
+        return result
     }
 }
