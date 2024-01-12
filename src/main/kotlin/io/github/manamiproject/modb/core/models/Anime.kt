@@ -33,8 +33,8 @@ public typealias Title = String
  * @property episodes Number of episodes. **Default** is `0`
  * @property status Publishing status. **Default** is [Status.UNKNOWN]
  * @property animeSeason In which season did the anime premiere
- * @property picture [URI] to a (large) poster/cover. **Default** is the not-found-pic from MAL.
- * @property thumbnail [URI] to a thumbnail poster/cover. **Default** is the not-found-pic from MAL.
+ * @property picture [URI] to a (large) poster/cover. **Default** is a self created "not found" pic.
+ * @property thumbnail [URI] to a thumbnail poster/cover. **Default** is a self created "not found" pic.
  * @property duration Duration of an anime having one episode or average duration of an episode if the anime has more than one episode.
  * @property relatedAnime Duplicate-free list of related anime. Sorted ascending.
  * @property tags Duplicate-free list of tags. Sorted ascending. All tags are lower case.
