@@ -28,7 +28,7 @@ public typealias Title = String
  * @since 3.1.0
  * @property _title Main title. Must not be blank.
  * @property sources Duplicate-free list of sources from which this anime was created. Sorted ascending.
- * @property synonyms Duplicate-free list of related anime. Synonyms are case sensitive and sorted ascending.
+ * @property synonyms Duplicate-free list of alternative titles. Synonyms are case sensitive and sorted ascending.
  * @property type Distribution type. **Default** is [TV]
  * @property episodes Number of episodes. **Default** is `0`
  * @property status Publishing status. **Default** is [Status.UNKNOWN]
