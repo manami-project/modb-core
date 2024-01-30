@@ -32,7 +32,7 @@ dependencies {
 
     implementation(platform(kotlin("bom")))
     implementation("org.slf4j:slf4j-api:2.0.11")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
     testImplementation("ch.qos.logback:logback-classic:1.4.14")
     testImplementation("io.github.manamiproject:modb-test:1.6.0")
