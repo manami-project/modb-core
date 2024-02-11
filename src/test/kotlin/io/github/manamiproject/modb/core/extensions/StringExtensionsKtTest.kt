@@ -31,35 +31,20 @@ internal class StringExtensionsKtTest {
             }
         }
 
-        @Test
-        fun `throws exception if the string is empty`() {
+        @ParameterizedTest
+        @ValueSource(strings = ["", " ", "    "])
+        fun `throws exception if the string is empty`(value: String) {
             tempDirectory {
                 // given
                 val file = tempDir.resolve("test.txt")
 
                 // when
                 val result = exceptionExpected<IllegalStateException> {
-                    EMPTY.writeToFile(file, false)
+                    value.writeToFile(file, false)
                 }
 
                 // then
-                assertThat(result).hasMessage("Trying to write file [$file], but string was blank")
-            }
-        }
-
-        @Test
-        fun `throws exception if the string is blank`() {
-            tempDirectory {
-                // given
-                val file = tempDir.resolve("test.txt")
-
-                // when
-                val result = exceptionExpected<IllegalStateException> {
-                    "    ".writeToFile(file, false)
-                }
-
-                // then
-                assertThat(result).hasMessage("Trying to write file [$file], but string was blank")
+                assertThat(result).hasMessage("Tried to write file [$file], but the String was blank.")
             }
         }
 
