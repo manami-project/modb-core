@@ -32,7 +32,7 @@ public suspend fun String.writeToFile(file: RegularFile, writeLockFile: Boolean 
     val content = this
 
     withContext(LIMITED_FS) {
-        check(content.isNotBlank()) { "Trying to write file [$file], but string was blank" }
+        check(content.isNotBlank()) { "Tried to write file [$file], but the String was blank." }
 
         val lockFile = file.changeSuffix(LOCK_FILE_SUFFIX)
 
