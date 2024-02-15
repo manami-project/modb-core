@@ -26,7 +26,7 @@ version = project.findProperty("release.version") as String? ?: ""
 
 dependencies {
     api(kotlin("stdlib"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
     api("com.squareup.okhttp3:okhttp:4.12.0")
     api("org.jsoup:jsoup:1.17.2")
 
