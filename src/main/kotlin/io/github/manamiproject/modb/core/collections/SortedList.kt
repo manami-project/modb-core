@@ -20,6 +20,12 @@ public class SortedList<T: Comparable<T>>(
      */
     public constructor(vararg values: T) : this(values.toMutableList())
 
+    /**
+     * @param values Initial values
+     * @since 11.0.0
+     */
+    public constructor(values: Collection<T>) : this(values.toMutableList())
+
     init {
         list.sortWith(comparator)
     }
