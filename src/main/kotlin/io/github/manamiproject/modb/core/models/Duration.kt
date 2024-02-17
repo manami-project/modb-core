@@ -11,7 +11,7 @@ public typealias Seconds = Int
 /**
  * Duration of an anime.
  * @since 1.0.0
- * @property value The duration
+ * @property value The duration.
  * @property unit Indicates whether the [value] refers to seconds, minutes or hours.
  */
 public data class Duration(
@@ -32,9 +32,9 @@ public data class Duration(
     /**
      * Returns the duration in seconds as formatted [String].
      *
-     * **Example output:** `120 seconds`
+     * **Example output:** `120 seconds`.
      * @since 1.0.0
-     * @return Value in seconds followed by `seconds`
+     * @return Value in seconds followed by `seconds`.
      */
     override fun toString(): String = "$duration seconds"
 

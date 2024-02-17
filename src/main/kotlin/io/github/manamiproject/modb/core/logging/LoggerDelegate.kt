@@ -25,7 +25,7 @@ public class LoggerDelegate(private val logLevel: LogLevel? = null) {
     /**
      * Creates the [Logger] for use in delegation.
      * @since 7.0.0
-     * @return Actual instance of the logger to use
+     * @return Actual instance of the logger to use.
      */
     public operator fun getValue(thisRef: Any, property: KProperty<*>): Logger {
         return ModbLogger(ref = thisRef::class, logLevel = logLevel)

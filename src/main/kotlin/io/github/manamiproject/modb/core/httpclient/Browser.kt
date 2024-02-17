@@ -18,7 +18,7 @@ public enum class Browser {
 }
 
 /**
- * Defines the visualization type of a [Browser]
+ * Defines the visualization type of a [Browser].
  * @since 4.0.0
  */
 public enum class BrowserType {

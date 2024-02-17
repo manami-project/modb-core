@@ -9,7 +9,7 @@ import java.time.LocalDate
 public typealias Year = Int
 
 /**
- * Year of the first japanese anime. See [Wikipedia](https://en.wikipedia.org/wiki/Katsud%C5%8D_Shashin)
+ * Year of the first japanese anime. See [Wikipedia](https://en.wikipedia.org/wiki/Katsud%C5%8D_Shashin).
  * @since 5.1.0
  */
 public const val YEAR_OF_THE_FIRST_ANIME: Year = 1907
@@ -32,13 +32,13 @@ public data class AnimeSeason(
 
     /**
      * @since 1.0.0
-     * @return `true` if the year is unknown which means that it's `0`
+     * @return `true` if the year is unknown which means that it's `0`.
      */
     public fun isYearOfPremiereUnknown(): Boolean = year == UNKNOWN_YEAR
 
     /**
      * @since 1.0.0
-     * @return `true` if the year is known which means that it's `0`
+     * @return `true` if the year is known which means that it's `0`.
      */
     public fun isYearOfPremiereKnown(): Boolean = year != UNKNOWN_YEAR
 
@@ -59,15 +59,36 @@ public data class AnimeSeason(
      * @since 1.0.0
      */
     public enum class Season {
-        UNDEFINED,
+        /**
+         * @since 1.0.0
+         */
         SPRING,
+        /**
+         * @since 1.0.0
+         */
         SUMMER,
+        /**
+         * @since 1.0.0
+         */
         FALL,
-        WINTER;
+        /**
+         * @since 1.0.0
+         */
+        WINTER,
+        /**
+         * Season is unknown.
+         * @since 1.0.0
+         */
+        UNDEFINED;
 
         public companion object {
+            /**
+             * Creates [AnimeSeason.Season] from a [String]. Tolerant by ignoreing leading and trailing whitespaces as well as case.
+             * @since 1.0.0
+             * @param value The value being mapped to a [AnimeSeason.Season].
+             */
             public fun of(value: String): Season {
-                return entries.find { it.toString().trim().equals(value, ignoreCase = true) } ?: UNDEFINED
+                return entries.find { it.toString().equals(value.trim(), ignoreCase = true) } ?: UNDEFINED
             }
         }
     }

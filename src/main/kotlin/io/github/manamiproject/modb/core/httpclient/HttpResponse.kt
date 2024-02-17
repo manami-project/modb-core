@@ -10,9 +10,9 @@ public typealias HttpResponseCode = Int
 /**
  * Data representing a HTTP response.
  * @since 10.0.0
- * @property code Numerical HTTP response code
+ * @property code Numerical HTTP response code.
  * @property body Raw response body as [ByteArray]. You can access this property for binary payload. Alternatively use [HttpResponse.bodyAsText].
- * @property _headers All HTTP header sent by the server
+ * @property _headers All HTTP header sent by the server.
  */
 public data class HttpResponse(
     public val code: HttpResponseCode,
@@ -46,9 +46,9 @@ public data class HttpResponse(
     }
 
     /**
-     * Convenience function to indicate the status based on [code]
+     * Convenience function to indicate the status based on [code].
      * @since 1.0.0
-     * @return `true` if the response code is 200
+     * @return `true` if the response code is 200.
      */
     public fun isOk(): Boolean = code == 200
 

@@ -9,12 +9,12 @@ import kotlin.io.path.writeBytes
 /**
  * Writes a [ByteArray] into a [RegularFile]. If the file already exists it will be overwritten.
  * @since 10.1.0
- * @param file The file to which you want to write the given [ByteArray]
+ * @param file The file to which you want to write the given [ByteArray].
  * @param writeLockFile You can choose to write an empty lock file which indicates that the file is currently being created.
  * First the empty lock file is created using [LOCK_FILE_SUFFIX]. Then the actual file is being written. After that the lock file is deleted again.
  * **Default** is `false`.
  * @throws IllegalStateException if the given [ByteArray] is empty.
- * @receiver Any non-nullable [ByteArray]
+ * @receiver Any non-nullable [ByteArray].
  */
 public suspend fun ByteArray.writeToFile(file: RegularFile, writeLockFile: Boolean = false) {
     val content = this
