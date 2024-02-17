@@ -11,10 +11,10 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 /**
- * Uses an [AnimeConverter] to convert files and directories to [Anime]s
+ * Uses an [AnimeConverter] to convert files and directories to [Anime]s.
  * @since 1.0.0
- * @param animeConverter Converter for the raw content
- * @param fileSuffix File suffix to determine which files to include
+ * @param animeConverter Converter for the raw content.
+ * @param fileSuffix File suffix to determine which files to include.
  */
 public class DefaultPathConverter(
     private val animeConverter: AnimeConverter,

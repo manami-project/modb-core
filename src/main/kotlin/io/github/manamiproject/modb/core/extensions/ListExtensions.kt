@@ -6,9 +6,9 @@ import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 
 /**
- * Randomizes the order of elements in a [List]
+ * Randomizes the order of elements in a [List].
  * @since 8.0.0
- * @return The randomized list
+ * @return The randomized list.
  * @receiver Any list.
  */
 public suspend fun <T> List<T>.createShuffledList(): List<T> {

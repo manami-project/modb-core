@@ -28,7 +28,7 @@ import java.security.SecureRandom
  * ```
  *
  * @since 8.0.0
- * @return Content of a file as [String]
+ * @return Content of a file as [String].
  * @throws IllegalArgumentException If the given path is blank.
  * @throws IllegalStateException If the given path does not exist.
  */
@@ -56,7 +56,7 @@ public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) 
  * ```
  * @since 4.0.0
  * @throws IllegalArgumentException If the given path is blank.
- * @return **true** if the file exists in classpath
+ * @return **true** if the file exists in classpath.
  */
 public fun resourceFileExists(path: String): Boolean {
     require(path.isNotBlank()) { "Given path must not be blank" }
@@ -73,7 +73,7 @@ public fun resourceFileExists(path: String): Boolean {
  * @since 1.0.0
  * @param number1 Bound for a random number (inclusive).
  * @param number2 Bound for a random number (inclusive).
- * @throws IllegalStateException If the given numbers are equal
+ * @throws IllegalStateException If the given numbers are equal.
  * @return A random number withing the given bounds.
  */
 public fun random(number1: Int, number2: Int): Long {
@@ -100,7 +100,7 @@ public suspend fun excludeFromTestContext(config: MetaDataProviderConfig, func: 
 /**
  * Suspend function wrapper for parsing a [String] into a [Document].
  * @since 8.0.0
- * @param rawHtml Raw HTML as [String]
+ * @param rawHtml Raw HTML as [String].
  * @return [Document]
  */
 public suspend fun parseHtml(rawHtml: String): Document = withContext(LIMITED_CPU) {
@@ -112,7 +112,7 @@ public suspend fun parseHtml(rawHtml: String): Document = withContext(LIMITED_CP
  * Parses a [String] into a [Document] on which data can be slected and returned.
  * @since 8.0.0
  * @param rawHtml Raw HTML as [String]
- * @param selector Lets you select data in the DOM
+ * @param selector Lets you select data in the DOM.
  * @return Selected data. Any type can be used.
  */
 public suspend inline fun <reified T> parseHtml(rawHtml: String, noinline selector: suspend (Document) -> T): T = withContext(LIMITED_CPU) {

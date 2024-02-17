@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.time.LocalDate
 
 internal class AnimeSeasonKtTest {
@@ -12,11 +14,9 @@ internal class AnimeSeasonKtTest {
     @Nested
     inner class SeasonTests {
 
-        @Test
-        fun `'SPRING' by string`() {
-            // given
-            val value = "SpRiNg"
-
+        @ParameterizedTest
+        @ValueSource(strings = ["SPRING", "SpRiNg", " SpRiNg", "SpRiNg "])
+        fun `'SPRING' by string`(value: String) {
             // when
             val result = AnimeSeason.Season.of(value)
 
@@ -24,11 +24,9 @@ internal class AnimeSeasonKtTest {
             assertThat(result).isEqualTo(SPRING)
         }
 
-        @Test
-        fun `'SUMMER' by string`() {
-            // given
-            val value = "SuMmEr"
-
+        @ParameterizedTest
+        @ValueSource(strings = ["SUMMER", "SuMmEr", " SuMmEr", "SuMmEr "])
+        fun `'SUMMER' by string`(value: String) {
             // when
             val result = AnimeSeason.Season.of(value)
 
@@ -36,11 +34,9 @@ internal class AnimeSeasonKtTest {
             assertThat(result).isEqualTo(SUMMER)
         }
 
-        @Test
-        fun `'FALL' by string`() {
-            // given
-            val value = "FaLl"
-
+        @ParameterizedTest
+        @ValueSource(strings = ["FALL", "FaLl", " FaLl", "FaLl "])
+        fun `'FALL' by string`(value: String) {
             // when
             val result = AnimeSeason.Season.of(value)
 
@@ -48,11 +44,9 @@ internal class AnimeSeasonKtTest {
             assertThat(result).isEqualTo(FALL)
         }
 
-        @Test
-        fun `'WINTER' by string`() {
-            // given
-            val value = "WiNtEr"
-
+        @ParameterizedTest
+        @ValueSource(strings = ["WINTER","WiNtEr", " WiNtEr", "WiNtEr "])
+        fun `'WINTER' by string`(value: String) {
             // when
             val result = AnimeSeason.Season.of(value)
 
@@ -60,11 +54,9 @@ internal class AnimeSeasonKtTest {
             assertThat(result).isEqualTo(WINTER)
         }
 
-        @Test
-        fun `'UNDEFINED' by string`() {
-            // given
-            val value = "UnDeFiNeD"
-
+        @ParameterizedTest
+        @ValueSource(strings = ["UNDEFINED", "UnDeFiNeD", " UnDeFiNeD", "UnDeFiNeD "])
+        fun `'UNDEFINED' by string`(value: String) {
             // when
             val result = AnimeSeason.Season.of(value)
 

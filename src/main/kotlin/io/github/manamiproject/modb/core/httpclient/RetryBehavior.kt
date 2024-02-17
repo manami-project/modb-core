@@ -2,7 +2,7 @@ package io.github.manamiproject.modb.core.httpclient
 
 /**
  * Configuration to individualize the behavior of [DefaultHttpClient].
- * You can determine when a retry is performed and how long to wait before the next attempt..
+ * You can determine when a retry is performed and how long to wait before the next attempt.
  * @since 9.0.0
  * @param maxAttempts Number of times a request should be retried before failing completly.
  * @param cases Contains all cases for which a retry will be performed.
@@ -15,7 +15,7 @@ public data class RetryBehavior(
     /**
      * Adds cases that describe when to perform a retry.
      * @since 9.0.0
-     * @param retryCases Can take a single or multiple [RetryCase]s
+     * @param retryCases Can take a single or multiple [RetryCase]s.
      */
     public fun addCases(vararg retryCases: RetryCase) {
         retryCases.forEach {

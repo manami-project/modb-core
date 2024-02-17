@@ -159,8 +159,8 @@ public object UserAgents {
 
     /**
      * Retrieve a list of user agents.
-     * @param browser Selected browser defined by [Browser]
-     * @param browserType Determines whether you request an agent for [DESKTOP] or [MOBILE]
+     * @param browser Selected browser defined by [Browser].
+     * @param browserType Determines whether you request an agent for [DESKTOP] or [MOBILE].
      * @since 4.0.0
      */
     public fun userAgents(browser: Browser, browserType: BrowserType): Set<String> {

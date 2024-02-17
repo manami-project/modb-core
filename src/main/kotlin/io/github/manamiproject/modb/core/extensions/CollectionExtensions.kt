@@ -3,10 +3,10 @@ package io.github.manamiproject.modb.core.extensions
 import java.security.SecureRandom
 
 /**
- * Picks a random element from a [Collection]
+ * Picks a random element from a [Collection].
  * @since 4.0.0
  * @return A random element from the given [Collection].
- * @throws IllegalStateException if the collection is empty
+ * @throws IllegalStateException if the collection is empty.
  * @receiver Any collection.
  */
 public fun <T> Collection<T>.pickRandom(): T {

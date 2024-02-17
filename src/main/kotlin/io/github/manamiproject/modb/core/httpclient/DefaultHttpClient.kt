@@ -30,11 +30,11 @@ import java.net.URL
  * **Example:** if [RetryBehavior.maxAttempts] is set to `3` worst case would be `4` executions in total.
  *
  * # Retry
- * + Waits for the amount of time defined in [RetryCase.waitDuration]
- * + Executes request again
+ * + Waits for the amount of time defined in [RetryCase.waitDuration].
+ * + Executes request again.
  * @since 9.0.0
  * @param proxy **Default** is [NO_PROXY]
- * @property protocols List of supported HTTP protocol versions in the order of preference. Default is HTTP/2, HTTP/1.1
+ * @property protocols List of supported HTTP protocol versions in the order of preference. Default is `HTTP/2, HTTP/1.1`.
  * @property okhttpClient Instance of the OKHTTP client on which this client is based.
  * @property retryBehavior [RetryBehavior] to use for each request.
  * @property isTestContext Whether this runs in the unit test context or not.

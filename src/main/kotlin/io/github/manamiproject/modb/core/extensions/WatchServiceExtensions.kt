@@ -10,8 +10,8 @@ import kotlin.time.toDuration
 /**
  * Retrieve [WatchKey]s and prevent [ClosedWatchServiceException] to be thrown. Instead of throwing the exception `null` is being returned.
  * @since 8.0.0
- * @return Either a [WatchKey] or `null`
- * @receiver Any [WatchService]
+ * @return Either a [WatchKey] or `null`.
+ * @receiver Any [WatchService].
  */
 public suspend fun WatchService.longPoll(): WatchKey? {
     val watchService = this
