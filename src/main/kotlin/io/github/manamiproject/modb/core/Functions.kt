@@ -37,7 +37,7 @@ public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) 
 
     return@withContext ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()
         ?.use(BufferedReader::readText)
-        ?.replace(System.getProperty("line.separator"), "\n")
+        ?.replace(System.lineSeparator(), "\n")
         ?: throw IllegalStateException("Unable to load file [$path]")
 }
 
