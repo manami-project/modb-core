@@ -111,6 +111,22 @@ internal class JsonKtTest {
         }
 
         @Test
+        fun `deserialize Anime object - with duration missing`() {
+            runBlocking {
+                // given
+                val expectedAnime = Anime("Death Note")
+
+                val json = loadTestResource<String>("json_tests/anime_duration_missing.json")
+
+                // when
+                val result = Json.parseJson<Anime>(json)
+
+                // then
+                assertThat(result).isEqualTo(expectedAnime)
+            }
+        }
+
+        @Test
         fun `deserialize object - throws exception if a property having a non-nullable type is mapped to null`() {
             // given
             val json = """

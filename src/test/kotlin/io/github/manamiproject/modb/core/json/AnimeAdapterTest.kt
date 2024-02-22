@@ -86,6 +86,70 @@ internal class AnimeAdapterTest {
         }
 
         @Test
+        fun `if duration is not present use UNKNOWN Duration`() {
+            // given
+            val adapter = AnimeAdapter()
+            val expected = Anime(
+                _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                sources = hashSetOf(URI("https://myanimelist.net/anime/6351")),
+                relatedAnime = hashSetOf(URI("https://myanimelist.net/anime/2167")),
+                type = Anime.Type.TV,
+                episodes = 24,
+                status = Anime.Status.FINISHED,
+                animeSeason = AnimeSeason(
+                    season = AnimeSeason.Season.SUMMER,
+                    year = 2009
+                ),
+                picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                duration = Duration.UNKNOWN,
+                synonyms = hashSetOf(
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                ),
+                tags = hashSetOf(
+                    "comedy",
+                    "romance",
+                )
+            )
+
+            // when
+            val result = adapter.fromJson("""
+                {
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "sources": [
+                    "https://myanimelist.net/anime/6351"
+                  ],
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": 2009
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "relatedAnime": [
+                    "https://myanimelist.net/anime/2167"
+                  ],
+                  "tags": [
+                    "comedy",
+                    "romance"
+                  ]
+                }
+            """.trimIndent())
+
+            // then
+            assertThat(result).isEqualTo(expected)
+        }
+
+        @Test
         fun `throw exception on null value`() {
             // given
             val adapter = AnimeAdapter()
@@ -941,48 +1005,6 @@ internal class AnimeAdapterTest {
 
             // then
             assertThat(result).hasMessage("Expected BEGIN_OBJECT but was NULL at path \$.duration")
-        }
-
-        @Test
-        fun `throws exception if duration is missing`() {
-            // given
-            val adapter = AnimeAdapter()
-
-            // when
-            val result = exceptionExpected<IllegalStateException> {
-                adapter.fromJson("""
-                    {
-                      "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                      "sources": [
-                        "https://myanimelist.net/anime/6351"
-                      ],
-                      "synonyms": [
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                      ],
-                      "type": "TV",
-                      "episodes": 24,
-                      "status": "FINISHED",
-                      "animeSeason": {
-                        "season": "SUMMER",
-                        "year": 2009
-                      },
-                      "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
-                      "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
-                      "relatedAnime": [
-                        "https://myanimelist.net/anime/2167"
-                      ],
-                      "tags": [
-                        "comedy",
-                        "romance"
-                      ]
-                    }
-            """.trimIndent())
-            }
-
-            // then
-            assertThat(result).hasMessage("Property 'duration' is either missing or null.")
         }
 
         @Test
