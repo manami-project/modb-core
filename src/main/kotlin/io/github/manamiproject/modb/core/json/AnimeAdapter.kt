@@ -45,7 +45,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
         var relatedAnime = HashSet<URI>()
         var relatedAnimeDeserialized = false
         var duration = Duration.UNKNOWN
-        var durationDeserialized = false
         var animeSeason = AnimeSeason()
         var animeSeasonDeserialized = false
 
@@ -93,7 +92,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
                 }
                 "duration" -> {
                     duration = durationAdapter.fromJson(reader)
-                    durationDeserialized = true
                 }
                 "animeSeason" -> {
                     animeSeason = animeSeasonAdapter.fromJson(reader)
@@ -116,7 +114,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
             !thumbnailDeserialized -> throw IllegalStateException("Property 'thumbnail' is either missing or null.")
             !tagsDeserialized -> throw IllegalStateException("Property 'tags' is either missing or null.")
             !relatedAnimeDeserialized -> throw IllegalStateException("Property 'relatedAnime' is either missing or null.")
-            !durationDeserialized -> throw IllegalStateException("Property 'duration' is either missing or null.")
             !animeSeasonDeserialized -> throw IllegalStateException("Property 'animeSeason' is either missing or null.")
         }
 
