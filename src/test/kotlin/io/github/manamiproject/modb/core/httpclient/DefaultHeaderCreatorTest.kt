@@ -5,7 +5,6 @@ import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import org.assertj.core.api.Assertions.assertThat
 import java.net.URI
 import kotlin.test.Test
-import java.net.URL
 
 internal class DefaultHeaderCreatorTest {
 
