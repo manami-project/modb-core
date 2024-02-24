@@ -1251,6 +1251,70 @@ internal class AnimeAdapterTest {
             """.trimIndent())
         }
 
+        @Test
+        fun `correctly serialize Anime without Duration`() {
+            // given
+            val adapter = AnimeAdapter(serializeDuration = false).indent("  ")
+            val obj = Anime(
+                _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                sources = hashSetOf(URI("https://myanimelist.net/anime/6351")),
+                relatedAnime = hashSetOf(URI("https://myanimelist.net/anime/2167")),
+                type = Anime.Type.TV,
+                episodes = 24,
+                status = Anime.Status.FINISHED,
+                animeSeason = AnimeSeason(
+                    season = AnimeSeason.Season.SUMMER,
+                    year = 2009
+                ),
+                picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                duration = Duration(24, Duration.TimeUnit.MINUTES),
+                synonyms = hashSetOf(
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                ),
+                tags = hashSetOf(
+                    "comedy",
+                    "romance",
+                )
+            )
+
+            // when
+            val result = adapter.toJson(obj)
+
+            // then
+            assertThat(result).isEqualTo("""
+                {
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "sources": [
+                    "https://myanimelist.net/anime/6351"
+                  ],
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": 2009
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "relatedAnime": [
+                    "https://myanimelist.net/anime/2167"
+                  ],
+                  "tags": [
+                    "comedy",
+                    "romance"
+                  ]
+                }
+            """.trimIndent())
+        }
+
         @ParameterizedTest
         @ValueSource(strings = ["", " ", "    ", "\u200C"])
         fun `runs performChecks if activateChecks is false and throws an exception if title is blank`(value: String) {

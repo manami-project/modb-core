@@ -1,14 +1,12 @@
 package io.github.manamiproject.modb.core.json
 
 import com.squareup.moshi.*
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import io.github.manamiproject.modb.core.coroutines.CoroutineManager.runCoroutine
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import io.github.manamiproject.modb.core.json.Json.SerializationOptions.*
-import io.github.manamiproject.modb.core.models.Duration
 import io.github.manamiproject.modb.core.models.Anime
+import io.github.manamiproject.modb.core.models.Duration
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import com.squareup.moshi.JsonAdapter as MoshiAdapter
@@ -74,6 +72,21 @@ public object Json {
     private fun configureJsonAdapter(settings: SerializationSettings): MoshiAdapter<Any> {
         var jsonAdapter = moshi.adapter<Any>()
 
+        if (settings.serializeDurationDeactivated) {
+            val delegate = jsonAdapter
+
+            jsonAdapter = object: MoshiAdapter<Any>() {
+                override fun fromJson(reader: JsonReader): Any? = delegate.fromJson(reader)
+                override fun toJson(writer: JsonWriter, value: Any?) {
+                    if (value is Anime) {
+                        AnimeAdapter(serializeDuration = false).toJson(writer, value)
+                    } else {
+                        delegate.toJson(writer, value)
+                    }
+                }
+            }
+        }
+
         if (settings.serializeNullActivated) {
             jsonAdapter = jsonAdapter.serializeNulls()
         }
@@ -82,17 +95,7 @@ public object Json {
             jsonAdapter = jsonAdapter.indent(JSON_IDENT)
         }
 
-        if (settings.serializeDurationDeactivated) {
-            val delegate = jsonAdapter
-            jsonAdapter = object: JsonAdapter<Any>() {
-                override fun fromJson(reader: JsonReader): Any? = delegate.fromJson(reader)
-                override fun toJson(writer: JsonWriter, value: Any?) {
-                    if (value !is Duration) {
-                        delegate.toJson(value)
-                    }
-                }
-            }
-        }
+
 
         return jsonAdapter
     }
@@ -127,10 +130,4 @@ private class SerializationSettings(val options: Set<Json.SerializationOptions>)
     val serializeNullActivated: Boolean = false.takeIf { options.contains(DEACTIVATE_SERIALIZE_NULL)} ?: true
     /** Serialize [Duration] is activated by default. */
     val serializeDurationDeactivated: Boolean = true.takeIf { options.contains(DEACTIVATE_SERIALIZE_DURATION)} ?: false
-}
-
-public fun main() {
-    runCoroutine {
-        println(Json.toJson(Duration.UNKNOWN))
-    }
 }
