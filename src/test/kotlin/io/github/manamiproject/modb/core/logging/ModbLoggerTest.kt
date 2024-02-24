@@ -181,8 +181,9 @@ internal class ModbLoggerTest {
 
             // then
             assertThat(invokedStatement.split('\n').take(2).joinToString("\n")).isEqualTo("""
-test-log-statement
-java.net.SocketTimeoutException: custom-message-here""".trimIndent())
+                test-log-statement
+                java.net.SocketTimeoutException: custom-message-here
+            """.trimIndent())
         }
 
         @ParameterizedTest
@@ -261,8 +262,9 @@ java.net.SocketTimeoutException: custom-message-here""".trimIndent())
 
             // then
             assertThat(invokedStatement.split('\n').take(2).joinToString("\n")).isEqualTo("""
-test-log-statement
-java.net.SocketTimeoutException: custom-message-here""".trimIndent())
+                test-log-statement
+                java.net.SocketTimeoutException: custom-message-here
+            """.trimIndent())
         }
 
         @ParameterizedTest
