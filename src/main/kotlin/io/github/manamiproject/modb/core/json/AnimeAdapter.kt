@@ -7,7 +7,7 @@ import io.github.manamiproject.modb.core.models.Anime.Companion.NO_PICTURE
 import io.github.manamiproject.modb.core.models.Anime.Companion.NO_PICTURE_THUMBNAIL
 import java.net.URI
 
-internal class AnimeAdapter: JsonAdapter<Anime>() {
+internal class AnimeAdapter(private val serializeDuration: Boolean = true): JsonAdapter<Anime>() {
 
     private val titleAdapter = TitleAdapter()
     private val uriHashSetAdapter = HashSetAdapter(UriAdapter())
@@ -172,8 +172,10 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
         writer.name("thumbnail")
         uriAdapter.toJson(writer, value.thumbnail)
 
-        writer.name("duration")
-        durationAdapter.toJson(writer, value.duration)
+        if (serializeDuration) {
+            writer.name("duration")
+            durationAdapter.toJson(writer, value.duration)
+        }
 
         writer.name("relatedAnime").beginArray()
         value.relatedAnime.map { it.toString() }.sorted().forEach { writer.value(it) }
