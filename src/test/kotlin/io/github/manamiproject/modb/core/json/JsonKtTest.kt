@@ -288,7 +288,6 @@ internal class JsonKtTest {
 
                     val expectedJson = """
                         {
-                          "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                           "sources": [
                             "https://anilist.co/anime/6351",
                             "https://anime-planet.com/anime/clannad-another-world-kyou-chapter",
@@ -298,6 +297,20 @@ internal class JsonKtTest {
                             "https://myanimelist.net/anime/6351",
                             "https://notify.moe/anime/3L63cKimg"
                           ],
+                          "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                          "type": "TV",
+                          "episodes": 24,
+                          "status": "FINISHED",
+                          "animeSeason": {
+                            "season": "SUMMER",
+                            "year": 2009
+                          },
+                          "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                          "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                          "duration": {
+                            "value": 1440,
+                            "unit": "SECONDS"
+                          },
                           "synonyms": [
                             "CLANNAD",
                             "Clannad (TV)",
@@ -315,19 +328,6 @@ internal class JsonKtTest {
                             "클라나드",
                             "ＣＬＡＮＮＡＤ -クラナド-"
                           ],
-                          "type": "TV",
-                          "episodes": 24,
-                          "status": "FINISHED",
-                          "animeSeason": {
-                            "season": "SUMMER",
-                            "year": 2009
-                          },
-                          "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
-                          "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
-                          "duration": {
-                            "value": 1440,
-                            "unit": "SECONDS"
-                          },
                           "relatedAnime": [
                             "https://anilist.co/anime/2167",
                             "https://anilist.co/anime/4059",
@@ -381,9 +381,8 @@ internal class JsonKtTest {
 
                     val expectedJson = """
                         {
-                          "title": "Death Note",
                           "sources": [],
-                          "synonyms": [],
+                          "title": "Death Note",
                           "type": "UNKNOWN",
                           "episodes": 0,
                           "status": "UNKNOWN",
@@ -397,6 +396,7 @@ internal class JsonKtTest {
                             "value": 0,
                             "unit": "SECONDS"
                           },
+                          "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
                         }
@@ -466,7 +466,7 @@ internal class JsonKtTest {
                         ),
                     )
 
-                    val expectedJson = """{"title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","sources":["https://myanimelist.net/anime/6351"],"synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","duration":{"value":1440,"unit":"SECONDS"},"relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
+                    val expectedJson = """{"sources":["https://myanimelist.net/anime/6351"],"title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","duration":{"value":1440,"unit":"SECONDS"},"synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
 
                     // when
                     val result = Json.toJson(anime, Json.SerializationOptions.DEACTIVATE_PRETTY_PRINT)
@@ -490,9 +490,8 @@ internal class JsonKtTest {
 
                     val expectedJson = """
                         {
-                          "title": "Title",
                           "sources": [],
-                          "synonyms": [],
+                          "title": "Title",
                           "type": "UNKNOWN",
                           "episodes": 0,
                           "status": "UNKNOWN",
@@ -505,6 +504,7 @@ internal class JsonKtTest {
                             "value": 0,
                             "unit": "SECONDS"
                           },
+                          "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
                         }
@@ -532,9 +532,8 @@ internal class JsonKtTest {
 
                     val expectedJson = """
                         {
-                          "title": "Title",
                           "sources": [],
-                          "synonyms": [],
+                          "title": "Title",
                           "type": "UNKNOWN",
                           "episodes": 0,
                           "status": "UNKNOWN",
@@ -544,6 +543,7 @@ internal class JsonKtTest {
                           },
                           "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                           "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
+                          "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
                         }
@@ -590,7 +590,7 @@ internal class JsonKtTest {
                         ),
                     )
 
-                    val expectedJson = """{"title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","sources":["https://myanimelist.net/anime/6351"],"synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
+                    val expectedJson = """{"sources":["https://myanimelist.net/anime/6351"],"title":"Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen","type":"TV","episodes":24,"status":"FINISHED","animeSeason":{"season":"SUMMER","year":2009},"picture":"https://cdn.myanimelist.net/images/anime/10/19621.jpg","thumbnail":"https://cdn.myanimelist.net/images/anime/10/19621t.jpg","synonyms":["Clannad ~After Story~: Another World, Kyou Chapter","Clannad: After Story OVA","クラナド　アフターストーリー　もうひとつの世界　杏編"],"relatedAnime":["https://myanimelist.net/anime/2167"],"tags":["comedy","romance"]}""".trimIndent()
 
                     // when
                     val result = Json.toJson(anime, Json.SerializationOptions.DEACTIVATE_PRETTY_PRINT, Json.SerializationOptions.DEACTIVATE_SERIALIZE_DURATION)

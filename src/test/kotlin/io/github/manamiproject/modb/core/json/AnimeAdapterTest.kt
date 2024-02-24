@@ -1218,15 +1218,10 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "sources": [
                     "https://myanimelist.net/anime/6351"
                   ],
-                  "synonyms": [
-                    "Clannad ~After Story~: Another World, Kyou Chapter",
-                    "Clannad: After Story OVA",
-                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                  ],
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "type": "TV",
                   "episodes": 24,
                   "status": "FINISHED",
@@ -1240,6 +1235,11 @@ internal class AnimeAdapterTest {
                     "value": 1440,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
                   "relatedAnime": [
                     "https://myanimelist.net/anime/2167"
                   ],
@@ -1286,15 +1286,10 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "sources": [
                     "https://myanimelist.net/anime/6351"
                   ],
-                  "synonyms": [
-                    "Clannad ~After Story~: Another World, Kyou Chapter",
-                    "Clannad: After Story OVA",
-                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                  ],
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "type": "TV",
                   "episodes": 24,
                   "status": "FINISHED",
@@ -1304,6 +1299,11 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
                   "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
                   "relatedAnime": [
                     "https://myanimelist.net/anime/2167"
                   ],
@@ -1350,9 +1350,8 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "Death Note",
                   "sources": [],
-                  "synonyms": [],
+                  "title": "Death Note",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1365,6 +1364,7 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [],
                   "relatedAnime": [],
                   "tags": []
                 }
@@ -1410,11 +1410,10 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "sources": [
                     "https://myanimelist.net/anime/6351"
                   ],
-                  "synonyms": [],
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1427,6 +1426,7 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [],
                   "relatedAnime": [
                     "https://myanimelist.net/anime/2167"
                   ],
@@ -1452,11 +1452,8 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "デスノート",
                   "sources": [],
-                  "synonyms": [
-                    "Death Note"
-                  ],
+                  "title": "デスノート",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1469,6 +1466,9 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [
+                    "Death Note"
+                  ],
                   "relatedAnime": [],
                   "tags": []
                 }
@@ -1492,9 +1492,8 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "デスノート",
                   "sources": [],
-                  "synonyms": [],
+                  "title": "デスノート",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1507,6 +1506,7 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [],
                   "relatedAnime": [],
                   "tags": []
                 }
@@ -1530,9 +1530,8 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "デスノート",
                   "sources": [],
-                  "synonyms": [],
+                  "title": "デスノート",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1545,6 +1544,7 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [],
                   "relatedAnime": [],
                   "tags": [
                     "death note"
@@ -1570,9 +1570,8 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "デスノート",
                   "sources": [],
-                  "synonyms": [],
+                  "title": "デスノート",
                   "type": "UNKNOWN",
                   "episodes": 0,
                   "status": "UNKNOWN",
@@ -1585,6 +1584,7 @@ internal class AnimeAdapterTest {
                     "value": 0,
                     "unit": "SECONDS"
                   },
+                  "synonyms": [],
                   "relatedAnime": [],
                   "tags": []
                 }
@@ -1675,7 +1675,6 @@ internal class AnimeAdapterTest {
             // then
             assertThat(result).isEqualTo("""
                 {
-                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                   "sources": [
                     "https://anilist.co/anime/6351",
                     "https://anime-planet.com/anime/clannad-another-world-kyou-chapter",
@@ -1685,6 +1684,20 @@ internal class AnimeAdapterTest {
                     "https://myanimelist.net/anime/6351",
                     "https://notify.moe/anime/3L63cKimg"
                   ],
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": 2009
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "duration": {
+                    "value": 1440,
+                    "unit": "SECONDS"
+                  },
                   "synonyms": [
                     "CLANNAD",
                     "Clannad (TV)",
@@ -1702,19 +1715,6 @@ internal class AnimeAdapterTest {
                     "클라나드",
                     "ＣＬＡＮＮＡＤ -クラナド-"
                   ],
-                  "type": "TV",
-                  "episodes": 24,
-                  "status": "FINISHED",
-                  "animeSeason": {
-                    "season": "SUMMER",
-                    "year": 2009
-                  },
-                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
-                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
-                  "duration": {
-                    "value": 1440,
-                    "unit": "SECONDS"
-                  },
                   "relatedAnime": [
                     "https://anilist.co/anime/2167",
                     "https://anilist.co/anime/4059",

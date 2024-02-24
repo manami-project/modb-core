@@ -2943,11 +2943,10 @@ internal class AnimeKtTest {
                 // then
                 assertThat(result).isEqualTo("""
                     {
-                      "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                       "sources": [
                         "https://myanimelist.net/anime/6351"
                       ],
-                      "synonyms": [],
+                      "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
                       "type": "UNKNOWN",
                       "episodes": 0,
                       "status": "UNKNOWN",
@@ -2960,6 +2959,7 @@ internal class AnimeKtTest {
                         "value": 0,
                         "unit": "SECONDS"
                       },
+                      "synonyms": [],
                       "relatedAnime": [
                         "https://myanimelist.net/anime/2167"
                       ],

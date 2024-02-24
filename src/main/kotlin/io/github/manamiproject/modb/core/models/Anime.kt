@@ -41,7 +41,6 @@ public typealias Title = String
 public data class Anime(
     private var _title: Title,
     val sources: HashSet<URI> = HashSet(),
-    val synonyms: HashSet<Title> = HashSet(),
     val type: Type = Type.UNKNOWN,
     val episodes: Episodes = 0,
     val status: Status = Status.UNKNOWN,
@@ -49,6 +48,7 @@ public data class Anime(
     val picture: URI = NO_PICTURE,
     val thumbnail: URI = NO_PICTURE_THUMBNAIL,
     val duration: Duration = Duration.UNKNOWN,
+    val synonyms: HashSet<Title> = HashSet(),
     val relatedAnime: HashSet<URI> = HashSet(),
     val tags: HashSet<Tag> = HashSet(),
     @Transient val activateChecks: Boolean = true,
