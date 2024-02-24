@@ -151,7 +151,6 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
         writer.name("title")
         titleAdapter.toJson(writer, value.title)
 
-
         writer.name("type")
         typeAdapter.toJson(writer, value.type)
 
