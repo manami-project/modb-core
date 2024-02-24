@@ -158,7 +158,9 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  title,
-                    synonyms = hashSetOf(title),
+                    synonyms = hashSetOf(
+                        title,
+                    ),
                 )
 
                 // then
@@ -170,7 +172,9 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = hashSetOf("         "),
+                    synonyms = hashSetOf(
+                        "         ",
+                    ),
                 )
 
                 // then
@@ -182,7 +186,9 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = hashSetOf("\u200C"),
+                    synonyms = hashSetOf(
+                        "\u200C",
+                    ),
                 )
 
                 // then
@@ -197,11 +203,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = hashSetOf(synonym),
+                    synonyms = hashSetOf(
+                        synonym,
+                    ),
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(synonym)
+                assertThat(result.synonyms).containsExactly(
+                    synonym,
+                )
             }
 
             @Test
@@ -212,11 +222,16 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Death Note",
-                    synonyms = hashSetOf(synonym, synonym),
+                    synonyms = hashSetOf(
+                        synonym,
+                        synonym,
+                    ),
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactly(synonym)
+                assertThat(result.synonyms).containsExactly(
+                    synonym,
+                )
             }
 
             @Test
@@ -227,11 +242,17 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = title,
-                    synonyms = hashSetOf(title.uppercase(), title.lowercase()),
+                    synonyms = hashSetOf(
+                        title.uppercase(),
+                        title.lowercase(),
+                    ),
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(title.uppercase(), title.lowercase())
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
@@ -250,7 +271,11 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(title, title.uppercase(), title.lowercase())
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    title,
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
@@ -269,7 +294,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -288,7 +316,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -307,7 +338,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -326,7 +360,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -345,7 +382,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -364,7 +404,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -383,7 +426,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(result.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(result.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @ParameterizedTest
@@ -397,7 +443,9 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(obj.synonyms).containsExactlyInAnyOrder(value)
+                assertThat(obj.synonyms).containsExactlyInAnyOrder(
+                    value,
+                )
             }
         }
 
@@ -410,7 +458,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms(listOf("Death Note"))
+                anime.addSynonyms(listOf(
+                    "Death Note",
+                ))
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -422,7 +472,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms(listOf("         "))
+                anime.addSynonyms(listOf(
+                    "         ",
+                ))
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -434,7 +486,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms(listOf("\u200C"))
+                anime.addSynonyms(listOf(
+                    "\u200C",
+                ))
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -451,10 +505,20 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms(listOf(four, two, three, one))
+                anime.addSynonyms(listOf(
+                    four,
+                    two,
+                    three,
+                    one,
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(one, two, three, four)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    one,
+                    two,
+                    three,
+                    four,
+                )
             }
 
             @Test
@@ -464,14 +528,23 @@ internal class AnimeKtTest {
                 val two = "DN"
 
                 val anime = Anime(
-                    _title = "Death Note"
-                ).addSynonyms(listOf(two))
+                    _title = "Death Note",
+                    synonyms = hashSetOf(
+                        two,
+                    ),
+                )
 
                 // when
-                anime.addSynonyms(listOf(two, one))
+                anime.addSynonyms(listOf(
+                    two,
+                    one,
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(one, two)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    one,
+                    two,
+                )
             }
 
             @Test
@@ -481,25 +554,39 @@ internal class AnimeKtTest {
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(listOf(title.uppercase(), title.lowercase()))
+                anime.addSynonyms(listOf(
+                    title.uppercase(),
+                    title.lowercase(),
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(title.uppercase(), title.lowercase())
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
             fun `synonym comparison is not case sensitive`() {
                 // given
                 val title  =  "Death Note"
-                val anime = Anime("デスノート").apply {
-                    addSynonyms(listOf(title.lowercase(), title.uppercase()))
-                }
+                val anime = Anime(
+                    _title = "デスノート",
+                    synonyms = hashSetOf(
+                        title.lowercase(),
+                        title.uppercase(),
+                    ),
+                )
 
                 // when
                 anime.addSynonyms(title)
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(title, title.uppercase(), title.lowercase())
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    title,
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
@@ -510,10 +597,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf(" $expectedTitleOne", " $expectedTitleTwo"))
+                anime.addSynonyms(listOf(
+                    " $expectedTitleOne",
+                    " $expectedTitleTwo",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -524,10 +617,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf("$expectedTitleOne ", "$expectedTitleTwo "))
+                anime.addSynonyms(listOf(
+                    "$expectedTitleOne ",
+                    "$expectedTitleTwo ",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -538,10 +637,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf("Death        Note", "Made      in        Abyss"))
+                anime.addSynonyms(listOf(
+                    "Death        Note",
+                    "Made      in        Abyss",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -552,10 +657,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf("Death\tNote", "Made\tin\tAbyss"))
+                anime.addSynonyms(listOf(
+                    "Death\tNote",
+                    "Made\tin\tAbyss",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -566,10 +677,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf("Death\nNote", "Made\nin\nAbyss"))
+                anime.addSynonyms(listOf(
+                    "Death\nNote",
+                    "Made\nin\nAbyss",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -580,10 +697,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(listOf("Death\r\nNote", "Made\r\nin\r\nAbyss"))
+                anime.addSynonyms(listOf(
+                    "Death\r\nNote",
+                    "Made\r\nin\r\nAbyss",
+                ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -600,7 +723,10 @@ internal class AnimeKtTest {
                 ))
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
         }
 
@@ -613,7 +739,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms("Death Note")
+                anime.addSynonyms(
+                    "Death Note",
+                )
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -625,7 +753,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms("         ")
+                anime.addSynonyms(
+                    "         ",
+                )
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -637,7 +767,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms("\u200C")
+                anime.addSynonyms(
+                    "\u200C",
+                )
 
                 // then
                 assertThat(anime.synonyms).isEmpty()
@@ -654,10 +786,20 @@ internal class AnimeKtTest {
                 val anime = Anime("Death Note")
 
                 // when
-                anime.addSynonyms(four, two, three, one)
+                anime.addSynonyms(
+                    four,
+                    two,
+                    three,
+                    one,
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(one, two, three, four)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    one,
+                    two,
+                    three,
+                    four,
+                )
             }
 
             @Test
@@ -667,27 +809,42 @@ internal class AnimeKtTest {
                 val two = "DN"
 
                 val anime = Anime(
-                    _title = "Death Note"
-                ).addSynonyms(two)
+                    _title = "Death Note",
+                    synonyms = hashSetOf(
+                        two,
+                    ),
+                )
 
                 // when
-                anime.addSynonyms(two, one)
+                anime.addSynonyms(
+                    two,
+                    one,
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(one, two)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    one,
+                    two,
+                )
             }
 
             @Test
-            fun `synonym comparison to title is not case sensitive`() {
+            fun `synonym comparison to title is case sensitive`() {
                 // given
                 val title  =  "Death Note"
                 val anime = Anime(title)
 
                 // when
-                anime.addSynonyms(title.uppercase(), title.lowercase())
+                anime.addSynonyms(
+                    title.uppercase(),
+                    title.lowercase(),
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(title.uppercase(), title.lowercase())
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
@@ -697,10 +854,18 @@ internal class AnimeKtTest {
                 val anime = Anime("デスノート")
 
                 // when
-                anime.addSynonyms(title, title.lowercase(), title.uppercase())
+                anime.addSynonyms(
+                    title,
+                    title.lowercase(),
+                    title.uppercase(),
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(title, title.uppercase(), title.lowercase())
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    title,
+                    title.uppercase(),
+                    title.lowercase(),
+                )
             }
 
             @Test
@@ -711,10 +876,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms(" $expectedTitleOne", " $expectedTitleTwo")
+                anime.addSynonyms(
+                    " $expectedTitleOne",
+                    " $expectedTitleTwo",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -725,10 +896,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms("$expectedTitleOne ", "$expectedTitleTwo ")
+                anime.addSynonyms(
+                    "$expectedTitleOne ",
+                    "$expectedTitleTwo ",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -739,10 +916,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms("Death        Note", "Made      in        Abyss")
+                anime.addSynonyms(
+                    "Death        Note",
+                    "Made      in        Abyss",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -753,10 +936,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms("Death\tNote", "Made\tin\tAbyss")
+                anime.addSynonyms(
+                    "Death\tNote",
+                    "Made\tin\tAbyss",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -767,10 +956,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms("Death\nNote", "Made\nin\nAbyss")
+                anime.addSynonyms(
+                    "Death\nNote",
+                    "Made\nin\nAbyss",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -781,10 +976,16 @@ internal class AnimeKtTest {
                 val anime = Anime("Title")
 
                 // when
-                anime.addSynonyms("Death\r\nNote", "Made\r\nin\r\nAbyss")
+                anime.addSynonyms(
+                    "Death\r\nNote",
+                    "Made\r\nin\r\nAbyss",
+                )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
 
             @Test
@@ -801,7 +1002,10 @@ internal class AnimeKtTest {
                 )
 
                 // then
-                assertThat(anime.synonyms).containsExactlyInAnyOrder(expectedTitleOne, expectedTitleTwo)
+                assertThat(anime.synonyms).containsExactlyInAnyOrder(
+                    expectedTitleOne,
+                    expectedTitleTwo,
+                )
             }
         }
     }
@@ -820,7 +1024,9 @@ internal class AnimeKtTest {
                 // when
                 val anime = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(source)
+                    sources = hashSetOf(
+                        source,
+                    ),
                 )
 
                 // then
@@ -835,7 +1041,10 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(source, source),
+                    sources = hashSetOf(
+                        source,
+                        source,
+                    ),
                 )
 
                 // then
@@ -850,12 +1059,18 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(source),
-                    relatedAnime = hashSetOf(source),
+                    sources = hashSetOf(
+                        source,
+                    ),
+                    relatedAnime = hashSetOf(
+                        source,
+                    ),
                 )
 
                 // then
-                assertThat(result.sources).containsExactly(source)
+                assertThat(result.sources).containsExactly(
+                    source,
+                )
                 assertThat(result.relatedAnime).isEmpty()
             }
 
@@ -867,14 +1082,22 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(source),
-                    relatedAnime = hashSetOf(source),
+                    sources = hashSetOf(
+                        source,
+                    ),
+                    relatedAnime = hashSetOf(
+                        source,
+                    ),
                     activateChecks = false,
                 )
 
                 // then
-                assertThat(result.sources).containsExactly(source)
-                assertThat(result.relatedAnime).containsExactly(source)
+                assertThat(result.sources).containsExactly(
+                    source,
+                )
+                assertThat(result.relatedAnime).containsExactly(
+                    source,
+                )
             }
         }
 
@@ -886,14 +1109,18 @@ internal class AnimeKtTest {
                 // given
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
-                    _title =  "Death Note"
+                    _title =  "Death Note",
                 )
 
                 // when
-                anime.addSources(listOf(source))
+                anime.addSources(listOf(
+                    source,
+                ))
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
             }
 
             @Test
@@ -901,14 +1128,21 @@ internal class AnimeKtTest {
                 // given
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addSources(listOf(source))
+                    _title =  "Death Note",
+                    sources = hashSetOf(
+                        source,
+                    ),
+                )
 
                 // when
-                anime.addSources(listOf(source))
+                anime.addSources(listOf(
+                    source,
+                ))
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
             }
 
             @Test
@@ -916,14 +1150,21 @@ internal class AnimeKtTest {
                 // given
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
-                        _title =  "Death Note"
-                ).addRelatedAnime(listOf(source))
+                    _title =  "Death Note",
+                    relatedAnime = hashSetOf(
+                        source,
+                    ),
+                )
 
                 // when
-                anime.addSources(listOf(source))
+                anime.addSources(listOf(
+                    source,
+                ))
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
                 assertThat(anime.relatedAnime).isEmpty()
             }
         }
@@ -940,10 +1181,14 @@ internal class AnimeKtTest {
                 )
 
                 // when
-                anime.addSources(source)
+                anime.addSources(
+                    source,
+                )
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
             }
 
             @Test
@@ -951,14 +1196,19 @@ internal class AnimeKtTest {
                 // given
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addSources(source)
+                    _title =  "Death Note",
+                    sources = hashSetOf(
+                        source,
+                    ),
+                )
 
                 // when
                 anime.addSources(source)
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
             }
 
             @Test
@@ -967,13 +1217,18 @@ internal class AnimeKtTest {
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                     _title =  "Death Note",
-                ).addRelatedAnime(source)
+                    relatedAnime = hashSetOf(
+                        source,
+                    ),
+                )
 
                 // when
                 anime.addSources(source)
 
                 // then
-                assertThat(anime.sources).containsExactly(source)
+                assertThat(anime.sources).containsExactly(
+                    source,
+                )
                 assertThat(anime.relatedAnime).isEmpty()
             }
         }
@@ -993,11 +1248,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = hashSetOf(relatedAnime),
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                    ),
                 )
 
                 // then
-                assertThat(result.relatedAnime).containsExactly(relatedAnime)
+                assertThat(result.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1008,11 +1267,16 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    relatedAnime = hashSetOf(relatedAnime, relatedAnime),
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                        relatedAnime,
+                    ),
                 )
 
                 // then
-                assertThat(result.relatedAnime).containsExactly(relatedAnime)
+                assertThat(result.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1023,8 +1287,12 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(link),
-                    relatedAnime = hashSetOf(link),
+                    sources = hashSetOf(
+                        link,
+                    ),
+                    relatedAnime = hashSetOf(
+                        link,
+                    ),
                 )
 
                 // then
@@ -1036,7 +1304,9 @@ internal class AnimeKtTest {
                 // when
                 val obj = Anime(
                     _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                    sources = hashSetOf(URI("https://myanimelist.net/anime/6351")),
+                    sources = hashSetOf(
+                        URI("https://myanimelist.net/anime/6351"),
+                    ),
                     relatedAnime = hashSetOf(
                         URI("https://myanimelist.net/anime/2167"),
                         URI("https://myanimelist.net/anime/6351"),
@@ -1061,10 +1331,14 @@ internal class AnimeKtTest {
                 )
 
                 // when
-                anime.addRelatedAnime(listOf(relatedAnime))
+                anime.addRelatedAnime(listOf(
+                    relatedAnime,
+                ))
 
                 // then
-                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+                assertThat(anime.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1072,14 +1346,21 @@ internal class AnimeKtTest {
                 // given
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addRelatedAnime(listOf(relatedAnime))
+                    _title =  "Death Note",
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                    ),
+                )
 
                 // when
-                anime.addRelatedAnime(listOf(relatedAnime))
+                anime.addRelatedAnime(listOf(
+                    relatedAnime,
+                ))
 
                 // then
-                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+                assertThat(anime.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1088,10 +1369,15 @@ internal class AnimeKtTest {
                 val link = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                     _title =  "Death Note",
-                ).addSources(listOf(link))
+                    sources = hashSetOf(
+                        link,
+                    ),
+                )
 
                 // when
-                anime.addRelatedAnime(listOf(link))
+                anime.addRelatedAnime(listOf(
+                    link,
+                ))
 
                 // then
                 assertThat(anime.relatedAnime).isEmpty()
@@ -1106,14 +1392,18 @@ internal class AnimeKtTest {
                 // given
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
-                    _title =  "Death Note"
+                    _title =  "Death Note",
                 )
 
                 // when
-                anime.addRelatedAnime(relatedAnime)
+                anime.addRelatedAnime(
+                    relatedAnime,
+                )
 
                 // then
-                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+                assertThat(anime.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1121,14 +1411,21 @@ internal class AnimeKtTest {
                 // given
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addRelatedAnime(relatedAnime)
+                    _title =  "Death Note",
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                    ),
+                )
 
                 // when
-                anime.addRelatedAnime(relatedAnime)
+                anime.addRelatedAnime(
+                    relatedAnime,
+                )
 
                 // then
-                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+                assertThat(anime.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
 
             @Test
@@ -1136,8 +1433,11 @@ internal class AnimeKtTest {
                 // given
                 val link = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addSources(link)
+                    _title =  "Death Note",
+                    sources = hashSetOf(
+                        link,
+                    ),
+                )
 
                 // when
                 anime.addRelatedAnime(link)
@@ -1155,8 +1455,11 @@ internal class AnimeKtTest {
                 // given
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addRelatedAnime(listOf(relatedAnime))
+                    _title =  "Death Note",
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                    ),
+                )
 
                 // when
                 anime.removeRelatedAnimeIf { it.toString() == "https://myanimelist.net/anime/2994" }
@@ -1170,14 +1473,19 @@ internal class AnimeKtTest {
                 // given
                 val relatedAnime = URI("https://myanimelist.net/anime/2994")
                 val anime = Anime(
-                    _title =  "Death Note"
-                ).addRelatedAnime(listOf(relatedAnime))
+                    _title =  "Death Note",
+                    relatedAnime = hashSetOf(
+                        relatedAnime,
+                    ),
+                )
 
                 // when
                 anime.removeRelatedAnimeIf { it.toString().contains("anidb.net") }
 
                 // then
-                assertThat(anime.relatedAnime).containsExactly(relatedAnime)
+                assertThat(anime.relatedAnime).containsExactly(
+                    relatedAnime,
+                )
             }
         }
     }
@@ -1190,13 +1498,19 @@ internal class AnimeKtTest {
             // given
             val title =  "Death Note"
             val a = Anime(
-                _title = title
-            ).addSources(URI("https://myanimelist.net/anime/1535"))
+                _title = title,
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/1535"),
+                ),
+            )
 
 
             val b = Anime(
-                _title = title
-            ).addSources(URI("https://myanimelist.net/anime/1535"))
+                _title = title,
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/1535"),
+                ),
+            )
 
             // when
             val result = a == b
@@ -1211,14 +1525,18 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title
-            ).addSources(URI("https://myanimelist.net/anime/1535"))
+                _title =  title,
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/1535"),
+                ),
+            ).addSources()
 
             val b = Anime(
-                _title =  title
-            ).addSources(
-                URI("https://myanimelist.net/anime/1535"),
-                URI("https://anidb.net/anime/4563")
+                _title =  title,
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/1535"),
+                    URI("https://anidb.net/anime/4563"),
+                ),
             )
 
             // when
@@ -1234,12 +1552,18 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title
-            ).addRelatedAnime(URI("https://myanimelist.net/anime/2994"))
+                _title =  title,
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2994"),
+                ),
+            )
 
             val b = Anime(
-                _title =  title
-            ).addRelatedAnime(URI("https://myanimelist.net/anime/2994"))
+                _title =  title,
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2994"),
+                ),
+            )
 
             // when
             val result = a == b
@@ -1254,14 +1578,18 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title
-            ).addRelatedAnime(URI("https://myanimelist.net/anime/2994"))
+                _title =  title,
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2994"),
+                ),
+            )
 
             val b = Anime(
-                _title =  title
-            ).addRelatedAnime(
-                URI("https://myanimelist.net/anime/2994"),
-                URI("http://anilist.co/anime/2994")
+                _title =  title,
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2994"),
+                    URI("http://anilist.co/anime/2994"),
+                ),
             )
 
             // when
@@ -1277,12 +1605,18 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title
-            ).addSynonyms("Caderno da Morte")
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
 
             val b = Anime(
-                _title =  title
-            ).addSynonyms("Caderno da Morte")
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
 
             // when
             val result = a == b
@@ -1297,15 +1631,19 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                _title =  title
-            ).addSynonyms("Caderno da Morte")
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
 
 
             val b = Anime(
-                _title =  title
-            ).addSynonyms(
-                "Caderno da Morte",
-                "Quaderno della Morte",
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                    "Quaderno della Morte",
+                ),
             )
 
             // when
@@ -1321,14 +1659,19 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                    _title =  title
-            ).addTags("comedy", "slice of life")
+                _title =  title,
+                tags = hashSetOf(
+                    "comedy",
+                    "slice of life",
+                ),
+            )
 
             val b = Anime(
-                    _title =  title
-            ).addTags(
-                "slice of life",
-                "comedy",
+                _title =  title,
+                tags = hashSetOf(
+                    "slice of life",
+                    "comedy",
+                ),
             )
 
             // when
@@ -1344,15 +1687,18 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                    _title =  title
-            ).addTags("slice of life")
-
+                _title =  title,
+                tags = hashSetOf(
+                    "slice of life",
+                ),
+            )
 
             val b = Anime(
-                    _title =  title
-            ).addTags(
-                "slice of life",
-                "comedy",
+                _title =  title,
+                tags = hashSetOf(
+                    "slice of life",
+                    "comedy",
+                ),
             )
 
             // when
@@ -1368,8 +1714,11 @@ internal class AnimeKtTest {
             // given
             val title  =  "Death Note"
             val a = Anime(
-                    _title =  title
-            ).addTags("slice of life")
+                _title =  title,
+                tags = hashSetOf(
+                    "slice of life",
+                ),
+            )
 
             // when
             val result = a.equals(1)
@@ -1385,8 +1734,14 @@ internal class AnimeKtTest {
         @Test
         fun `use this number of episodes` () {
             // given
-            val anime = Anime("this", episodes = 12)
-            val other = Anime("other", episodes = 13)
+            val anime = Anime(
+                _title = "this",
+                episodes = 12,
+            )
+            val other = Anime(
+                _title = "other",
+                episodes = 13,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1398,8 +1753,14 @@ internal class AnimeKtTest {
         @Test
         fun `use other's number of episodes if this number of episodes is 0` () {
             // given
-            val anime = Anime("this", episodes = 0)
-            val other = Anime("other", episodes = 13)
+            val anime = Anime(
+                _title = "this",
+                episodes = 0,
+            )
+            val other = Anime(
+                _title = "other",
+                episodes = 13,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1411,8 +1772,14 @@ internal class AnimeKtTest {
         @Test
         fun `use this type` () {
             // given
-            val anime = Anime("this", type = MOVIE)
-            val other = Anime("other", type = SPECIAL)
+            val anime = Anime(
+                _title = "this",
+                type = MOVIE,
+            )
+            val other = Anime(
+                _title = "other",
+                type = SPECIAL,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1424,8 +1791,14 @@ internal class AnimeKtTest {
         @Test
         fun `use other's type if this type is UNKNOWN` () {
             // given
-            val anime = Anime("this", type = Anime.Type.UNKNOWN)
-            val other = Anime("other", type = SPECIAL)
+            val anime = Anime(
+                _title = "this",
+                type = Anime.Type.UNKNOWN,
+            )
+            val other = Anime(
+                _title = "other",
+                type = SPECIAL,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1437,8 +1810,14 @@ internal class AnimeKtTest {
         @Test
         fun `use this status` () {
             // given
-            val anime = Anime("this", status = FINISHED)
-            val other = Anime("other", status = ONGOING)
+            val anime = Anime(
+                _title = "this",
+                status = FINISHED,
+            )
+            val other = Anime(
+                _title = "other",
+                status = ONGOING,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1450,8 +1829,14 @@ internal class AnimeKtTest {
         @Test
         fun `use other's status if this status is UNKNOWN` () {
             // given
-            val anime = Anime("this", status = UNKNOWN)
-            val other = Anime("other", status = ONGOING)
+            val anime = Anime(
+                _title = "this",
+                status = UNKNOWN,
+            )
+            val other = Anime(
+                _title = "other",
+                status = ONGOING,
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1463,8 +1848,14 @@ internal class AnimeKtTest {
         @Test
         fun `use this duration` () {
             // given
-            val anime = Anime("this", duration = Duration(120, MINUTES))
-            val other = Anime("other", duration = Duration(125, MINUTES))
+            val anime = Anime(
+                _title = "this",
+                duration = Duration(120, MINUTES),
+            )
+            val other = Anime(
+                _title = "other",
+                duration = Duration(125, MINUTES),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1476,8 +1867,14 @@ internal class AnimeKtTest {
         @Test
         fun `use other's duration if this duration is UNKNOWN` () {
             // given
-            val anime = Anime("this", duration = Duration.UNKNOWN)
-            val other = Anime("other", duration = Duration(125, MINUTES))
+            val anime = Anime(
+                _title = "this",
+                duration = Duration.UNKNOWN,
+            )
+            val other = Anime(
+                _title = "other",
+                duration = Duration(125, MINUTES),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1489,8 +1886,20 @@ internal class AnimeKtTest {
         @Test
         fun `use this season` () {
             // given
-            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = 2010))
-            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+            val anime = Anime(
+                _title = "this",
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = 2010,
+                ),
+            )
+            val other = Anime(
+                _title = "other",
+                animeSeason = AnimeSeason(
+                    season = WINTER,
+                    year = 2011,
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1503,8 +1912,20 @@ internal class AnimeKtTest {
         @Test
         fun `use other's season if this season is UNDEFINED` () {
             // given
-            val anime = Anime("this", animeSeason = AnimeSeason(season = UNDEFINED, year = 2010))
-            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+            val anime = Anime(
+                _title = "this",
+                animeSeason = AnimeSeason(
+                    season = UNDEFINED,
+                    year = 2010,
+                ),
+            )
+            val other = Anime(
+                _title = "other",
+                animeSeason = AnimeSeason(
+                    season = WINTER,
+                    year = 2011,
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1517,8 +1938,20 @@ internal class AnimeKtTest {
         @Test
         fun `use this year` () {
             // given
-            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = 2010))
-            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+            val anime = Anime(
+                _title = "this",
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = 2010,
+                ),
+            )
+            val other = Anime(
+                _title = "other",
+                animeSeason = AnimeSeason(
+                    season = WINTER,
+                    year = 2011,
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1531,8 +1964,20 @@ internal class AnimeKtTest {
         @Test
         fun `use other's year if this year is UNKNOWN` () {
             // given
-            val anime = Anime("this", animeSeason = AnimeSeason(season = FALL, year = UNKNOWN_YEAR))
-            val other = Anime("other", animeSeason = AnimeSeason(season = WINTER, year = 2011))
+            val anime = Anime(
+                _title = "this",
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = UNKNOWN_YEAR,
+                ),
+            )
+            val other = Anime(
+                _title = "other",
+                animeSeason = AnimeSeason(
+                    season = WINTER,
+                    year = 2011,
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1546,35 +1991,54 @@ internal class AnimeKtTest {
         fun `add title and synonyms of the other anime to this anime's synonyms`() {
             // given
             val anime = Anime(
-                _title =  "Death Note"
-            ).addSynonyms("Caderno da Morte")
+                _title =  "Death Note",
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
 
             val other = Anime(
-                _title =  "DEATH NOTE"
-            ).addSynonyms("Caderno da Morte", "Quaderno della Morte")
+                _title =  "DEATH NOTE",
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                    "Quaderno della Morte",
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
 
             // then
             assertThat(result.title).isEqualTo(anime.title)
-            assertThat(result.synonyms).containsExactlyInAnyOrder("Caderno da Morte", "DEATH NOTE", "Quaderno della Morte")
+            assertThat(result.synonyms).containsExactlyInAnyOrder(
+                "Caderno da Morte",
+                "DEATH NOTE",
+                "Quaderno della Morte",
+            )
         }
 
         @Test
         fun `merge related anime and source links`() {
             // given
             val anime = Anime(
-                _title =  "Death Note"
-            ).addSources(URI("https://myanimelist.net/anime/1535"))
-                .addRelatedAnime(URI("https://myanimelist.net/anime/2994"))
+                _title =  "Death Note",
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/1535"),
+                ),
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2994"),
+                ),
+            )
 
             val other = Anime(
-                _title =  "Death Note"
-            ).addSources(URI("https://anidb.net/anime/4563"))
-                .addRelatedAnime(
-                        URI("https://anidb.net/anime/8146"),
-                        URI("https://anidb.net/anime/8147"),
+                _title =  "Death Note",
+                sources = hashSetOf(
+                    URI("https://anidb.net/anime/4563"),
+                ),
+                relatedAnime = hashSetOf(
+                    URI("https://anidb.net/anime/8146"),
+                    URI("https://anidb.net/anime/8147"),
+                ),
             )
 
             // when
@@ -1596,12 +2060,24 @@ internal class AnimeKtTest {
         fun `merge tags`() {
             // given
             val anime = Anime(
-                _title =  "Death Note"
-            ).addTags("Psychological", "Thriller", "Shounen")
+                _title =  "Death Note",
+                tags = hashSetOf(
+                    "Psychological",
+                    "Thriller",
+                    "Shounen",
+                ),
+            )
 
             val other = Anime(
-                _title =  "Death Note"
-            ).addTags("Mystery", "Police", "Psychological", "Supernatural", "Thriller")
+                _title =  "Death Note",
+                tags = hashSetOf(
+                    "Mystery",
+                    "Police",
+                    "Psychological",
+                    "Supernatural",
+                    "Thriller",
+                ),
+            )
 
             // when
             val result = anime.mergeWith(other)
@@ -1632,12 +2108,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf(tag)
+                    tags = hashSetOf(
+                        tag,
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isNotEqualTo(tag)
-                assertThat(result.tags.first()).isEqualTo(tag.lowercase())
+                assertThat(result.tags).containsExactly(
+                    tag.lowercase(),
+                )
             }
 
             @Test
@@ -1648,11 +2127,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf(" $expectedTag")
+                    tags = hashSetOf(
+                        " $expectedTag",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1663,11 +2146,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("$expectedTag ")
+                    tags = hashSetOf(
+                        "$expectedTag ",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1678,11 +2165,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("slice     of      life")
+                    tags = hashSetOf(
+                        "slice     of      life",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1693,11 +2184,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("slice\tof\tlife")
+                    tags = hashSetOf(
+                        "slice\tof\tlife",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1708,11 +2203,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("slice\nof\nlife")
+                    tags = hashSetOf(
+                        "slice\nof\nlife",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1723,11 +2222,15 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("slice\r\nof\r\nlife")
+                    tags = hashSetOf(
+                        "slice\r\nof\r\nlife",
+                    ),
                 )
 
                 // then
-                assertThat(result.tags.first()).isEqualTo(expectedTag)
+                assertThat(result.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1735,7 +2238,9 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf(EMPTY)
+                    tags = hashSetOf(
+                        EMPTY,
+                    ),
                 )
 
                 // then
@@ -1747,7 +2252,9 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf("     ")
+                    tags = hashSetOf(
+                        "     ",
+                    ),
                 )
 
                 // then
@@ -1763,12 +2270,20 @@ internal class AnimeKtTest {
                 // when
                 val result = Anime(
                     _title = "Test",
-                    tags = hashSetOf(tag2, tag1, tag1, tag2)
+                    tags = hashSetOf(
+                        tag2,
+                        tag1,
+                        tag1,
+                        tag2,
+                    ),
                 )
 
                 // then
                 assertThat(result.tags).hasSize(2)
-                assertThat(result.tags).containsExactlyInAnyOrder(tag1, tag2)
+                assertThat(result.tags).containsExactlyInAnyOrder(
+                    tag1,
+                    tag2,
+                )
             }
 
             @ParameterizedTest
@@ -1777,12 +2292,16 @@ internal class AnimeKtTest {
                 // when
                 val obj = Anime(
                     _title = "デスノート",
-                    tags = hashSetOf(value),
+                    tags = hashSetOf(
+                        value,
+                    ),
                     activateChecks = false,
                 )
 
                 // then
-                assertThat(obj.tags).containsExactlyInAnyOrder(value)
+                assertThat(obj.tags).containsExactlyInAnyOrder(
+                    value,
+                )
             }
         }
 
@@ -1796,11 +2315,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf(tag))
+                anime.addTags(listOf(
+                    tag,
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isNotEqualTo(tag)
-                assertThat(anime.tags.first()).isEqualTo(tag.lowercase())
+                assertThat(anime.tags).containsExactly(
+                    tag.lowercase(),
+                )
             }
 
             @Test
@@ -1810,10 +2332,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf(" $expectedTag"))
+                anime.addTags(listOf(
+                    " $expectedTag",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1823,10 +2349,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("$expectedTag "))
+                anime.addTags(listOf(
+                    "$expectedTag ",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1836,10 +2366,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("slice     of      life"))
+                anime.addTags(listOf(
+                    "slice     of      life",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1849,10 +2383,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("slice\tof\tlife"))
+                anime.addTags(listOf(
+                    "slice\tof\tlife",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1862,10 +2400,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("slice\nof\nlife"))
+                anime.addTags(listOf(
+                    "slice\nof\nlife",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1875,10 +2417,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("slice\r\nof\r\nlife"))
+                anime.addTags(listOf(
+                    "slice\r\nof\r\nlife",
+                ))
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1887,7 +2433,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf(EMPTY))
+                anime.addTags(listOf(
+                    EMPTY,
+                ))
 
                 // then
                 assertThat(anime.tags).isEmpty()
@@ -1899,7 +2447,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf("     "))
+                anime.addTags(listOf(
+                    "     ",
+                ))
 
                 // then
                 assertThat(anime.tags).isEmpty()
@@ -1913,11 +2463,19 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(listOf(tag2, tag1, tag1, tag2))
+                anime.addTags(listOf(
+                    tag2,
+                    tag1,
+                    tag1,
+                    tag2,
+                ))
 
                 // then
                 assertThat(anime.tags).hasSize(2)
-                assertThat(anime.tags).containsExactlyInAnyOrder(tag1, tag2)
+                assertThat(anime.tags).containsExactlyInAnyOrder(
+                    tag1,
+                    tag2,
+                )
             }
         }
 
@@ -1934,8 +2492,9 @@ internal class AnimeKtTest {
                 anime.addTags(tag)
 
                 // then
-                assertThat(anime.tags.first()).isNotEqualTo(tag)
-                assertThat(anime.tags.first()).isEqualTo(tag.lowercase())
+                assertThat(anime.tags).containsExactly(
+                    tag.lowercase(),
+                )
             }
 
             @Test
@@ -1945,10 +2504,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(" $expectedTag")
+                anime.addTags(
+                    " $expectedTag",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1958,10 +2521,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("$expectedTag ")
+                anime.addTags(
+                    "$expectedTag ",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1971,10 +2538,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("slice     of      life")
+                anime.addTags(
+                    "slice     of      life",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1984,10 +2555,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("slice\tof\tlife")
+                anime.addTags(
+                    "slice\tof\tlife",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -1997,10 +2572,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("slice\nof\nlife")
+                anime.addTags(
+                    "slice\nof\nlife",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -2010,10 +2589,14 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("slice\r\nof\r\nlife")
+                anime.addTags(
+                    "slice\r\nof\r\nlife",
+                )
 
                 // then
-                assertThat(anime.tags.first()).isEqualTo(expectedTag)
+                assertThat(anime.tags).containsExactly(
+                    expectedTag,
+                )
             }
 
             @Test
@@ -2022,7 +2605,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(EMPTY)
+                anime.addTags(
+                    EMPTY,
+                )
 
                 // then
                 assertThat(anime.tags).isEmpty()
@@ -2034,7 +2619,9 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags("     ")
+                anime.addTags(
+                    "     ",
+                )
 
                 // then
                 assertThat(anime.tags).isEmpty()
@@ -2048,11 +2635,19 @@ internal class AnimeKtTest {
                 val anime = Anime("Test")
 
                 // when
-                anime.addTags(tag2, tag1, tag1, tag2)
+                anime.addTags(
+                    tag2,
+                    tag1,
+                    tag1,
+                    tag2,
+                )
 
                 // then
                 assertThat(anime.tags).hasSize(2)
-                assertThat(anime.tags).containsExactlyInAnyOrder(tag1, tag2)
+                assertThat(anime.tags).containsExactlyInAnyOrder(
+                    tag1,
+                    tag2,
+                )
             }
         }
     }
@@ -2159,38 +2754,37 @@ internal class AnimeKtTest {
         fun `create formatted string listing all properties`() {
             // given
             val anime = Anime(
-                    _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                    type = SPECIAL,
-                    episodes = 1,
-                    status = FINISHED,
-                    animeSeason = AnimeSeason(
-                            season = SUMMER,
-                            year = 2009
-                    ),
-                    picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
-                    thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
-                    duration = Duration(2, MINUTES)
-            ).apply {
-                addSources(listOf(URI("https://myanimelist.net/anime/6351")))
-                addSynonyms(
-                        listOf(
-                                "Clannad ~After Story~: Another World, Kyou Chapter",
-                                "Clannad: After Story OVA",
-                                "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                        )
-                )
-                addRelatedAnime(listOf(URI("https://myanimelist.net/anime/2167")))
-                addTags(
-                        listOf(
-                                "comedy",
-                                "drama",
-                                "romance",
-                                "school",
-                                "slice of life",
-                                "supernatural"
-                        )
-                )
-            }
+                _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                sources = hashSetOf(
+                    URI("https://myanimelist.net/anime/6351"),
+                ),
+                relatedAnime = hashSetOf(
+                    URI("https://myanimelist.net/anime/2167"),
+                ),
+                type = SPECIAL,
+                episodes = 1,
+                status = FINISHED,
+                animeSeason = AnimeSeason(
+                    season = SUMMER,
+                    year = 2009
+                ),
+                picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                duration = Duration(2, MINUTES),
+                synonyms = hashSetOf(
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                ),
+                tags = hashSetOf(
+                    "comedy",
+                    "drama",
+                    "romance",
+                    "school",
+                    "slice of life",
+                    "supernatural",
+                ),
+            )
 
             // when
             val result = anime.toString()
@@ -2333,7 +2927,9 @@ internal class AnimeKtTest {
                 val adapter = AnimeAdapter().indent("  ")
                 val obj = Anime(
                     _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                    sources = hashSetOf(URI("https://myanimelist.net/anime/6351")),
+                    sources = hashSetOf(
+                        URI("https://myanimelist.net/anime/6351"),
+                    ),
                     relatedAnime = hashSetOf(
                         URI("https://myanimelist.net/anime/2167"),
                         URI("https://myanimelist.net/anime/6351"),
@@ -2382,13 +2978,17 @@ internal class AnimeKtTest {
                 // given
                 val obj = Anime(
                     _title = "デスノート",
-                    synonyms = hashSetOf(value),
+                    synonyms = hashSetOf(
+                        value,
+                    ),
                     activateChecks = false,
                 )
 
                 val expected = Anime(
                     _title = "デスノート",
-                    synonyms = hashSetOf("Death Note"),
+                    synonyms = hashSetOf(
+                        "Death Note",
+                    ),
                     activateChecks = false,
                 )
 
@@ -2405,7 +3005,9 @@ internal class AnimeKtTest {
                 // given
                 val obj = Anime(
                     _title = "デスノート",
-                    synonyms = hashSetOf(value),
+                    synonyms = hashSetOf(
+                        value,
+                    ),
                     activateChecks = false,
                 )
 
@@ -2432,13 +3034,17 @@ internal class AnimeKtTest {
                 // given
                 val obj = Anime(
                     _title = "デスノート",
-                    tags = hashSetOf(value),
+                    tags = hashSetOf(
+                        value,
+                    ),
                     activateChecks = false,
                 )
 
                 val expected = Anime(
                     _title = "デスノート",
-                    tags = hashSetOf("death note"),
+                    tags = hashSetOf(
+                        "death note",
+                    ),
                     activateChecks = false,
                 )
 
@@ -2455,7 +3061,9 @@ internal class AnimeKtTest {
                 // given
                 val obj = Anime(
                     _title = "デスノート",
-                    tags = hashSetOf(value),
+                    tags = hashSetOf(
+                        value,
+                    ),
                     activateChecks = false,
                 )
 
@@ -2482,9 +3090,13 @@ internal class AnimeKtTest {
                 val source = URI("https://myanimelist.net/anime/1535")
                 val anime = Anime(
                     _title =  "Death Note",
-                    sources = hashSetOf(source),
-                    relatedAnime = hashSetOf(source),
-                    activateChecks = false
+                    sources = hashSetOf(
+                        source,
+                    ),
+                    relatedAnime = hashSetOf(
+                        source,
+                    ),
+                    activateChecks = false,
                 )
 
                 // when

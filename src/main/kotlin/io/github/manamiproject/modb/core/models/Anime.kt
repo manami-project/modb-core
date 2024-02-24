@@ -234,7 +234,6 @@ public data class Anime(
 
         return Anime(
             _title = title,
-            sources = hashSetOf<URI>().apply { addAll(sources); addAll(anime.sources) },
             type = mergedType,
             episodes = mergedEpisodes,
             status = mergedStatus,
@@ -245,14 +244,15 @@ public data class Anime(
                 season = mergedSeason,
                 year = mergedYear,
             ),
-            tags = hashSetOf<Tag>().apply { addAll(tags); addAll(anime.tags) },
-            activateChecks = false, // we can assume checked objects at this point
-        )
-        .addSynonyms(synonyms) // synonyms require checks against title
-        .addSynonyms(anime.synonyms)
-        .addSynonyms(anime.title)
-        .addRelatedAnime(relatedAnime) // relations require checks against sources
-        .addRelatedAnime(anime.relatedAnime)
+        ).addSources(sources)
+            .addSources(anime.sources)
+            .addSynonyms(synonyms)
+            .addSynonyms(anime.title)
+            .addSynonyms(anime.synonyms)
+            .addRelatedAnime(relatedAnime)
+            .addRelatedAnime(anime.relatedAnime)
+            .addTags(tags)
+            .addTags(anime.tags)
     }
 
     /**
