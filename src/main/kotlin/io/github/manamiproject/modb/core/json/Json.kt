@@ -1,6 +1,8 @@
 package io.github.manamiproject.modb.core.json
 
-import com.squareup.moshi.*
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
+import com.squareup.moshi.addAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
@@ -54,11 +56,11 @@ public object Json {
      */
     @OptIn(ExperimentalStdlibApi::class)
     public suspend inline fun <reified T> parseJson(json: InputStream): T? = withContext(LIMITED_FS) {
-        return@withContext moshi.adapter<T>().fromJson(json.bufferedReader().readText())
+        return@withContext moshi.adapter<T>().nullSafe().fromJson(json.bufferedReader().readText())
     }
 
     /**
-     * Serialize any object to JSON.
+     * Serialize any object to JSON. Uses default set of custom adaoters for serializing [Anime].
      * @since 8.0.0
      * @param obj Any object that is supposed to be serialized to JSON.
      * @param options Options that can change the default behavior of the JSON serialization.
@@ -70,21 +72,18 @@ public object Json {
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun configureJsonAdapter(settings: SerializationSettings): MoshiAdapter<Any> {
-        var jsonAdapter = moshi.adapter<Any>()
-
-        if (settings.serializeDurationDeactivated) {
-            val delegate = jsonAdapter
-
-            jsonAdapter = object: MoshiAdapter<Any>() {
-                override fun fromJson(reader: JsonReader): Any? = delegate.fromJson(reader)
-                override fun toJson(writer: JsonWriter, value: Any?) {
-                    if (value is Anime) {
-                        AnimeAdapter(serializeDuration = false).toJson(writer, value)
-                    } else {
-                        delegate.toJson(writer, value)
-                    }
-                }
-            }
+        var jsonAdapter = if (settings.serializeDurationDeactivated) {
+            Moshi.Builder()
+                .addAdapter(UriAdapter())
+                .addAdapter(DurationAdapter())
+                .addAdapter(AnimeTypeAdapter())
+                .addAdapter(AnimeStatusAdapter())
+                .addAdapter(AnimeSeasonAdapter())
+                .addAdapter(AnimeAdapter(serializeDuration = false))
+                .addLast(KotlinJsonAdapterFactory())
+                .build().adapter<Any>()
+        } else {
+            moshi.adapter<Any>()
         }
 
         if (settings.serializeNullActivated) {
@@ -94,8 +93,6 @@ public object Json {
         if (settings.prettyPrintActivated) {
             jsonAdapter = jsonAdapter.indent(JSON_IDENT)
         }
-
-
 
         return jsonAdapter
     }
