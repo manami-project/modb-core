@@ -50,17 +50,13 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
 
         while (reader.hasNext()) {
             when (reader.nextName()) {
-                "title" -> {
-                    title = titleAdapter.fromJson(reader)
-                    titleDeserialized = true
-                }
                 "sources" -> {
                     sources = uriHashSetAdapter.fromJson(reader)
                     sourcesDeserialized = true
                 }
-                "synonyms" -> {
-                    synonyms = titleHashSetAdapter.fromJson(reader)
-                    synonymsDeserialized = true
+                "title" -> {
+                    title = titleAdapter.fromJson(reader)
+                    titleDeserialized = true
                 }
                 "type" -> {
                     type = typeAdapter.fromJson(reader)
@@ -74,6 +70,10 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
                     status = statusAdapter.fromJson(reader)
                     statusDeserialized = true
                 }
+                "animeSeason" -> {
+                    animeSeason = animeSeasonAdapter.fromJson(reader)
+                    animeSeasonDeserialized = true
+                }
                 "picture" -> {
                     picture = uriAdapter.fromJson(reader)
                     pictureDeserialized = true
@@ -82,20 +82,20 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
                     thumbnail = uriAdapter.fromJson(reader)
                     thumbnailDeserialized = true
                 }
-                "tags" -> {
-                    tags = tagHashSetAdapter.fromJson(reader)
-                    tagsDeserialized = true
+                "duration" -> {
+                    duration = durationAdapter.fromJson(reader)
+                }
+                "synonyms" -> {
+                    synonyms = titleHashSetAdapter.fromJson(reader)
+                    synonymsDeserialized = true
                 }
                 "relatedAnime" -> {
                     relatedAnime = uriHashSetAdapter.fromJson(reader)
                     relatedAnimeDeserialized = true
                 }
-                "duration" -> {
-                    duration = durationAdapter.fromJson(reader)
-                }
-                "animeSeason" -> {
-                    animeSeason = animeSeasonAdapter.fromJson(reader)
-                    animeSeasonDeserialized = true
+                "tags" -> {
+                    tags = tagHashSetAdapter.fromJson(reader)
+                    tagsDeserialized = true
                 }
                 else -> reader.skipValue()
             }
@@ -144,16 +144,13 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
 
         writer.beginObject()
 
-        writer.name("title")
-        titleAdapter.toJson(writer, value.title)
-
         writer.name("sources").beginArray()
         value.sources.map { it.toString() }.sorted().forEach { writer.value(it) }
         writer.endArray()
 
-        writer.name("synonyms").beginArray()
-        value.synonyms.sorted().forEach { writer.value(it) }
-        writer.endArray()
+        writer.name("title")
+        titleAdapter.toJson(writer, value.title)
+
 
         writer.name("type")
         typeAdapter.toJson(writer, value.type)
@@ -176,6 +173,10 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
             writer.name("duration")
             durationAdapter.toJson(writer, value.duration)
         }
+
+        writer.name("synonyms").beginArray()
+        value.synonyms.sorted().forEach { writer.value(it) }
+        writer.endArray()
 
         writer.name("relatedAnime").beginArray()
         value.relatedAnime.map { it.toString() }.sorted().forEach { writer.value(it) }
