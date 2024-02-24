@@ -301,9 +301,11 @@ internal class PathExtensionsKtTest {
                 val result = file.readFile()
 
                 // then
-                assertThat(result).isEqualTo("""This file
-  uses
-carriage return line feed [CRLF]""")
+                assertThat(result).isEqualTo("""
+                    This file
+                      uses
+                    carriage return line feed [CRLF]
+                """.trimIndent())
             }
         }
 
@@ -320,9 +322,11 @@ carriage return line feed [CRLF]""")
                 val result = file.readFile()
 
                 // then
-                assertThat(result).isEqualTo("""This file
-  uses
-line feed [LF]""")
+                assertThat(result).isEqualTo("""
+                    This file
+                      uses
+                    line feed [LF]
+                """.trimIndent())
             }
         }
     }
