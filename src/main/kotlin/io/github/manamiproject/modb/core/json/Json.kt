@@ -33,6 +33,18 @@ public object Json {
         .addLast(KotlinJsonAdapterFactory())
         .build()
 
+    @PublishedApi
+    @OptIn(ExperimentalStdlibApi::class)
+    internal val moshiNoDuration: Moshi = Moshi.Builder()
+        .addAdapter(UriAdapter())
+        .addAdapter(DurationAdapter())
+        .addAdapter(AnimeTypeAdapter())
+        .addAdapter(AnimeStatusAdapter())
+        .addAdapter(AnimeSeasonAdapter())
+        .addAdapter(AnimeAdapter(serializeDuration = false))
+        .addLast(KotlinJsonAdapterFactory())
+        .build()
+
     /**
      * Parse a [String] into an object.
      *
@@ -73,15 +85,7 @@ public object Json {
     @OptIn(ExperimentalStdlibApi::class)
     private fun configureJsonAdapter(settings: SerializationSettings): MoshiAdapter<Any> {
         var jsonAdapter = if (settings.serializeDurationDeactivated) {
-            Moshi.Builder()
-                .addAdapter(UriAdapter())
-                .addAdapter(DurationAdapter())
-                .addAdapter(AnimeTypeAdapter())
-                .addAdapter(AnimeStatusAdapter())
-                .addAdapter(AnimeSeasonAdapter())
-                .addAdapter(AnimeAdapter(serializeDuration = false))
-                .addLast(KotlinJsonAdapterFactory())
-                .build().adapter<Any>()
+            moshiNoDuration.adapter<Any>()
         } else {
             moshi.adapter<Any>()
         }
