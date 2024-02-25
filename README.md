@@ -8,9 +8,6 @@ This lib is the base for every specific meta data provider module. It contains t
 # Features
 This lib contains the following features.
 
-## SortedList
-+ An implementation of `MutableList` whose elements are always sorted by a predefined `Comparator`
-
 ## Interfaces
 * Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathConverter`. `HttpClient` which define the standard API
 
@@ -70,7 +67,7 @@ companion object {
 ## Extension and utility functions
 
 | function                                |description|
-|-----------------------------------------|----|
+|-----------------------------------------| ---- |
 | `loadResource`                          |Conveniently load a file from `src/main/resources`|
 | `resourceFileExists`                    |Checks if a file exists in `src/main/resources`|
 | `random`                                |Pick a a random number from a given interval|
