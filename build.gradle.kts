@@ -34,7 +34,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.12")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
-    testImplementation("ch.qos.logback:logback-classic:1.5.2")
+    testImplementation("ch.qos.logback:logback-classic:1.5.3")
     testImplementation("io.github.manamiproject:modb-test:1.6.4")
 }
 
