@@ -8,6 +8,7 @@ import io.github.manamiproject.modb.core.models.Anime
  */
 public interface AnimeConverter {
 
+
     /**
      * Converts a [String] into an [Anime].
      * @since 8.0.0
@@ -15,4 +16,9 @@ public interface AnimeConverter {
      * @return Instance of [Anime].
      */
     public suspend fun convert(rawContent: String): Anime
+
+    public suspend fun convert(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Collection<String>>
 }
+
+public typealias OutputKey = String
+public typealias Selector = String

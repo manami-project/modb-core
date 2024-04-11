@@ -17,4 +17,6 @@ public interface PathConverter {
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory.
      */
     public suspend fun convert(path: Path): Collection<Anime>
+
+    public suspend fun convert(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Collection<String>>>
 }
