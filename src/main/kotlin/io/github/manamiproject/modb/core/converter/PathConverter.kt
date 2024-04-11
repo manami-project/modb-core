@@ -18,5 +18,5 @@ public interface PathConverter {
      */
     public suspend fun convert(path: Path): Collection<Anime>
 
-    public suspend fun convert(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Collection<String>>>
+    public suspend fun convert(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>>
 }
