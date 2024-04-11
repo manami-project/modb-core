@@ -20,5 +20,5 @@ internal object MetaDataProviderTestConfig : MetaDataProviderConfig {
 
 internal object TestAnimeConverter : AnimeConverter {
     override suspend fun convert(rawContent: String) = shouldNotBeInvoked()
-    override suspend fun convert(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Collection<String>> = shouldNotBeInvoked()
+    override suspend fun convert(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Any> = shouldNotBeInvoked()
 }

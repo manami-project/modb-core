@@ -17,7 +17,7 @@ public interface AnimeConverter {
      */
     public suspend fun convert(rawContent: String): Anime
 
-    public suspend fun convert(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Collection<String>>
+    public suspend fun convert(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Any>
 }
 
 public typealias OutputKey = String
