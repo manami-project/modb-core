@@ -1,6 +1,6 @@
 package io.github.manamiproject.modb.core.converter
 
-import io.github.manamiproject.modb.core.TestAnimeConverter
+import io.github.manamiproject.modb.core.TestDataExtractor
 import io.github.manamiproject.modb.core.extensions.writeToFile
 import io.github.manamiproject.modb.core.models.Anime
 import io.github.manamiproject.modb.test.exceptionExpected
@@ -11,7 +11,7 @@ import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
 import kotlin.test.Test
 
-internal class DefaultPathConverterTest {
+internal class DefaultPathDataExtractorTest {
 
     @Test
     fun `throws exception if the given Path does not exist`() {
@@ -19,12 +19,12 @@ internal class DefaultPathConverterTest {
             // given
             val file = tempDir.resolve("test.txt")
 
-            val specificTestConverter = object: AnimeConverter by TestAnimeConverter { }
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val specificTestConverter = object: DataExtractor by TestDataExtractor { }
+            val converter = DefaultPathDataExtractor(specificTestConverter, "txt")
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
-                converter.convert(file)
+                converter.extract(file, mapOf("result" to "//test"))
             }
 
             // then
@@ -39,25 +39,28 @@ internal class DefaultPathConverterTest {
             val file = tempDir.resolve("test.txt").createFile()
             "Correct file".writeToFile(file)
 
-            val expectedAnime = Anime("Expected Anime")
+            val expected = mapOf("result" to "testValue")
 
-            val specificTestConverter = object : AnimeConverter by TestAnimeConverter {
-                override suspend fun convert(rawContent: String): Anime {
+            val specificTestConverter = object : DataExtractor by TestDataExtractor {
+                override suspend fun extract(
+                    rawContent: String,
+                    selection: Map<OutputKey, Selector>
+                ): Map<OutputKey, Any> {
                     return if (rawContent == "Correct file") {
-                        expectedAnime
+                        expected
                     } else {
                         shouldNotBeInvoked()
                     }
                 }
             }
 
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val converter = DefaultPathDataExtractor(specificTestConverter, "txt")
 
             // when
-            val result = converter.convert(file)
+            val result = converter.extract(file, mapOf("result" to "//test"))
 
             // then
-            assertThat(result).containsExactly(expectedAnime)
+            assertThat(result).containsExactly(expected)
         }
     }
 
@@ -70,25 +73,28 @@ internal class DefaultPathConverterTest {
                 "accept 2".writeToFile(this.resolve("file2.txt"))
             }
 
-            val specificTestConverter = object: AnimeConverter by TestAnimeConverter {
-                override suspend fun convert(rawContent: String): Anime {
+            val specificTestConverter = object: DataExtractor by TestDataExtractor {
+                override suspend fun extract(
+                    rawContent: String,
+                    selection: Map<OutputKey, Selector>
+                ): Map<OutputKey, Any> {
                     return if (rawContent.startsWith("accept")) {
-                        Anime(rawContent)
+                        mapOf("result" to rawContent)
                     } else {
                         shouldNotBeInvoked()
                     }
                 }
             }
 
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val converter = DefaultPathDataExtractor(specificTestConverter, "txt")
 
             // when
-            val result = converter.convert(directory)
+            val result = converter.extract(directory, mapOf("result" to "//test"))
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
-                Anime("accept 1"),
-                Anime("accept 2"),
+                mapOf("result" to "accept 1"),
+                mapOf("result" to "accept 2"),
             )
         }
     }

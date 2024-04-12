@@ -43,27 +43,4 @@ public class DefaultPathConverter(
 
         awaitAll(*jobs.toTypedArray()).flatten().toList()
     }
-
-    override suspend fun convert(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>> = withContext(LIMITED_CPU) {
-        when{
-            path.regularFileExists() -> convertSingleFile(path, selection)
-            path.directoryExists() -> convertAllFilesInADirectory(path, selection)
-            else -> throw IllegalArgumentException("Given path [$path] does not exist.")
-        }
-    }
-
-    private suspend fun convertSingleFile(file: RegularFile, selection: Map<OutputKey, Selector>) = withContext(LIMITED_CPU) {
-        listOf(animeConverter.convert(file.readFile(), selection))
-    }
-
-    private suspend fun convertAllFilesInADirectory(path: Directory, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>> = withContext(LIMITED_FS) {
-        val jobs = path.listRegularFiles(glob = "*$fileSuffix")
-            .map {
-                async {
-                    convertSingleFile(it, selection)
-                }
-            }
-
-        awaitAll(*jobs.toTypedArray()).flatten().toList()
-    }
 }
