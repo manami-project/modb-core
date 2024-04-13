@@ -17,8 +17,9 @@ import java.nio.file.Path
 )
 public typealias PathConverter = PathAnimeConverter
 
+
 /**
- * Converts files and directories into a single [Anime] or a [List] of [Anime]s.
+ * Converts a single file or multiple files in a directory into a single [Anime] or a [List] of [Anime]s.
  * @since 1.0.0
  */
 public interface PathAnimeConverter {
