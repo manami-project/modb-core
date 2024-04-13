@@ -6,7 +6,15 @@ import java.nio.file.Path
 /**
  * @since 11.1.0
  */
-@Deprecated(level = DeprecationLevel.WARNING, message = "Has been renamed to PathAnimeConverter. PathConverter will be removed in the next major version.")
+@Deprecated(
+    message = "Has been renamed to PathAnimeConverter. PathConverter will be removed in the next major version.",
+    replaceWith = ReplaceWith(
+        expression = "PathAnimeConverter",
+        imports = [
+            "io.github.manamiproject.modb.core.converter.PathAnimeConverter"
+        ]
+    )
+)
 public typealias PathConverter = PathAnimeConverter
 
 /**
