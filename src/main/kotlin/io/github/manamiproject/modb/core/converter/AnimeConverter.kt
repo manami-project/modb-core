@@ -8,7 +8,6 @@ import io.github.manamiproject.modb.core.models.Anime
  */
 public interface AnimeConverter {
 
-
     /**
      * Converts a [String] into an [Anime].
      * @since 8.0.0

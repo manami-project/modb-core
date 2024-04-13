@@ -1,7 +1,12 @@
 package io.github.manamiproject.modb.core.converter
 
+import io.github.manamiproject.modb.core.models.Anime
 import java.nio.file.Path
 
+/**
+ * Extracts data from a single file or multiple files in a directory into a single [Anime] or a [List] of [Anime]s.
+ * @since 11.1.0
+ */
 public interface PathDataExtractor {
 
     /**

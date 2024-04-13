@@ -9,6 +9,12 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
+/**
+ * Uses a [DataExtractor] to extract from a single file or multiple files in a directory.
+ * @since 11.1.0
+ * @param dataExtractor Extractor for the raw content.
+ * @param fileSuffix File suffix to determine which files to include.
+ */
 public class DefaultPathDataExtractor(
     private val dataExtractor: DataExtractor,
     private val fileSuffix: FileSuffix,

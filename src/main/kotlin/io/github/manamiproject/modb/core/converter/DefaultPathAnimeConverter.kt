@@ -24,8 +24,9 @@ import java.nio.file.Path
 )
 public typealias DefaultPathConverter = DefaultPathAnimeConverter
 
+
 /**
- * Uses an [AnimeConverter] to convert files and directories to [Anime]s.
+ * Uses an [AnimeConverter] to convert a single file or multiple files in a directory to [Anime]s.
  * @since 1.0.0
  * @param animeConverter Converter for the raw content.
  * @param fileSuffix File suffix to determine which files to include.
