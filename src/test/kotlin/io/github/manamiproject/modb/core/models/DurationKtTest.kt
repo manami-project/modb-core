@@ -1,7 +1,7 @@
 package io.github.manamiproject.modb.core.models
 
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.*
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 

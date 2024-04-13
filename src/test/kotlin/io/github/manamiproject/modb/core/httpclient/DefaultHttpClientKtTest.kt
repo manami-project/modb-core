@@ -17,7 +17,9 @@ import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
-import java.net.*
+import java.net.SocketTimeoutException
+import java.net.URI
+import java.net.UnknownHostException
 import kotlin.test.Test
 
 
