@@ -20,7 +20,7 @@ internal class DefaultPathConverterTest {
             val file = tempDir.resolve("test.txt")
 
             val specificTestConverter = object: AnimeConverter by TestAnimeConverter { }
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val converter = DefaultPathAnimeConverter(specificTestConverter, "txt")
 
             // when
             val result = exceptionExpected<IllegalArgumentException> {
@@ -51,7 +51,7 @@ internal class DefaultPathConverterTest {
                 }
             }
 
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val converter = DefaultPathAnimeConverter(specificTestConverter, "txt")
 
             // when
             val result = converter.convert(file)
@@ -80,7 +80,7 @@ internal class DefaultPathConverterTest {
                 }
             }
 
-            val converter = DefaultPathConverter(specificTestConverter, "txt")
+            val converter = DefaultPathAnimeConverter(specificTestConverter, "txt")
 
             // when
             val result = converter.convert(directory)

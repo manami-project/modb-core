@@ -11,15 +11,21 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 /**
+ * @since 11.1.0
+ */
+@Deprecated(level = DeprecationLevel.WARNING, message = "Has been renamed to DefaultPathAnimeConverter. DefaultPathConverter will be removed in the next major version.")
+public typealias DefaultPathConverter = DefaultPathAnimeConverter
+
+/**
  * Uses an [AnimeConverter] to convert files and directories to [Anime]s.
  * @since 1.0.0
  * @param animeConverter Converter for the raw content.
  * @param fileSuffix File suffix to determine which files to include.
  */
-public class DefaultPathConverter(
+public class DefaultPathAnimeConverter(
     private val animeConverter: AnimeConverter,
     private val fileSuffix: FileSuffix,
-) : PathConverter {
+) : PathAnimeConverter {
 
     override suspend fun convert(path: Path): List<Anime> = withContext(LIMITED_CPU) {
         when{
