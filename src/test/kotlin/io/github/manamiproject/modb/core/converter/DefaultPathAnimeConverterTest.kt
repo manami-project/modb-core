@@ -11,7 +11,7 @@ import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
 import kotlin.test.Test
 
-internal class DefaultPathConverterTest {
+internal class DefaultPathAnimeConverterTest {
 
     @Test
     fun `throws exception if the given Path does not exist`() {
