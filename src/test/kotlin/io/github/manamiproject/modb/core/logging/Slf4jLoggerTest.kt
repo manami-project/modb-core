@@ -2,9 +2,9 @@ package io.github.manamiproject.modb.core.logging
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import org.assertj.core.api.Assertions.assertThat
-import kotlin.test.Test
 import org.slf4j.Logger
 import java.net.SocketTimeoutException
+import kotlin.test.Test
 
 internal class Slf4jLoggerTest {
 

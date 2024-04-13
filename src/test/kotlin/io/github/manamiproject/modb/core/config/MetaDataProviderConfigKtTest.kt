@@ -3,9 +3,9 @@ package io.github.manamiproject.modb.core.config
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import kotlin.test.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.URI
+import kotlin.test.Test
 
 internal class MetaDataProviderConfigKtTest {
 

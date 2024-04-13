@@ -1,7 +1,5 @@
 package io.github.manamiproject.modb.core.converter
 
-import io.github.manamiproject.modb.core.models.Anime
-
 /**
  * @since 11.1.0
  */
