@@ -9,10 +9,13 @@ This lib is the base for every specific meta data provider module. It contains t
 This lib contains the following features.
 
 ## Interfaces
-* Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathConverter`. `HttpClient` which define the standard API
+* Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathAnimeConverter`, `DataExtractor`, `PathDataExtractor`, `HttpClient` which define the standard API.
 
 ## Converter
-+ Default implementation for `PathConverter`. Takes an `AnimeConverter` as delegate and can convert files and directories
++ Default implementation for `PathAnimeConverter`. Takes an `AnimeConverter` as delegate and can convert files and directories.
+
+## DataExtractor
++ Default implementation for `PathDataExtractor`. Takes an `DataExtractor` as delegate and can convert files and directories.
 
 ## HttpClient
 + Leightweight interface for creating HTTP calls including helpers for creating headers and setting user agents

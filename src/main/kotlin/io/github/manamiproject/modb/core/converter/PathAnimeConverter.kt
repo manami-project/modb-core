@@ -4,10 +4,16 @@ import io.github.manamiproject.modb.core.models.Anime
 import java.nio.file.Path
 
 /**
+ * @since 11.1.0
+ */
+@Deprecated(level = DeprecationLevel.WARNING, message = "Has been renamed to PathAnimeConverter. PathConverter will be removed in the next major version.")
+public typealias PathConverter = PathAnimeConverter
+
+/**
  * Converts files and directories into a single [Anime] or a [List] of [Anime]s.
  * @since 1.0.0
  */
-public interface PathConverter {
+public interface PathAnimeConverter {
 
     /**
      * Converts a file into a single [Anime] (wrapped in a [Collection]) or a directory into a [Collection] of [Anime]s.
