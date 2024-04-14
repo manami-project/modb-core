@@ -5,9 +5,9 @@ import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.config.Hostname
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.converter.AnimeConverter
-import io.github.manamiproject.modb.core.converter.DataExtractor
-import io.github.manamiproject.modb.core.converter.OutputKey
-import io.github.manamiproject.modb.core.converter.Selector
+import io.github.manamiproject.modb.core.extractor.DataExtractor
+import io.github.manamiproject.modb.core.extractor.OutputKey
+import io.github.manamiproject.modb.core.extractor.Selector
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
 import java.net.URI
 

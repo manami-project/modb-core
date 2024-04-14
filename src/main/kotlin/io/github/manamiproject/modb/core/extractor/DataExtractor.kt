@@ -1,4 +1,4 @@
-package io.github.manamiproject.modb.core.converter
+package io.github.manamiproject.modb.core.extractor
 
 /**
  * @since 11.1.0
