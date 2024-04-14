@@ -28,12 +28,12 @@ dependencies {
     api(kotlin("stdlib"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
     api("com.squareup.okhttp3:okhttp:4.12.0")
-    api("org.jsoup:jsoup:1.17.2")
 
     implementation(platform(kotlin("bom")))
     implementation("org.slf4j:slf4j-api:2.0.13")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
     implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
+    implementation("org.jsoup:jsoup:1.17.2")
     implementation("us.codecraft:xsoup:0.3.7")
 
     testImplementation("ch.qos.logback:logback-classic:1.5.6")
