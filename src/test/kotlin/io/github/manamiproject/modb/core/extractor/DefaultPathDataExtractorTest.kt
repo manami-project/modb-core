@@ -38,13 +38,13 @@ internal class DefaultPathDataExtractorTest {
             val file = tempDir.resolve("test.txt").createFile()
             "Correct file".writeToFile(file)
 
-            val expected = mapOf("result" to "testValue")
+            val expected = ExtractionResult(mapOf("result" to "testValue"))
 
             val specificTestConverter = object : DataExtractor by TestDataExtractor {
                 override suspend fun extract(
                     rawContent: String,
                     selection: Map<OutputKey, Selector>
-                ): Map<OutputKey, Any> {
+                ): ExtractionResult {
                     return if (rawContent == "Correct file") {
                         expected
                     } else {
@@ -76,9 +76,9 @@ internal class DefaultPathDataExtractorTest {
                 override suspend fun extract(
                     rawContent: String,
                     selection: Map<OutputKey, Selector>
-                ): Map<OutputKey, Any> {
+                ): ExtractionResult {
                     return if (rawContent.startsWith("accept")) {
-                        mapOf("result" to rawContent)
+                        ExtractionResult(mapOf("result" to rawContent))
                     } else {
                         shouldNotBeInvoked()
                     }
@@ -91,9 +91,9 @@ internal class DefaultPathDataExtractorTest {
             val result = converter.extract(directory, mapOf("result" to "//test"))
 
             // then
-            assertThat(result).containsExactlyInAnyOrder(
-                mapOf("result" to "accept 1"),
-                mapOf("result" to "accept 2"),
+            assertThat(result).contains(
+                ExtractionResult(mapOf("result" to "accept 1")),
+                ExtractionResult(mapOf("result" to "accept 2")),
             )
         }
     }

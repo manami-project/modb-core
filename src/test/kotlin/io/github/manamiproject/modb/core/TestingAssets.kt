@@ -6,6 +6,7 @@ import io.github.manamiproject.modb.core.config.Hostname
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.converter.AnimeConverter
 import io.github.manamiproject.modb.core.extractor.DataExtractor
+import io.github.manamiproject.modb.core.extractor.ExtractionResult
 import io.github.manamiproject.modb.core.extractor.OutputKey
 import io.github.manamiproject.modb.core.extractor.Selector
 import io.github.manamiproject.modb.test.shouldNotBeInvoked
@@ -24,5 +25,5 @@ internal object TestAnimeConverter : AnimeConverter {
 }
 
 internal object TestDataExtractor : DataExtractor {
-    override suspend fun extract(rawContent: String, selection: Map<OutputKey, Selector>): Map<OutputKey, Any> = shouldNotBeInvoked()
+    override suspend fun extract(rawContent: String, selection: Map<OutputKey, Selector>): ExtractionResult = shouldNotBeInvoked()
 }
