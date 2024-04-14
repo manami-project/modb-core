@@ -20,7 +20,7 @@ public class DefaultPathDataExtractor(
     private val fileSuffix: FileSuffix,
 ) : PathDataExtractor {
 
-    override suspend fun extract(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>> = withContext(LIMITED_CPU) {
+    override suspend fun extract(path: Path, selection: Map<OutputKey, Selector>): Collection<ExtractionResult> = withContext(LIMITED_CPU) {
         when{
             path.regularFileExists() -> convertSingleFile(path, selection)
             path.directoryExists() -> convertAllFilesInADirectory(path, selection)
@@ -32,7 +32,7 @@ public class DefaultPathDataExtractor(
         listOf(dataExtractor.extract(file.readFile(), selection))
     }
 
-    private suspend fun convertAllFilesInADirectory(path: Directory, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>> = withContext(LIMITED_FS) {
+    private suspend fun convertAllFilesInADirectory(path: Directory, selection: Map<OutputKey, Selector>): Collection<ExtractionResult> = withContext(LIMITED_FS) {
         val jobs = path.listRegularFiles(glob = "*$fileSuffix")
             .map {
                 async {
