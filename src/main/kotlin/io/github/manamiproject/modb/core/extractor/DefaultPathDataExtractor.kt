@@ -1,4 +1,4 @@
-package io.github.manamiproject.modb.core.converter
+package io.github.manamiproject.modb.core.extractor
 
 import io.github.manamiproject.modb.core.config.FileSuffix
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
