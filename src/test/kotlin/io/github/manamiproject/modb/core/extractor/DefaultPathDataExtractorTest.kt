@@ -91,7 +91,7 @@ internal class DefaultPathDataExtractorTest {
             val result = converter.extract(directory, mapOf("result" to "//test"))
 
             // then
-            assertThat(result).contains(
+            assertThat(result).containsExactlyInAnyOrder(
                 ExtractionResult(mapOf("result" to "accept 1")),
                 ExtractionResult(mapOf("result" to "accept 2")),
             )

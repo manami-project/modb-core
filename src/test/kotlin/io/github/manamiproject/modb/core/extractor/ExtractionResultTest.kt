@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core.extractor
 import io.github.manamiproject.modb.test.exceptionExpected
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
+import java.net.URI
 import kotlin.test.Test
 
 internal class ExtractionResultTest {
@@ -341,7 +342,10 @@ internal class ExtractionResultTest {
             val result = obj.list<String>("result")
 
             // then
-            assertThat(result).isEqualTo(listOf("one", "two"))
+            assertThat(result).containsExactlyInAnyOrder(
+                "one",
+                "two"
+            )
         }
 
         @Test
@@ -353,7 +357,10 @@ internal class ExtractionResultTest {
             val result = obj.list<String>("result")
 
             // then
-            assertThat(result).isEqualTo(listOf("one", "two"))
+            assertThat(result).containsExactlyInAnyOrder(
+                "one",
+                "two",
+            )
         }
 
         @Test
@@ -369,17 +376,15 @@ internal class ExtractionResultTest {
         }
 
         @Test
-        fun `throws exception if object is not iterable`() {
+        fun `if the result is only a single element it will be encapsulated in a list`() {
             // given
-            val obj = ExtractionResult(mapOf("result" to "test"))
+            val obj = ExtractionResult(mapOf("result" to 5))
 
             // when
-            val result = exceptionExpected<IllegalStateException> {
-                obj.list<Int>("result")
-            }
+            val result = obj.list<Int>("result")
 
             // then
-            assertThat(result).hasMessage("Value of [result] is not iterable.")
+            assertThat(result).containsExactly(5)
         }
 
         @Test
@@ -394,6 +399,104 @@ internal class ExtractionResultTest {
 
             // then
             assertThat(result).hasMessage("List elements are not if type [kotlin.String], but of type [kotlin.Int].")
+        }
+    }
+
+    @Nested
+    inner class ListWithTransformTests {
+
+        @Test
+        fun `throws exception if identifier doesn't exist in result`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to "https://example.org"))
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                obj.list<URI>("unknown") { URI(it) }
+            }
+
+            // then
+            assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `correctly transforms elements`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to listOf("http://example.org", "http://localhost")))
+
+            // when
+            val result = obj.list<URI>("result") { URI(it) }
+
+            // then
+            assertThat(result).containsExactlyInAnyOrder(
+                URI("http://example.org"),
+                URI("http://localhost"),
+            )
+        }
+
+        @Test
+        fun `returns set as list`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to listOf("http://example.org", "http://localhost")))
+
+            // when
+            val result = obj.list<URI>("result") { URI(it) }
+
+            // then
+            assertThat(result).containsExactlyInAnyOrder(
+                URI("http://example.org"),
+                URI("http://localhost"),
+            )
+        }
+
+        @Test
+        fun `returns empty list as-is`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to emptyList<String>()))
+
+            // when
+            val result = obj.list<String>("result") { it }
+
+            // then
+            assertThat(result).isEmpty()
+        }
+
+        @Test
+        fun `if the result is only a single element it will be encapsulated in a list`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to 5))
+
+            // when
+            val result = obj.list<Int>("result") { it.toInt() }
+
+            // then
+            assertThat(result).containsExactly(5)
+        }
+    }
+
+    @Nested
+    inner class ToStringTests {
+
+        @Test
+        fun `correctly create output`() {
+            // given
+            val extractionResult = ExtractionResult(mapOf(
+                "string" to "test",
+                "int" to 5,
+                "double" to 2.6,
+                "list" to listOf("one", "two"),
+            ))
+
+            // when
+            val result = extractionResult.toString()
+
+            // then
+            assertThat(result).isEqualTo("""
+                string => test
+                int => 5
+                double => 2.6
+                list => [one, two]
+            """.trimIndent())
         }
     }
 }

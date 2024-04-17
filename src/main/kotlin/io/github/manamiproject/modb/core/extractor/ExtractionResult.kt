@@ -64,7 +64,7 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any>) : Map<O
         val list = if (value::class.isSubclassOf(Iterable::class)) {
             (value as Iterable<*>).toList()
         } else {
-            throw IllegalStateException("Value of [$identifier] is not iterable.")
+            listOf(value)
         }
 
         if (list.isEmpty()) {
@@ -78,4 +78,24 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any>) : Map<O
 
         return list.map { it as T }
     }
+
+    public inline fun <reified T> list(identifier: OutputKey, extractionResult: ExtractionResult = this, transform: (String) -> T): List<T> {
+        check(extractionResult.containsKey(identifier)) { "Result doesn't contain entry [$identifier]" }
+
+        val value = extractionResult[identifier]!!
+
+        val list = if (value::class.isSubclassOf(Iterable::class)) {
+            (value as Iterable<*>).toList()
+        } else {
+            listOf(value)
+        }
+
+        return list.map { transform.invoke(it.toString()) }
+    }
+
+    override fun toString(): String = delegate.map { "${it.key} => ${it.value}" }.joinToString("\n")
+
+    override fun equals(other: Any?): Boolean = delegate == other
+
+    override fun hashCode(): Int = delegate.hashCode()
 }

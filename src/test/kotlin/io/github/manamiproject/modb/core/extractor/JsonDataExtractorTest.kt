@@ -14,7 +14,7 @@ internal class JsonDataExtractorTest {
     fun `contains NotFound for the OutputKey if raw content is blank`(input: String) {
         runBlocking {
             // when
-            val result = JsonDataExtractor().extract(input, mapOf("result" to "$.propertyName"))
+            val result = JsonDataExtractor.extract(input, mapOf("result" to "$.propertyName"))
 
             // then
             assertThat(result).containsEntry("result", NotFound)
@@ -32,7 +32,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.propertyName"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.propertyName"))
 
             // then
             assertThat(result).containsEntry("result", NotFound)
@@ -50,7 +50,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, emptyMap())
+            val result = JsonDataExtractor.extract(raw, emptyMap())
 
             // then
             assertThat(result).isEmpty()
@@ -68,7 +68,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.string"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.string"))
 
             // then
             assertThat(result).containsEntry("result", "testValue")
@@ -86,7 +86,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.integer"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.integer"))
 
             // then
             assertThat(result).containsEntry("result", 5)
@@ -104,7 +104,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.double"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.double"))
 
             // then
             assertThat(result).containsEntry("result", 5.2)
@@ -125,7 +125,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.array_strings"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.array_strings"))
 
             // then
             assertThat(result).containsEntry("result", listOf("one", "two"))
@@ -147,7 +147,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.array_integers"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.array_integers"))
 
             // then
             assertThat(result).containsEntry("result", listOf(2, 3, 5))
@@ -169,7 +169,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.object"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.object"))
 
             // then
             assertThat(result).containsEntry("result", mapOf(
@@ -195,7 +195,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.object.inner_string"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.object.inner_string"))
 
             // then
             assertThat(result).containsEntry("result", "otherValue")
@@ -217,7 +217,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.object.inner_integer"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.object.inner_integer"))
 
             // then
             assertThat(result).containsEntry("result", 7)
@@ -239,7 +239,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.object.inner_double"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.object.inner_double"))
 
             // then
             assertThat(result).containsEntry("result", 4.3)
@@ -261,7 +261,7 @@ internal class JsonDataExtractorTest {
             """.trimIndent()
 
             // when
-            val result = JsonDataExtractor().extract(raw, mapOf("result" to "$.array_integers[1]"))
+            val result = JsonDataExtractor.extract(raw, mapOf("result" to "$.array_integers[1]"))
 
             // then
             assertThat(result).containsEntry("result", 3)
