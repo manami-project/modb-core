@@ -4,7 +4,7 @@ import com.nfeld.jsonpathkt.JsonPath
 import com.nfeld.jsonpathkt.extension.read
 
 
-public class JsonDataExtractor : DataExtractor {
+public object JsonDataExtractor : DataExtractor {
 
     override suspend fun extract(rawContent: String, selection: Map<OutputKey, Selector>): ExtractionResult {
         return ExtractionResult(selection.map{
