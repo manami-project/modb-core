@@ -34,7 +34,6 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
     implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
     implementation("org.jsoup:jsoup:1.17.2")
-    implementation("us.codecraft:xsoup:0.3.7")
 
     testImplementation("ch.qos.logback:logback-classic:1.5.6")
     testImplementation("io.github.manamiproject:modb-test:1.6.8")
