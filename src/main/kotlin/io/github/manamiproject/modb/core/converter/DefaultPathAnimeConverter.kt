@@ -11,21 +11,6 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 /**
- * @since 11.1.0
- */
-@Deprecated(
-    message = "Has been renamed to DefaultPathAnimeConverter. DefaultPathConverter will be removed in the next major version.",
-    replaceWith = ReplaceWith(
-        expression = "DefaultPathAnimeConverter",
-        imports = [
-            "io.github.manamiproject.modb.core.converter.DefaultPathAnimeConverter",
-        ]
-    )
-)
-public typealias DefaultPathConverter = DefaultPathAnimeConverter
-
-
-/**
  * Uses an [AnimeConverter] to convert a single file or multiple files in a directory to [Anime]s.
  * @since 1.0.0
  * @param animeConverter Converter for the raw content.
