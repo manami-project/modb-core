@@ -388,7 +388,7 @@ internal class ExtractionResultTest {
         }
 
         @Test
-        fun `throws exception if list elements are of different type`() {
+        fun `throws exception if all list elements are of different type`() {
             // given
             val obj = ExtractionResult(mapOf("result" to listOf(1, 3)))
 
@@ -398,7 +398,21 @@ internal class ExtractionResultTest {
             }
 
             // then
-            assertThat(result).hasMessage("List elements are not if type [kotlin.String], but of type [kotlin.Int].")
+            assertThat(result).hasMessage("List not all elements are of type [kotlin.String].")
+        }
+
+        @Test
+        fun `throws exception if not all list elements are of expected type`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to listOf("test", 3)))
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                obj.list<String>("result")
+            }
+
+            // then
+            assertThat(result).hasMessage("List not all elements are of type [kotlin.String].")
         }
     }
 

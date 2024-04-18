@@ -5,7 +5,10 @@ import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 import kotlin.reflect.full.isSubclassOf
 
-
+/**
+ * Extract data using XPath.
+ * @since 12.0.0
+ */
 public object XmlDataExtractor : DataExtractor {
 
     override suspend fun extract(rawContent: String, selection: Map<OutputKey, Selector>): ExtractionResult {
