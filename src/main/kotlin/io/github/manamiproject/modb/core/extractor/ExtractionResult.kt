@@ -99,19 +99,20 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any> = emptyM
 
     /**
      * Can return values as [List]. Single values will be wrapped in list.
+     * Excludes `null` values.
      * @since 12.0.0
      * @param identifier The output key for the value to retrieve.
      * @param extractionResult Parameter required by inline function. Normally you don't need to set this.
      * @return Value of the entry with key [identifier] as [List] of type [T].
      * @throws IllegalStateException If [identifier] doesn't exist or not all elements are of type [T].
      */
-    public inline fun <reified T> list(identifier: OutputKey, extractionResult: ExtractionResult = this): List<T> {
+    public inline fun <reified T> listNotNull(identifier: OutputKey, extractionResult: ExtractionResult = this): List<T> {
         check(extractionResult.containsKey(identifier)) { "Result doesn't contain entry [$identifier]" }
 
         val value = extractionResult[identifier]!!
 
         val list = if (value::class.isSubclassOf(Iterable::class)) {
-            (value as Iterable<*>).toList()
+            (value as Iterable<*>).filterNotNull()
         } else {
             listOf(value)
         }
@@ -128,23 +129,22 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any> = emptyM
     }
 
     /**
-     * Same as [list], but allows add a transformator which allows to transform elements from [String] to [T].
-     *
+     * Same as [listNotNull], but allows add a transformator which allows to transform elements from [String] to [T].
      * @since 12.0.0
      * @param identifier The output key for the value to retrieve.
      * @param extractionResult Parameter required by inline function. Normally you don't need to set this.
      * @param transform Allows to transform the elements from [String] to [T].
      * @return Value of the entry with key [identifier] as [List] of type [T].
      * @throws IllegalStateException If [identifier] doesn't exist.
-     * @see [list]
+     * @see [listNotNull]
      */
-    public inline fun <reified T> list(identifier: OutputKey, extractionResult: ExtractionResult = this, transform: (String) -> T): List<T> {
+    public inline fun <reified T> listNotNull(identifier: OutputKey, extractionResult: ExtractionResult = this, transform: (String) -> T): List<T> {
         check(extractionResult.containsKey(identifier)) { "Result doesn't contain entry [$identifier]" }
 
         val value = extractionResult[identifier]!!
 
         val list = if (value::class.isSubclassOf(Iterable::class)) {
-            (value as Iterable<*>).toList()
+            (value as Iterable<*>).filterNotNull()
         } else {
             listOf(value)
         }

@@ -38,7 +38,7 @@ internal class XmlDataExtractorTest {
             assertThat(result.string("premiered")).isEqualTo("Winter 1996")
             assertThat(result.string("aired")).isEqualTo("Jan 10, 1996 to Sep 8, 1998")
             assertThat(result.string("picture")).isEqualTo("https://cdn.myanimelist.net/images/anime/1346/119505.jpg")
-            assertThat(result.list<String>("tags")).containsExactlyInAnyOrder(
+            assertThat(result.listNotNull<String>("tags")).containsExactlyInAnyOrder(
                 "Action",
                 "Adventure",
                 "Comedy",
@@ -47,7 +47,7 @@ internal class XmlDataExtractorTest {
                 "Samurai",
                 "Shounen"
             )
-            assertThat(result.list<String>("relatedAnime")).containsExactlyInAnyOrder(
+            assertThat(result.listNotNull<String>("relatedAnime")).containsExactlyInAnyOrder(
                 "https://myanimelist.net/anime/401/Rurouni_Kenshin__Meiji_Kenkaku_Romantan_-_Seisou-hen",
                 "https://myanimelist.net/anime/44/Rurouni_Kenshin__Meiji_Kenkaku_Romantan_-_Tsuioku-hen",
                 "https://myanimelist.net/anime/6591/Rurouni_Kenshin_DVD-BOX_Special_Ending",
@@ -76,7 +76,7 @@ internal class XmlDataExtractorTest {
             )
 
             // then
-            assertThat(result.list<String>("synonyms")).containsExactlyInAnyOrder(
+            assertThat(result.listNotNull<String>("synonyms")).containsExactlyInAnyOrder(
                 "Prétear",
                 "Prétear: The New Legend of Snow White",
                 "Shin Shirayuki-hime Densetsu Pretear",

@@ -326,7 +326,7 @@ internal class ExtractionResultTest {
 
             // when
             val result = exceptionExpected<IllegalStateException> {
-                obj.list<String>("unknown")
+                obj.listNotNull<String>("unknown")
             }
 
             // then
@@ -339,7 +339,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to listOf("one", "two")))
 
             // when
-            val result = obj.list<String>("result")
+            val result = obj.listNotNull<String>("result")
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
@@ -354,7 +354,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to setOf("one", "two")))
 
             // when
-            val result = obj.list<String>("result")
+            val result = obj.listNotNull<String>("result")
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
@@ -369,10 +369,22 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to emptyList<String>()))
 
             // when
-            val result = obj.list<String>("result")
+            val result = obj.listNotNull<String>("result")
 
             // then
             assertThat(result).isEmpty()
+        }
+
+        @Test
+        fun `excludes null`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to listOf("one", null, "two")))
+
+            // when
+            val result = obj.listNotNull<String>("result")
+
+            // then
+            assertThat(result).containsExactlyInAnyOrder("one", "two")
         }
 
         @Test
@@ -381,7 +393,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to 5))
 
             // when
-            val result = obj.list<Int>("result")
+            val result = obj.listNotNull<Int>("result")
 
             // then
             assertThat(result).containsExactly(5)
@@ -394,7 +406,7 @@ internal class ExtractionResultTest {
 
             // when
             val result = exceptionExpected<IllegalStateException> {
-                obj.list<String>("result")
+                obj.listNotNull<String>("result")
             }
 
             // then
@@ -408,7 +420,7 @@ internal class ExtractionResultTest {
 
             // when
             val result = exceptionExpected<IllegalStateException> {
-                obj.list<String>("result")
+                obj.listNotNull<String>("result")
             }
 
             // then
@@ -426,7 +438,7 @@ internal class ExtractionResultTest {
 
             // when
             val result = exceptionExpected<IllegalStateException> {
-                obj.list<URI>("unknown") { URI(it) }
+                obj.listNotNull<URI>("unknown") { URI(it) }
             }
 
             // then
@@ -439,7 +451,22 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to listOf("http://example.org", "http://localhost")))
 
             // when
-            val result = obj.list<URI>("result") { URI(it) }
+            val result = obj.listNotNull<URI>("result") { URI(it) }
+
+            // then
+            assertThat(result).containsExactlyInAnyOrder(
+                URI("http://example.org"),
+                URI("http://localhost"),
+            )
+        }
+
+        @Test
+        fun `excludes null`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to listOf("http://example.org", null, "http://localhost")))
+
+            // when
+            val result = obj.listNotNull<URI>("result") { URI(it) }
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
@@ -454,7 +481,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to listOf("http://example.org", "http://localhost")))
 
             // when
-            val result = obj.list<URI>("result") { URI(it) }
+            val result = obj.listNotNull<URI>("result") { URI(it) }
 
             // then
             assertThat(result).containsExactlyInAnyOrder(
@@ -469,7 +496,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to emptyList<String>()))
 
             // when
-            val result = obj.list<String>("result") { it }
+            val result = obj.listNotNull<String>("result") { it }
 
             // then
             assertThat(result).isEmpty()
@@ -481,7 +508,7 @@ internal class ExtractionResultTest {
             val obj = ExtractionResult(mapOf("result" to 5))
 
             // when
-            val result = obj.list<Int>("result") { it.toInt() }
+            val result = obj.listNotNull<Int>("result") { it.toInt() }
 
             // then
             assertThat(result).containsExactly(5)
