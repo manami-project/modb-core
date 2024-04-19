@@ -17,5 +17,5 @@ public interface PathDataExtractor {
      * from [selection]. The value is the identified data from files based on the XPath or JsonPath.
      * @throws IllegalArgumentException if the given [Path] is neither file nor directory.
      */
-    public suspend fun extract(path: Path, selection: Map<OutputKey, Selector>): Collection<Map<OutputKey, Any>>
+    public suspend fun extract(path: Path, selection: Map<OutputKey, Selector>): Collection<ExtractionResult>
 }

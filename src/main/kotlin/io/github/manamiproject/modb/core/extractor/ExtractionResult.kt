@@ -62,7 +62,7 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any> = emptyM
             return (value as Number).toInt()
         }
 
-        val convertedValue = value.toString().toIntOrNull()
+        val convertedValue = value.toString().trim().toIntOrNull()
 
         if (convertedValue != null) {
             return convertedValue
@@ -88,7 +88,7 @@ public class ExtractionResult(private val delegate: Map<OutputKey, Any> = emptyM
             return (value as Number).toDouble()
         }
 
-        val convertedValue = value.toString().toDoubleOrNull()
+        val convertedValue = value.toString().trim().toDoubleOrNull()
 
         if (convertedValue != null) {
             return convertedValue
