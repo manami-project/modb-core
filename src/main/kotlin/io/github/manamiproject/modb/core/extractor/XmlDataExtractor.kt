@@ -42,6 +42,7 @@ public object XmlDataExtractor : DataExtractor {
         return when {
             split.last().startsWith("@") -> Triple(entry.key, allExceptLast, split.last().trimStart('@'))
             split.last().endsWith("text()") -> Triple(entry.key, allExceptLast, split.last())
+            split.last().endsWith("node()") -> Triple(entry.key, allExceptLast, split.last())
             else -> Triple(entry.key, entry.value, EMPTY)
         }
     }
@@ -50,6 +51,7 @@ public object XmlDataExtractor : DataExtractor {
         val value =  when {
             jsoupElements.isEmpty() -> NotFound
             entry.third == "text()" -> jsoupElements.eachText() ?: NotFound
+            entry.third == "node()" -> jsoupElements.dataNodes().map { it.wholeData.trim() }
             entry.third == EMPTY -> jsoupElements.textNodes().map { it.text().trim() }.filter { it.isNotBlank() }
             else -> jsoupElements.eachAttr(entry.third) ?: NotFound
         }

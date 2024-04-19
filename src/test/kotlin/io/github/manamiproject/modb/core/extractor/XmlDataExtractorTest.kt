@@ -24,7 +24,7 @@ internal class XmlDataExtractorTest {
                     "premiered" to "//td[contains(text(), 'Premiered')]/following-sibling::*/text()",
                     "aired" to "//td[contains(text(), 'Aired')]/following-sibling::*/text()",
                     "picture" to "//div[contains(@class, 'status-block')]/div[@itemprop='image']/@content",
-                    "relatedAnime" to "//div[@id='related-manga']/table/tbody//a[contains(@href, 'https://myanimelist.net/anime/')]/@href"
+                    "relatedAnime" to "//div[@id='related-manga']/table/tbody//a[contains(@href, 'https://myanimelist.net/anime/')]/@href",
                 )
             )
 
@@ -98,6 +98,22 @@ internal class XmlDataExtractorTest {
 
             // then
             assertThat(result.notFound("result")).isTrue()
+        }
+    }
+
+    @Test
+    fun `correctly filters on cdata and returns it`() {
+        runBlocking {
+            // when
+            val result = XmlDataExtractor.extract(
+                rawContent = loadTestResource("xml_data_extractor_tests/example.html"),
+                selection = mapOf(
+                    "result" to "//script[contains(node(), 'window.GRECAPTCHA_SITE_KEY')]/node()",
+                )
+            )
+
+            // then
+            assertThat(result.string("result")).isEqualTo("window.GRECAPTCHA_SITE_KEY = '6Ld_1aIZAAAAAF6bNdR67ICKIaeXLKlbhE7t2Qz4';")
         }
     }
 }
