@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.extractor
 
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.test.exceptionExpected
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -157,6 +158,48 @@ internal class ExtractionResultTest {
     }
 
     @Nested
+    inner class StringorDefaultTests {
+
+        @Test
+        fun `throws exception if identifier doesn't exist in result`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to "test"))
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                obj.stringOrDefault("unknown")
+            }
+
+            // then
+            assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `returns default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.stringOrDefault("result")
+
+            // then
+            assertThat(result).isEqualTo(EMPTY)
+        }
+
+        @Test
+        fun `returns custom default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.stringOrDefault("result", "custom-default")
+
+            // then
+            assertThat(result).isEqualTo("custom-default")
+        }
+    }
+
+    @Nested
     inner class IntTests {
 
         @Test
@@ -237,6 +280,48 @@ internal class ExtractionResultTest {
     }
 
     @Nested
+    inner class IntOrDefaultTests {
+
+        @Test
+        fun `throws exception if identifier doesn't exist in result`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to "test"))
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                obj.intOrDefault("unknown")
+            }
+
+            // then
+            assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `returns default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.intOrDefault("result")
+
+            // then
+            assertThat(result).isZero()
+        }
+
+        @Test
+        fun `returns custom default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.intOrDefault("result", 7)
+
+            // then
+            assertThat(result).isEqualTo(7)
+        }
+    }
+
+    @Nested
     inner class DoubleTests {
 
         @Test
@@ -313,6 +398,48 @@ internal class ExtractionResultTest {
 
             // then
             assertThat(result).hasMessage("Unable to return value [test] as Double.")
+        }
+    }
+
+    @Nested
+    inner class DoubleOrDefaultTests {
+
+        @Test
+        fun `throws exception if identifier doesn't exist in result`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to "test"))
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                obj.doubleOrDefault("unknown")
+            }
+
+            // then
+            assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `returns default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.doubleOrDefault("result")
+
+            // then
+            assertThat(result).isZero()
+        }
+
+        @Test
+        fun `returns custom default if the value is NotFound`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to NotFound))
+
+            // when
+            val result = obj.doubleOrDefault("result", 9.0)
+
+            // then
+            assertThat(result).isEqualTo(9.0)
         }
     }
 
