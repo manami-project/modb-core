@@ -1,6 +1,5 @@
 package io.github.manamiproject.modb.core.extractor
 
-import io.github.manamiproject.modb.core.extensions.EMPTY
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
