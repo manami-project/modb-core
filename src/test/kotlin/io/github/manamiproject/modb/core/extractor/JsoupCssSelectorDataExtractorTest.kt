@@ -74,8 +74,8 @@ internal class JsoupCssSelectorDataExtractorTest {
                         "thriller",
                     )
                     assertThat(result.string("image")).isEqualTo("https://cdn.anidb.net/images/main/221544.jpg")
-                    assertThat(result.listNotNull<String>("source")[0]).isEqualTo("4563")
-                    assertThat(result.listNotNull<String>("type")[0]).isEqualTo("TV Series, 37 episodes")
+                    assertThat(result.listNotNull<String>("source").first()).isEqualTo("4563")
+                    assertThat(result.listNotNull<String>("type").first()).isEqualTo("TV Series, 37 episodes")
                     assertThat(result.listNotNull<String>("duration").first()).isEqualTo("25m")
                     assertThat(result.string("season")).isEqualTo("Autumn 2006")
                     assertThat(result.string("startDate")).isEqualTo("2006-10-04")
