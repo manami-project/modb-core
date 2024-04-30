@@ -47,7 +47,7 @@ internal class JsoupXPathDataExtractorTest {
                         "tags" to "//span[contains(@itemprop, 'genre')]/text()",
                         "image" to "//img[contains(@itemprop, 'image')]/@src",
                         "source" to "//input[contains(@type, 'hidden')][contains(@name, 'aid')]/@value",
-                        "type" to "//tr[contains(@class, 'type')]//th[contains(text(), 'Type')]//following-sibling::*",
+                        "type" to "//tr[contains(@class, 'type')]//th[contains(text(), 'Type')]/following-sibling::*/text()",
                         "duration" to "//table[contains(@id, 'eplist')]/tbody/tr//td[contains(@class, 'duration')]/text()",
                         "season" to "//tr[contains(@class, 'season')]//td[contains(@class, 'value')]/text()",
                         "startDate" to "//tr[contains(@class, 'year')]//td[contains(@class, 'value')]//span[contains(@itemprop, 'startDate')]/@content",
@@ -74,8 +74,8 @@ internal class JsoupXPathDataExtractorTest {
                         "thriller",
                     )
                     assertThat(result.string("image")).isEqualTo("https://cdn.anidb.net/images/main/221544.jpg")
-                    assertThat(result.listNotNull<String>("source")[0]).isEqualTo("4563")
-                    assertThat(result.listNotNull<String>("type")[0]).isEqualTo("TV Series,")
+                    assertThat(result.listNotNull<String>("source").first()).isEqualTo("4563")
+                    assertThat(result.listNotNull<String>("type").first()).isEqualTo("TV Series, 37 episodes")
                     assertThat(result.listNotNull<String>("duration").first()).isEqualTo("25m")
                     assertThat(result.string("season")).isEqualTo("Autumn 2006")
                     assertThat(result.string("startDate")).isEqualTo("2006-10-04")
@@ -299,22 +299,21 @@ internal class JsoupXPathDataExtractorTest {
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
-                            "jsonld" to "//script[@type='application/ld+json']/node()",
-                            "title" to "//meta[@property='og:title']/@content",
-                            "image" to "//meta[@property='og:image']/@content",
-                            "episodesDiv" to "//div[contains(text(), 'Episodes')]/../text()",
-                            "episodesCountdown" to "//div[@data-controller='countdown-bar']//div[contains(text(), 'EP')]/text()",
-                            "type" to "//div[contains(text(), 'Format')]/..",
-                            "status" to "//div[contains(text(), 'Status')]/..",
-                            "duration" to "//div[contains(text(), 'Run time')]/..",
-                            "season" to "//div[contains(text(), 'Season')]/../a/text()",
-                            "year" to "//div[contains(text(), 'Premiere')]/following-sibling::*",
-                            "relatedAnime" to "//div[@data-controller='carousel']//article/a/@href",
-                            "tags" to "//div[contains(text(), 'Tags')]/..//a[@data-anime-details-target='tagChip']",
-                            "sourceDiv" to "//div[@data-anime-details-id]/@data-anime-details-id",
-                            "sourceMeta" to "//meta[@property='og:url']/@content",
-                        )
-                    )
+                        "jsonld" to "//script[@type='application/ld+json']/node()",
+                        "title" to "//meta[@property='og:title']/@content",
+                        "image" to "//meta[@property='og:image']/@content",
+                        "episodesDiv" to "//div[contains(text(), 'Episodes')]/../text()",
+                        "episodesCountdown" to "//div[@data-controller='countdown-bar']//div[contains(text(), 'EP')]/text()",
+                        "type" to "//div[contains(text(), 'Format')]/..",
+                        "status" to "//div[contains(text(), 'Status')]/..",
+                        "duration" to "//div[contains(text(), 'Run time')]/..",
+                        "season" to "//div[contains(text(), 'Season')]/../a/text()",
+                        "year" to "//div[contains(text(), 'Premiere')]/following-sibling::*",
+                        "relatedAnime" to "//div[@data-controller='carousel']//article/a/@href",
+                        "tags" to "//div[contains(text(), 'Tags')]/..//a[@data-anime-details-target='tagChip']",
+                        "sourceDiv" to "//div[@data-anime-details-id]/@data-anime-details-id",
+                        "sourceMeta" to "//meta[@property='og:url']/@content",
+                    ))
 
                     // then
                     assertThat(result.listNotNull<String>("jsonld").first()).isEqualTo("""{"@context":"http://schema.org","@type":"TVSeries","url":"https://www.livechart.me/anime/3437","genre":["Detective","Mystery","Psychological","Supernatural","Suspense"],"name":"Death Note","image":"https://u.livechart.me/anime/3437/poster_image/ea9acd1ccea844fd9c4debde5e8e631e.png/large.jpg","description":"Bored with his deteriorating world and the laconic way of his fellows, shinigami Ryuuk drops his Death Note on Earth and watches to see if it stirs up anything interesting. His plan succeeds beyond his wildest expectations when the Death Note is found by brilliant high school senior Light Yagami, who is also bored with a world he considers rotten. Although initially he regards the book as a prank, Light soon discovers, through experimentation, that the book&#39;s claim is true: picture a person in your mind as you write the person&#39;s name in the Death Note, and that person dies 40 seconds later of a heart attack (although a different time frame and manner of death can be specified). Armed with that power, Light sets out on a quest he sees as noble: make the world a better place by eliminating all its criminals using the Death Note. Soon cast as the mysterious &quot;Kira&quot; (a Japanese pronunciation of the English &quot;killer&quot;) in the media and on the Internet, some take exception to his playing god, most notably the police and the enigmatic master detective L, who resolves to do everything in his power to stop Kira. Light counters by doing everything in his power to prevent people from identifying or interfering with him, even if that means getting rid of people investigating him.","numberOfEpisodes":37,"datePublished":"2006-10-03","alternateName":["デスノート"],"productionCompany":[{"@type":"Organization","@id":"https://www.livechart.me/studios/65","url":"https://www.livechart.me/studios/65","name":"MADHOUSE"}],"aggregateRating":{"@type":"AggregateRating","ratingCount":6900,"bestRating":10,"worstRating":1,"ratingValue":"8.66"}}""")
