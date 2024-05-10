@@ -374,13 +374,13 @@ public data class Anime(
          * URL to a default picture.
          * @since 11.0.0
          */
-        public val NO_PICTURE: URI = URI("https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png")
+        public val NO_PICTURE: URI = URI("https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic.png")
 
         /**
          * URL to a default thumbnail.
          * @since 11.0.0
          */
-        public val NO_PICTURE_THUMBNAIL: URI = URI("https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png")
+        public val NO_PICTURE_THUMBNAIL: URI = URI("https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic_thumbnail.png")
     }
 
     /**

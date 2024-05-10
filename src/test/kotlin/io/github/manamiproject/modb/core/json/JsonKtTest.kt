@@ -390,8 +390,8 @@ internal class JsonKtTest {
                             "season": "UNDEFINED",
                             "year": null
                           },
-                          "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
-                          "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
+                          "picture": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic.png",
+                          "thumbnail": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic_thumbnail.png",
                           "duration": {
                             "value": 0,
                             "unit": "SECONDS"
@@ -498,8 +498,8 @@ internal class JsonKtTest {
                           "animeSeason": {
                             "season": "SUMMER"
                           },
-                          "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
-                          "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
+                          "picture": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic.png",
+                          "thumbnail": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic_thumbnail.png",
                           "duration": {
                             "value": 0,
                             "unit": "SECONDS"
@@ -541,8 +541,8 @@ internal class JsonKtTest {
                             "season": "UNDEFINED",
                             "year": null
                           },
-                          "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
-                          "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
+                          "picture": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic.png",
+                          "thumbnail": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic_thumbnail.png",
                           "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
