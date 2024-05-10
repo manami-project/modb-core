@@ -55,6 +55,51 @@ tasks.withType<Test> {
     reports.html.required.set(false)
     reports.junitXml.required.set(true)
     maxParallelForks = Runtime.getRuntime().availableProcessors()
+    jacoco {
+        exclude(
+            "io/github/manamiproject/modb/core/converter/AnimeConverter.class",
+            "io/github/manamiproject/modb/core/converter/PathAnimeConverter.class",
+            "io/github/manamiproject/modb/core/downloader/Downloader.class",
+            "io/github/manamiproject/modb/core/extractor/DataExtractor.class",
+            "io/github/manamiproject/modb/core/extractor/PathDataExtractor.class",
+            "io/github/manamiproject/modb/core/httpclient/HeaderCreator.class",
+            "io/github/manamiproject/modb/core/httpclient/HttpClient.class",
+            "io/github/manamiproject/modb/core/logging/Logger.class",
+            "io/github/manamiproject/modb/core/logging/LogLevelRetriever.class",
+        )
+    }
+}
+
+val fileTreeConfig: (ConfigurableFileTree) -> Unit = {
+    it.exclude(
+        "io/github/manamiproject/modb/core/converter/AnimeConverter.class",
+        "io/github/manamiproject/modb/core/converter/PathAnimeConverter.class",
+        "io/github/manamiproject/modb/core/downloader/Downloader.class",
+        "io/github/manamiproject/modb/core/extractor/DataExtractor.class",
+        "io/github/manamiproject/modb/core/extractor/PathDataExtractor.class",
+        "io/github/manamiproject/modb/core/httpclient/HeaderCreator.class",
+        "io/github/manamiproject/modb/core/httpclient/HttpClient.class",
+        "io/github/manamiproject/modb/core/logging/Logger.class",
+        "io/github/manamiproject/modb/core/logging/LogLevelRetriever.class",
+    )
+}
+
+tasks.jacocoTestReport {
+    dependsOn(allprojects.map { it.tasks.named<Test>("test") })
+    reports {
+        html.required.set(false)
+        xml.required.set(true)
+        xml.outputLocation.set(file("${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"))
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.map {
+            fileTree(it to fileTreeConfig)
+        })
+    }
+}
+
+coverallsJacoco {
+    reportPath = "${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
@@ -109,19 +154,6 @@ publishing {
             }
         }
     }
-}
-
-coverallsJacoco {
-    reportPath = "${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"
-}
-
-tasks.jacocoTestReport {
-    reports {
-        html.required.set(false)
-        xml.required.set(true)
-        xml.outputLocation.set(file("${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"))
-    }
-    dependsOn(allprojects.map { it.tasks.named<Test>("test") })
 }
 
 fun parameter(name: String, default: String = ""): String {
