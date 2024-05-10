@@ -1,10 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.9.24"
+    alias(libs.plugins.kotlin.jvm)
     `maven-publish`
     `java-library`
     jacoco
-    id("com.github.nbaztec.coveralls-jacoco") version "1.2.19"
+    alias(libs.plugins.coveralls.jacoco)
 }
+
+group = "io.github.manamiproject"
+version = project.findProperty("release.version") as String? ?: ""
 
 val projectName = "modb-core"
 val githubUsername = "manami-project"
@@ -21,22 +24,18 @@ repositories {
     }
 }
 
-group = "io.github.manamiproject"
-version = project.findProperty("release.version") as String? ?: ""
-
 dependencies {
-    api(kotlin("stdlib"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
-    api("com.squareup.okhttp3:okhttp:4.12.0")
+    api(libs.kotlin.stdlib)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.okhttp)
 
-    implementation(platform(kotlin("bom")))
-    implementation("org.slf4j:slf4j-api:2.0.13")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
-    implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
-    implementation("org.jsoup:jsoup:1.17.2")
+    implementation(libs.slf4j.api)
+    implementation(libs.moshi)
+    implementation(libs.jsonpathkt)
+    implementation(libs.jsoup)
 
-    testImplementation("ch.qos.logback:logback-classic:1.5.6")
-    testImplementation("io.github.manamiproject:modb-test:1.6.9")
+    testImplementation(libs.logback.classic)
+    testImplementation(libs.modb.test)
 }
 
 kotlin {
