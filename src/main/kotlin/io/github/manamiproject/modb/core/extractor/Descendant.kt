@@ -59,7 +59,7 @@ internal class Descendant(private val initial: String) {
                     "[${matchResult.groups["attr"]!!.value}]"
                 }
 
-                else -> throw XpathtransformationException("No transformation for [$it]")
+                else -> throw IllegalStateException("No transformation for [$it]")
             }
 
             ret = ret.replace(it, replacement)
