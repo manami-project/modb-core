@@ -444,7 +444,7 @@ internal class ExtractionResultTest {
     }
 
     @Nested
-    inner class ListTests {
+    inner class ListNotNullTests {
 
         @Test
         fun `throws exception if identifier doesn't exist in result`() {
@@ -471,7 +471,7 @@ internal class ExtractionResultTest {
             // then
             assertThat(result).containsExactlyInAnyOrder(
                 "one",
-                "two"
+                "two",
             )
         }
 
