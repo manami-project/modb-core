@@ -1,7 +1,7 @@
 package io.github.manamiproject.modb.core.extractor
 
 
-public class Descendant(private val initial: String) {
+internal class Descendant(private val initial: String) {
 
     /**
      * First part up to the first child element if it exists.
@@ -10,7 +10,7 @@ public class Descendant(private val initial: String) {
         initial.trimStart('/')
     }
 
-    public val terminatingChild: String by lazy {
+    val terminatingChild: String by lazy {
         initial.removePrefix("/")
             .removePrefix("/")
             .removePrefix(selfPath)
@@ -19,9 +19,9 @@ public class Descendant(private val initial: String) {
             .last()
     }
 
-    public fun hasTerminatingChild(): Boolean = terminatingChild.isNotBlank() && (terminatingChild in setOf("text()", "node()") || terminatingChild.startsWith('@'))
+    fun hasTerminatingChild(): Boolean = terminatingChild.isNotBlank() && (terminatingChild in setOf("text()", "node()") || terminatingChild.startsWith('@'))
 
-    public fun isTerminatingChild(): Boolean = selfPath.isNotBlank() && (selfPath in setOf("text()", "node()") || selfPath.startsWith('@'))
+    fun isTerminatingChild(): Boolean = selfPath.isNotBlank() && (selfPath in setOf("text()", "node()") || selfPath.startsWith('@'))
 
     private fun allFilters(value: String): List<String> {
         return ALL_FILTERS.findAll(value)
@@ -68,7 +68,7 @@ public class Descendant(private val initial: String) {
         return ret
     }
 
-    public fun toJsoup(): String {
+    fun toJsoup(): String {
         var converted = initial.removePrefix("/")
             .removePrefix("/")
 
