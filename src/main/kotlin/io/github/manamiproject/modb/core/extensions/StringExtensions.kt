@@ -70,8 +70,17 @@ public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWh
 /**
  * Replaces multiple consecutive whitespaces with a single one, trims the string and replaces different types of
  * whitespaces (not line breaks or tabs) to default whitespaces.
+ * Replaces:
+ * - no-break space
+ * - narrow no-break space
+ * - zero width no-break space
+ * - figure space
+ * - mongolian vowel separator
+ * - word joiner
+ * - zero-width joiner
+ * - zero-width non-joiner
  * @since 5.3.0
- * @return The original [String] having a single whitespace in places where it had multiple consecutive whitespaces before.
+ * @return The original [String], but trimmed and having a single whitespace in places where it had multiple consecutive whitespaces before and containing only default whitespaces.
  * @receiver Any non-nullable [String].
  */
 public fun String.normalizeWhitespaces(): String = this.replace('\u00A0', ' ') // no-break space
@@ -81,6 +90,19 @@ public fun String.normalizeWhitespaces(): String = this.replace('\u00A0', ' ') /
     .replace('\u180E', ' ') // mongolian vowel separator
     .replace('\u2060', ' ') // word joiner
     .replace('\u200D', ' ') // zero-width joiner
-    .replace('\u200C', ' ') // zero-width non-joiner
+    .replace("\u200C", "") // zero-width non-joiner
     .replace(Regex(" {2,}"), " ")
     .trim()
+
+
+/**
+ * Removes line breaks, tabs and normalizes whitespaces.
+ * @since 12.1.0
+ * @return The original [String] having tabs, carriage return and line feed replaced with whitespaces and all whitespace types replaced with the default.
+ * @receiver Any non-nullable [String].
+ * @see normalizeWhitespaces
+ */
+public fun String.normalize(): String = this.replace('\r', ' ')
+    .replace('\n', ' ')
+    .replace('\t', ' ')
+    .normalizeWhitespaces()

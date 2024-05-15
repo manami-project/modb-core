@@ -195,13 +195,34 @@ internal class StringExtensionsKtTest {
     inner class NormalizeWhitespacesTests {
 
         @ParameterizedTest
-        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C"])
-        fun `correctly normalizes strings`(value: String) {
+        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D"])
+        fun `correctly normalizes whitespaces`(value: String) {
             // when
             val result = "  a${value}bc${value}${value}de${value}${value}${value}f ".normalizeWhitespaces()
 
             // then
             assertThat(result).isEqualTo("a bc de f")
+        }
+
+        fun `correctly normalizes zero width non joiner`() {
+            // when
+            val result = "Ba\u200Cek".normalizeWhitespaces()
+
+            // then
+            assertThat(result).isEqualTo("Baek")
+        }
+    }
+
+    @Nested
+    inner class NormalizeTests {
+
+        @Test
+        fun `correctly normalize strings`() {
+            // when
+            val result = "  \u00A0 a\u200Ce \u202F b \uFEFF c \u2007 d \u180E e \u2060 f \u200D g \u200C \r h \r\r i \r\n j \r\n\r\n k \n l \n\n m \t n \t\t o  ".normalize()
+
+            // then
+            assertThat(result).isEqualTo("ae b c d e f g h i j k l m n o")
         }
     }
 }
