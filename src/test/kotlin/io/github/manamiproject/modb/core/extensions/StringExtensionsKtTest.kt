@@ -195,23 +195,13 @@ internal class StringExtensionsKtTest {
     inner class NormalizeWhitespacesTests {
 
         @ParameterizedTest
-        @ValueSource(strings = ["a b", "a  b", "a   b", "a    b"])
-        fun `replaces multiple consecutive whitespaces with a single one`(value: String) {
+        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C"])
+        fun `correctly normalizes strings`(value: String) {
             // when
-            val result = value.normalizeWhitespaces()
+            val result = "  a${value}bc${value}${value}de${value}${value}${value}f ".normalizeWhitespaces()
 
             // then
-            assertThat(result).isEqualTo("a b")
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = ["a b", " a b", "a b ", " ab ", "ab"])
-        fun `does nothing if there are no multiple consecutive whitespaces`(value: String) {
-            // when
-            val result = value.normalizeWhitespaces()
-
-            // then
-            assertThat(result).isEqualTo(value)
+            assertThat(result).isEqualTo("a bc de f")
         }
     }
 }

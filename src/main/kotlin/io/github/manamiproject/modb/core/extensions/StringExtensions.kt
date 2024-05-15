@@ -68,9 +68,19 @@ public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWh
 }
 
 /**
- * Replaces multiple consecutive whitespaces with a single one.
+ * Replaces multiple consecutive whitespaces with a single one, trims the string and replaces different types of
+ * whitespaces (not line breaks or tabs) to default whitespaces.
  * @since 5.3.0
  * @return The original [String] having a single whitespace in places where it had multiple consecutive whitespaces before.
  * @receiver Any non-nullable [String].
  */
-public fun String.normalizeWhitespaces(): String = this.replace(Regex(" {2,}"), " ")
+public fun String.normalizeWhitespaces(): String = this.replace('\u00A0', ' ') // no-break space
+    .replace('\u202F', ' ') // narrow no-break space
+    .replace('\uFEFF', ' ') // zero width no-break space
+    .replace('\u2007', ' ') // figure space
+    .replace('\u180E', ' ') // mongolian vowel separator
+    .replace('\u2060', ' ') // word joiner
+    .replace('\u200D', ' ') // zero-width joiner
+    .replace('\u200C', ' ') // zero-width non-joiner
+    .replace(Regex(" {2,}"), " ")
+    .trim()
