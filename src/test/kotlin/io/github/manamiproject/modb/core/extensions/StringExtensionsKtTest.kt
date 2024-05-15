@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.extensions
 
+import io.github.manamiproject.modb.core.random
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.tempDirectory
 import org.assertj.core.api.Assertions.assertThat
@@ -204,6 +205,7 @@ internal class StringExtensionsKtTest {
             assertThat(result).isEqualTo("a bc de f")
         }
 
+        @Test
         fun `correctly normalizes zero width non joiner`() {
             // when
             val result = "Ba\u200Cek".normalizeWhitespaces()
@@ -223,6 +225,140 @@ internal class StringExtensionsKtTest {
 
             // then
             assertThat(result).isEqualTo("ae b c d e f g h i j k l m n o")
+        }
+    }
+
+    @Nested
+    inner class EitherNullOrBlankTests {
+
+        @Test
+        fun `returns true if string is null`() {
+            // given
+            val value: String? = null
+
+            // when
+            val result = value.eitherNullOrBlank()
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @Test
+        fun `returns true if string is empty`() {
+            // given
+            val value = EMPTY
+
+            // when
+            val result = value.eitherNullOrBlank()
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " "])
+        fun `returns true if string only contains types of whitespaces or new lines or tabs`(input: String) {
+            // given
+            val value = "$input$input"
+
+            // when
+            val result = value.eitherNullOrBlank()
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @Test
+        fun `returns true if string only contains variations of types of whitespaces or new lines or tabs`() {
+            // given
+            val chars = setOf("\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " ")
+            val builder = StringBuilder()
+            for (i in 1..random(4, 8)) {
+                builder.append(chars.pickRandom())
+            }
+
+            // when
+            val result = builder.toString().eitherNullOrBlank()
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["a", "0", "#", "'"])
+        fun `returns false if string is not empty and contains non-whitespace non-line-feed non-tab content`(input: String) {
+            // when
+            val result = input.eitherNullOrBlank()
+
+            // then
+            assertThat(result).isFalse()
+        }
+    }
+
+    @Nested
+    inner class NeitherNullNorBlankTests {
+
+        @Test
+        fun `returns false if string is null`() {
+            // given
+            val value: String? = null
+
+            // when
+            val result = value.neitherNullNorBlank()
+
+            // then
+            assertThat(result).isFalse()
+        }
+
+        @Test
+        fun `returns false if string is empty`() {
+            // given
+            val value = EMPTY
+
+            // when
+            val result = value.neitherNullNorBlank()
+
+            // then
+            assertThat(result).isFalse()
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " "])
+        fun `returns false if string only contains types of whitespaces or new lines or tabs`(input: String) {
+            // given
+            val value = "$input$input"
+
+            // when
+            val result = value.neitherNullNorBlank()
+
+            // then
+            assertThat(result).isFalse()
+        }
+
+        @Test
+        fun `returns false if string only contains variations of types of whitespaces or new lines or tabs`() {
+            // given
+            val chars = setOf("\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " ")
+            val builder = StringBuilder()
+            for (i in 1..random(4, 8)) {
+                builder.append(chars.pickRandom())
+            }
+
+            // when
+            val result = builder.toString().neitherNullNorBlank()
+
+            // then
+            assertThat(result).isFalse()
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["a", "0", "#", "'"])
+        fun `returns true if string is not empty and contains non-whitespace non-line-feed non-tab content`(input: String) {
+            // when
+            val result = input.neitherNullNorBlank()
+
+            // then
+            assertThat(result).isTrue()
         }
     }
 }

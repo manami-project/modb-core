@@ -69,25 +69,28 @@ companion object {
 
 ## Extension and utility functions
 
-| function                                |description|
-|-----------------------------------------| ---- |
-| `loadResource`                          |Conveniently load a file from `src/main/resources`|
-| `resourceFileExists`                    |Checks if a file exists in `src/main/resources`|
-| `random`                                |Pick a a random number from a given interval|
-| `excludeFromTestContext`                |Won't execute the code within during test execution|
-| `Collection<T>.pickRandom()`            |Picks a random element of a `Collection`|
-| `Int.toAnimeId`                         |Converts an `Int` to an `AnimeId`|
-| `List<T>.createShuffledList()`          |Creates a new list from the given `List` and randomizes the order of elements|
-| `List<T>.containsExactlyInTheSameOrder` |Checks if a list contains the same elements in the same order as another list|
-| `OutputStream.write`                    |Writes a `String` to the `OutputStream` and also flushes the stream|
-| `Path.changeSuffix`                     |Changes the file suffix|
-| `Path.regularFileExists`                |Checks if a given `Path` exists and is a file|
-| `Path.directoryExists`                  |Checks if a given `Path` exists and is a directory|
-| `Path.readFile`                         |Read the content of a file into a `String`|
-| `Path.copyTo`                           |Copy file to file, directory to directory or a file into a directory|
-| `Path.fileName`                         |Filename as `String`|
-| `Path.fileSuffix`                       |Returns the file suffix as `String`|
-| `ByteArray.writeToFile`                 |Write `ByteArray` to file and optionally write a lock file as indications for other processes that the file is being written|
-| `String.writeToFile`                    |Write `String` to file and optionally write a lock file as indications for other processes that the file is being written|
-| `String.remove`                         |Remove sequence from a `String`|
-| `String.normalizeWhitespaces`           |Replaces multiple consecutive whitespaces with a single one|
+| function                                | description                                                                                                                                    |
+|-----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| `loadResource`                          | Conveniently load a file from `src/main/resources`                                                                                             |
+| `resourceFileExists`                    | Checks if a file exists in `src/main/resources`                                                                                                |
+| `random`                                | Pick a a random number from a given interval                                                                                                   |
+| `excludeFromTestContext`                | Won't execute the code within during test execution                                                                                            |
+| `Collection<T>.pickRandom()`            | Picks a random element of a `Collection`                                                                                                       |
+| `Int.toAnimeId`                         | Converts an `Int` to an `AnimeId`                                                                                                              |
+| `List<T>.createShuffledList()`          | Creates a new list from the given `List` and randomizes the order of elements                                                                  |
+| `List<T>.containsExactlyInTheSameOrder` | Checks if a list contains the same elements in the same order as another list                                                                  |
+| `OutputStream.write`                    | Writes a `String` to the `OutputStream` and also flushes the stream                                                                            |
+| `Path.changeSuffix`                     | Changes the file suffix                                                                                                                        |
+| `Path.regularFileExists`                | Checks if a given `Path` exists and is a file                                                                                                  |
+| `Path.directoryExists`                  | Checks if a given `Path` exists and is a directory                                                                                             |
+| `Path.readFile`                         | Read the content of a file into a `String`                                                                                                     |
+| `Path.copyTo`                           | Copy file to file, directory to directory or a file into a directory                                                                           |
+| `Path.fileName`                         | Filename as `String`                                                                                                                           |
+| `Path.fileSuffix`                       | Returns the file suffix as `String`                                                                                                            |
+| `ByteArray.writeToFile`                 | Write `ByteArray` to file and optionally write a lock file as indications for other processes that the file is being written                   |
+| `String.writeToFile`                    | Write `String` to file and optionally write a lock file as indications for other processes that the file is being written                      |
+| `String.remove`                         | Remove sequence from a `String`                                                                                                                |
+| `String.normalizeWhitespaces`           | Replaces multiple consecutive whitespaces with a single one. Replaces different kinds of whitespace with the default one and trims the string. |
+| `String.normalize`                      | Replaces tabs, carriage return and line feed with whitespaces and additionally does the same as `String.normalizeWhitespaces`.                 |
+| `String.eitherNullOrBlank`              | Returns true for `null`, empty strings and strings consisting only of non-visible characters.                                                  |
+| `String.neitherNullNorBlank`            | Opposite of `String.eitherNullOrBlank`                                                                                                         |

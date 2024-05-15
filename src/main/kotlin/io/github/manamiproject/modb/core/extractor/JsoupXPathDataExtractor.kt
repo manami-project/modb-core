@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.extractor
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import kotlin.reflect.full.isSubclassOf
@@ -44,7 +45,7 @@ internal object JsoupXPathDataExtractor : DataExtractor {
     }
 
     private fun elementSelection(document: Document, entry: Triple<OutputKey, Selector, String>): Pair<OutputKey, Any> {
-        val jsoupElements = if (entry.second.isNotBlank()) {
+        val jsoupElements = if (entry.second.neitherNullNorBlank()) {
             document.selectXpath(entry.second)
         } else {
             document.allElements
@@ -54,7 +55,7 @@ internal object JsoupXPathDataExtractor : DataExtractor {
             jsoupElements.isEmpty() -> NotFound
             entry.third == "text()" -> jsoupElements.eachText() ?: NotFound
             entry.third == "node()" -> jsoupElements.dataNodes().map { it.wholeData.trim() }
-            entry.third == EMPTY -> jsoupElements.textNodes().map { it.text().trim() }.filter { it.isNotBlank() }
+            entry.third == EMPTY -> jsoupElements.textNodes().map { it.text().trim() }.filter { it.neitherNullNorBlank() }
             else -> jsoupElements.eachAttr(entry.third) ?: NotFound
         }
 

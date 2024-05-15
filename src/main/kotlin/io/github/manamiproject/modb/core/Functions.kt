@@ -3,6 +3,7 @@ package io.github.manamiproject.modb.core
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -31,7 +32,7 @@ import java.security.SecureRandom
  * @throws IllegalStateException If the given path does not exist.
  */
 public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) {
-    require(path.isNotBlank()) { "Given path must not be blank" }
+    require(path.neitherNullNorBlank()) { "Given path must not be blank" }
 
     return@withContext ClassLoader.getSystemResourceAsStream(path)?.bufferedReader()
         ?.use(BufferedReader::readText)
@@ -57,7 +58,7 @@ public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) 
  * @return **true** if the file exists in classpath.
  */
 public fun resourceFileExists(path: String): Boolean {
-    require(path.isNotBlank()) { "Given path must not be blank" }
+    require(path.neitherNullNorBlank()) { "Given path must not be blank" }
 
     val resource = ClassLoader.getSystemResource(path) ?: return false
     val file = Paths.get(resource.toURI())

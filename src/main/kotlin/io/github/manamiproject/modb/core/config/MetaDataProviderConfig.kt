@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.config
 
 import io.github.manamiproject.modb.core.extensions.EMPTY
+import io.github.manamiproject.modb.core.extensions.remove
 import java.net.URI
 
 /**
@@ -67,7 +68,7 @@ public interface MetaDataProviderConfig {
      */
     public fun extractAnimeId(uri: URI): AnimeId {
         require(uri.toString().contains(hostname())) { "URI doesn't contain hostname [${hostname()}]" }
-        return uri.toString().replace(buildAnimeLink(EMPTY).toString(), EMPTY)
+        return uri.toString().remove(buildAnimeLink(EMPTY).toString())
     }
 
     /**

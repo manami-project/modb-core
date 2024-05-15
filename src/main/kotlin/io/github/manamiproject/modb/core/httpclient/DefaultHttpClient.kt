@@ -2,6 +2,7 @@ package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.extensions.EMPTY
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
@@ -66,8 +67,8 @@ public class DefaultHttpClient(
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
         requestHeaders["content-type"] = requestBody.mediaType
 
-        require(requestBody.mediaType.isNotBlank()) { "MediaType must not be blank." }
-        require(requestBody.body.isNotBlank()) { "The request's body must not be blank." }
+        require(requestBody.mediaType.neitherNullNorBlank()) { "MediaType must not be blank." }
+        require(requestBody.body.neitherNullNorBlank()) { "The request's body must not be blank." }
 
         val request = Request.Builder()
             .post(requestBody.body.encodeUtf8().toRequestBody(requestBody.mediaType.toMediaType()))

@@ -1,5 +1,7 @@
 package io.github.manamiproject.modb.core.extractor
 
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
+
 
 internal class Descendant(private val initial: String) {
 
@@ -19,9 +21,9 @@ internal class Descendant(private val initial: String) {
             .last()
     }
 
-    fun hasTerminatingChild(): Boolean = terminatingChild.isNotBlank() && (terminatingChild in setOf("text()", "node()") || terminatingChild.startsWith('@'))
+    fun hasTerminatingChild(): Boolean = terminatingChild.neitherNullNorBlank() && (terminatingChild in setOf("text()", "node()") || terminatingChild.startsWith('@'))
 
-    fun isTerminatingChild(): Boolean = selfPath.isNotBlank() && (selfPath in setOf("text()", "node()") || selfPath.startsWith('@'))
+    fun isTerminatingChild(): Boolean = selfPath.neitherNullNorBlank() && (selfPath in setOf("text()", "node()") || selfPath.startsWith('@'))
 
     private fun allFilters(value: String): List<String> {
         return ALL_FILTERS.findAll(value)

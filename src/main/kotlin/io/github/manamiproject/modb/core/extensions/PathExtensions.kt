@@ -59,7 +59,7 @@ public fun Path.changeSuffix(suffix: String): RegularFile {
         suffix
     }
 
-    val fileNameRewrite = if (newSuffix.isBlank()) {
+    val fileNameRewrite = if (newSuffix.eitherNullOrBlank()) {
         fileNameWithoutSuffix
     } else {
         "$fileNameWithoutSuffix.$newSuffix"

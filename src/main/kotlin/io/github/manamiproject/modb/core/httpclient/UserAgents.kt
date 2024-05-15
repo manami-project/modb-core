@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.httpclient
 
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
@@ -194,7 +195,7 @@ public object UserAgents {
 
         log.debug { "Checking for property [$propertyName]" }
 
-        if (System.getProperty(propertyName)?.isNotBlank() == true) {
+        if (System.getProperty(propertyName)?.neitherNullNorBlank() == true) {
             log.debug { "Found property [$propertyName]" }
 
             val file = Paths.get(System.getProperty(propertyName))

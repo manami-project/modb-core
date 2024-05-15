@@ -2,6 +2,8 @@ package io.github.manamiproject.modb.core.extensions
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
 import kotlinx.coroutines.withContext
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 import kotlin.io.path.createFile
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
@@ -32,7 +34,7 @@ public suspend fun String.writeToFile(file: RegularFile, writeLockFile: Boolean 
     val content = this
 
     withContext(LIMITED_FS) {
-        check(content.isNotBlank()) { "Tried to write file [$file], but the String was blank." }
+        check(content.neitherNullNorBlank()) { "Tried to write file [$file], but the String was blank." }
 
         val lockFile = file.changeSuffix(LOCK_FILE_SUFFIX)
 
@@ -90,7 +92,7 @@ public fun String.normalizeWhitespaces(): String = this.replace('\u00A0', ' ') /
     .replace('\u180E', ' ') // mongolian vowel separator
     .replace('\u2060', ' ') // word joiner
     .replace('\u200D', ' ') // zero-width joiner
-    .replace("\u200C", "") // zero-width non-joiner
+    .remove("\u200C") // zero-width non-joiner
     .replace(Regex(" {2,}"), " ")
     .trim()
 
@@ -106,3 +108,25 @@ public fun String.normalize(): String = this.replace('\r', ' ')
     .replace('\n', ' ')
     .replace('\t', ' ')
     .normalizeWhitespaces()
+
+
+public fun String?.eitherNullOrBlank(): Boolean {
+    if (this == null) {
+        return true
+    }
+
+    if (this.isEmpty()) {
+        return true
+    }
+
+    return """^[\u00A0\u202F\uFEFF\u2007\u180E\u2060\u200D\u200C\r\n\t ]*$""".toRegex().matches(this)
+}
+
+@OptIn(ExperimentalContracts::class)
+public fun String?.neitherNullNorBlank(): Boolean {
+    contract {
+        returns(false) implies (this@neitherNullNorBlank != null)
+    }
+
+    return !this.eitherNullOrBlank()
+}

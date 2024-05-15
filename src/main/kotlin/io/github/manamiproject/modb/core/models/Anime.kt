@@ -1,5 +1,6 @@
 package io.github.manamiproject.modb.core.models
 
+import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.extensions.normalize
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
 import java.net.URI
@@ -74,7 +75,7 @@ public data class Anime(
      * @param synonym Synonyms to be added.
      * @return Same instance.
      */
-    public fun addSynonyms(vararg synonym: Title): Anime = addSynonyms(synonym.toList())
+    public fun addSynonyms(vararg synonym: Title): Anime = addSynonyms(synonym.toHashSet())
 
     /**
      * Add additional synonyms to the existing list. Duplicates are being ignored.
@@ -87,7 +88,7 @@ public data class Anime(
     public fun addSynonyms(synonyms: Collection<Title>): Anime {
         synonyms.asSequence()
             .map { it.normalize() }
-            .filter { it.isNotBlank() }
+            .filter { it.neitherNullNorBlank() }
             .filter { it != _title }
             .forEach { this.synonyms.add(it) }
 
@@ -101,7 +102,7 @@ public data class Anime(
      * @param source Sources to be added.
      * @return Same instance.
      */
-    public fun addSources(vararg source: URI): Anime = addSources(source.toList())
+    public fun addSources(vararg source: URI): Anime = addSources(source.toHashSet())
 
     /**
      * Add additional sources to the existing list. This will **not** override [sources].
@@ -125,7 +126,7 @@ public data class Anime(
      * @param relatedAnime List of related anime.
      * @return Same instance.
      */
-    public fun addRelatedAnime(vararg relatedAnime: URI): Anime = addRelatedAnime(relatedAnime.toList())
+    public fun addRelatedAnime(vararg relatedAnime: URI): Anime = addRelatedAnime(relatedAnime.toHashSet())
 
     /**
      * Add additional related anime to the existing list. This will **not** override [relatedAnime].
@@ -160,7 +161,7 @@ public data class Anime(
      * @param tag List of tags.
      * @return Same instance.
      */
-    public fun addTags(vararg tag: Tag): Anime = addTags(tag.toList())
+    public fun addTags(vararg tag: Tag): Anime = addTags(tag.toHashSet())
 
     /**
      * Add additional tags to the existing list. This will **not** override [tags].
@@ -172,7 +173,7 @@ public data class Anime(
     public fun addTags(tags: Collection<Tag>): Anime {
         tags.asSequence()
             .map { it.normalize() }
-            .filter { it.isNotBlank() }
+            .filter { it.neitherNullNorBlank() }
             .map { it.lowercase() }
             .forEach { this.tags.add(it) }
 
@@ -262,7 +263,7 @@ public data class Anime(
      */
     public fun performChecks(): Anime {
         _title = _title.normalize()
-        require(_title.isNotBlank() && _title != "‌") { "Title cannot be blank." }
+        require(_title.neitherNullNorBlank()) { "Title cannot be blank." }
 
         require(episodes >= 0) { "Episodes cannot have a negative value." }
 
