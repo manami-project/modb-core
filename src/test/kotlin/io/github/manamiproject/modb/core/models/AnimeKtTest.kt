@@ -97,10 +97,10 @@ internal class AnimeKtTest {
         @Test
         fun `remove zero-width non-joiner`() {
             // when
-            val result = Anime("Death\u200CNote")
+            val result = Anime("Ba\u200Cek")
 
             // then
-            assertThat(result.title).isEqualTo("DeathNote")
+            assertThat(result.title).isEqualTo("Baek")
         }
 
         @ParameterizedTest

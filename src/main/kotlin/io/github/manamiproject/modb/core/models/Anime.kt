@@ -1,7 +1,6 @@
 package io.github.manamiproject.modb.core.models
 
-import io.github.manamiproject.modb.core.extensions.EMPTY
-import io.github.manamiproject.modb.core.logging.LoggerDelegate
+import io.github.manamiproject.modb.core.extensions.normalize
 import io.github.manamiproject.modb.core.models.AnimeSeason.Season.UNDEFINED
 import java.net.URI
 
@@ -87,7 +86,7 @@ public data class Anime(
      */
     public fun addSynonyms(synonyms: Collection<Title>): Anime {
         synonyms.asSequence()
-            .map { cleanupTitle(it) }
+            .map { it.normalize() }
             .filter { it.isNotBlank() }
             .filter { it != _title }
             .forEach { this.synonyms.add(it) }
@@ -172,7 +171,7 @@ public data class Anime(
      */
     public fun addTags(tags: Collection<Tag>): Anime {
         tags.asSequence()
-            .map { cleanupTitle(it) }
+            .map { it.normalize() }
             .filter { it.isNotBlank() }
             .map { it.lowercase() }
             .forEach { this.tags.add(it) }
@@ -262,7 +261,7 @@ public data class Anime(
      * @throws IllegalArgumentException if _title is blank or number of episodes is negative.
      */
     public fun performChecks(): Anime {
-        _title = cleanupTitle(_title)
+        _title = _title.normalize()
         require(_title.isNotBlank() && _title != "‌") { "Title cannot be blank." }
 
         require(episodes >= 0) { "Episodes cannot have a negative value." }
@@ -284,28 +283,6 @@ public data class Anime(
         addTags(uncheckedTags)
 
         return this
-    }
-
-    private fun cleanupTitle(original: Title): Title {
-        var editedTitle = original
-
-        REPLACEMENTS.forEach { replacement ->
-            if (editedTitle.contains(Regex(replacement))) {
-                log.debug { "Identified [$replacement] in [$editedTitle]" }
-                log.debug { "Changed: [$editedTitle]" }
-                editedTitle = editedTitle.replace(Regex(replacement), " ")
-                log.debug { "To     : [$editedTitle]" }
-            }
-        }
-
-        if (editedTitle.startsWith(WHITESPACE) || editedTitle.endsWith(WHITESPACE)) {
-            log.debug { "Identified leading or trailing space in [$editedTitle]" }
-            log.debug { "Changed: [$editedTitle]" }
-            editedTitle = editedTitle.trim()
-            log.debug { "To     : [$editedTitle]" }
-        }
-
-        return editedTitle.replace("‌", EMPTY) // remove zero-width non-joiner
     }
 
     override fun equals(other: Any?): Boolean {
@@ -366,10 +343,6 @@ public data class Anime(
     }
 
     public companion object {
-        private val log by LoggerDelegate()
-        private const val WHITESPACE = ' '
-        private val REPLACEMENTS = listOf("\r\n", "\n", "\t", " {2,}")
-
         /**
          * URL to a default picture.
          * @since 11.0.0
