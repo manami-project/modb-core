@@ -2953,8 +2953,8 @@ internal class AnimeKtTest {
                       "animeSeason": {
                         "season": "UNDEFINED"
                       },
-                      "picture": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic.png",
-                      "thumbnail": "https://github.com/manami-project/anime-offline-database/raw/master/pics/no_pic_thumbnail.png",
+                      "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
+                      "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
                       "duration": {
                         "value": 0,
                         "unit": "SECONDS"
