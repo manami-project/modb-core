@@ -3,7 +3,6 @@ plugins {
     `maven-publish`
     `java-library`
     jacoco
-    alias(libs.plugins.coveralls.jacoco)
 }
 
 group = "io.github.manamiproject"
@@ -64,10 +63,6 @@ tasks.jacocoTestReport {
         xml.outputLocation.set(file("${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"))
     }
     dependsOn(allprojects.map { it.tasks.named<Test>("test") })
-}
-
-coverallsJacoco {
-    reportPath = "${layout.buildDirectory}/reports/jacoco/test/jacocoFullReport.xml"
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
