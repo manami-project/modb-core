@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.jsonpathkt)
     implementation(libs.jsoup)
+    implementation(libs.tomlj)
 
     testImplementation(libs.logback.classic)
     testImplementation(libs.modb.test)

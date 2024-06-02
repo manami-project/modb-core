@@ -8,6 +8,7 @@ jsonpathkt = "2.0.1"
 jsoup = "1.17.2"
 logback-classic = "1.5.6"
 modb-test = "1.6.13"
+tomlj = "1.1.1"
 
 [libraries]
 kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines-core-jvm" }
@@ -19,6 +20,8 @@ jsonpathkt = { module = "com.nfeld.jsonpathkt:jsonpathkt", version.ref = "jsonpa
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 modb-test = { module = "io.github.manamiproject:modb-test", version.ref = "modb-test" }
+tomlj = { module = "org.tomlj:tomlj", version.ref = "tomlj" }
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
