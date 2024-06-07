@@ -32,7 +32,7 @@ internal class PropertiesKtTest {
 
             val property = StringPropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             // when
@@ -53,7 +53,7 @@ internal class PropertiesKtTest {
 
             val property = StringPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -77,7 +77,7 @@ internal class PropertiesKtTest {
             }
 
             val property = StringPropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -103,7 +103,7 @@ internal class PropertiesKtTest {
             val property = StringPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = "my-default",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -127,7 +127,7 @@ internal class PropertiesKtTest {
             val property = StringPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = "my-default",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -150,7 +150,7 @@ internal class PropertiesKtTest {
 
             val property = StringPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -178,7 +178,7 @@ internal class PropertiesKtTest {
 
             val property = LongPropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -203,7 +203,7 @@ internal class PropertiesKtTest {
 
             val property = LongPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -227,7 +227,7 @@ internal class PropertiesKtTest {
             }
 
             val property = LongPropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -253,7 +253,7 @@ internal class PropertiesKtTest {
             val property = LongPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = 456L,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -277,7 +277,7 @@ internal class PropertiesKtTest {
             val property = LongPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = 456L,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -300,7 +300,7 @@ internal class PropertiesKtTest {
 
             val property = LongPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -328,7 +328,7 @@ internal class PropertiesKtTest {
 
             val property = BooleanPropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -353,7 +353,7 @@ internal class PropertiesKtTest {
 
             val property = BooleanPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -377,7 +377,7 @@ internal class PropertiesKtTest {
             }
 
             val property = BooleanPropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -403,7 +403,7 @@ internal class PropertiesKtTest {
             val property = BooleanPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = false,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -427,7 +427,7 @@ internal class PropertiesKtTest {
             val property = BooleanPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = false,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -450,7 +450,7 @@ internal class PropertiesKtTest {
 
             val property = BooleanPropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -478,7 +478,7 @@ internal class PropertiesKtTest {
 
             val property = DoublePropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -503,7 +503,7 @@ internal class PropertiesKtTest {
 
             val property = DoublePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -527,7 +527,7 @@ internal class PropertiesKtTest {
             }
 
             val property = DoublePropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -553,7 +553,7 @@ internal class PropertiesKtTest {
             val property = DoublePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = 456.12,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -577,7 +577,7 @@ internal class PropertiesKtTest {
             val property = DoublePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = 456.12,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -600,7 +600,7 @@ internal class PropertiesKtTest {
 
             val property = DoublePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -628,7 +628,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDatePropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -653,7 +653,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDatePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -677,7 +677,7 @@ internal class PropertiesKtTest {
             }
 
             val property = LocalDatePropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -705,7 +705,7 @@ internal class PropertiesKtTest {
             val property = LocalDatePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -732,7 +732,7 @@ internal class PropertiesKtTest {
             val property = LocalDatePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -757,7 +757,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDatePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -785,7 +785,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDateTimePropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -810,7 +810,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -834,7 +834,7 @@ internal class PropertiesKtTest {
             }
 
             val property = LocalDateTimePropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -862,7 +862,7 @@ internal class PropertiesKtTest {
             val property = LocalDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -889,7 +889,7 @@ internal class PropertiesKtTest {
             val property = LocalDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -914,7 +914,7 @@ internal class PropertiesKtTest {
 
             val property = LocalDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -942,7 +942,7 @@ internal class PropertiesKtTest {
 
             val property = OffsetDateTimePropertyDelegate(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -967,7 +967,7 @@ internal class PropertiesKtTest {
 
             val property = OffsetDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -991,7 +991,7 @@ internal class PropertiesKtTest {
             }
 
             val property = OffsetDateTimePropertyDelegate(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1019,7 +1019,7 @@ internal class PropertiesKtTest {
             val property = OffsetDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1046,7 +1046,7 @@ internal class PropertiesKtTest {
             val property = OffsetDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = defaultValue,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1071,7 +1071,7 @@ internal class PropertiesKtTest {
 
             val property = OffsetDateTimePropertyDelegate(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1103,7 +1103,7 @@ internal class PropertiesKtTest {
 
             val property = ListPropertyDelegate<String>(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             // when
@@ -1124,7 +1124,7 @@ internal class PropertiesKtTest {
 
             val property = ListPropertyDelegate<String>(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1148,7 +1148,7 @@ internal class PropertiesKtTest {
             }
 
             val property = ListPropertyDelegate<String>(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1174,7 +1174,7 @@ internal class PropertiesKtTest {
             val property = ListPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = listOf("my-default"),
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1199,7 +1199,7 @@ internal class PropertiesKtTest {
             val property = ListPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = listOf("my-default"),
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1223,7 +1223,7 @@ internal class PropertiesKtTest {
 
             val property = ListPropertyDelegate<String>(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1255,7 +1255,7 @@ internal class PropertiesKtTest {
 
             val property = MapPropertyDelegate<Long>(
                 namespace = input,
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             // when
@@ -1276,7 +1276,7 @@ internal class PropertiesKtTest {
 
             val property = MapPropertyDelegate<Long>(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1300,7 +1300,7 @@ internal class PropertiesKtTest {
             }
 
             val property = MapPropertyDelegate<Long>(
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1326,7 +1326,7 @@ internal class PropertiesKtTest {
             val property = MapPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = mapOf("my-default" to 5432L),
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1353,7 +1353,7 @@ internal class PropertiesKtTest {
             val property = MapPropertyDelegate(
                 namespace = "modb.core.unittest",
                 default = mapOf("my-default" to 5432L),
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {
@@ -1377,7 +1377,7 @@ internal class PropertiesKtTest {
 
             val property = MapPropertyDelegate<String>(
                 namespace = "modb.core.unittest",
-                registry = testConfigRegistry,
+                configRegistry = testConfigRegistry,
             )
 
             val testKProperty = object: KProperty<String> by TestKProperty() {

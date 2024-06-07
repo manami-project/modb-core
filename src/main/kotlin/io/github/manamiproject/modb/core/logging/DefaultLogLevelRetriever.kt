@@ -1,22 +1,27 @@
 package io.github.manamiproject.modb.core.logging
 
-import io.github.manamiproject.modb.core.extensions.EMPTY
-import io.github.manamiproject.modb.core.logging.LogLevel.DEBUG
+import io.github.manamiproject.modb.core.config.ConfigRegistry
+import io.github.manamiproject.modb.core.config.DefaultConfigRegistry
+import io.github.manamiproject.modb.core.config.StringPropertyDelegate
 
-internal class DefaultLogLevelRetriever(private val localLogLevelOverride: LogLevel? = null): LogLevelRetriever {
+internal class DefaultLogLevelRetriever(
+    private val localLogLevelOverride: LogLevelValue = LogLevelValue.NotSet,
+    configRegistry: ConfigRegistry = DefaultConfigRegistry,
+): LogLevelRetriever {
 
-    private var _logLevel = retrieveLogLevel()
+    private val logLevel by StringPropertyDelegate(
+        namespace = "modb.core.logging",
+        default = LogLevel.INFO.toString(),
+        configRegistry = configRegistry,
+    )
 
-    override val logLevel: LogLevel
-        get() = _logLevel
-
-    private fun retrieveLogLevel(): LogLevel = localLogLevelOverride ?: property() ?: DEBUG
-
-    private fun property(): LogLevel? {
-        return LogLevel.of(System.getProperty(LOG_LEVEL_CONFIG_PROPERTY_NAME) ?: EMPTY)
-    }
-
-    companion object {
-        const val LOG_LEVEL_CONFIG_PROPERTY_NAME = "modb.logging.loglevel"
+    override fun logLevel(): LogLevel = when (localLogLevelOverride) {
+        LogLevel.OFF -> LogLevel.OFF
+        LogLevel.ERROR -> LogLevel.ERROR
+        LogLevel.WARN -> LogLevel.WARN
+        LogLevel.INFO -> LogLevel.INFO
+        LogLevel.DEBUG -> LogLevel.DEBUG
+        LogLevel.TRACE -> LogLevel.TRACE
+        LogLevelValue.NotSet -> LogLevel.of(logLevel) ?: LogLevel.INFO
     }
 }
