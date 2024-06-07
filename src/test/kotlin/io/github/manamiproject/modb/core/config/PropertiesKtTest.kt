@@ -1239,6 +1239,174 @@ internal class PropertiesKtTest {
     }
 
     @Nested
+    inner class SetPropertyDelegateTests {
+
+        @ParameterizedTest
+        @ValueSource(strings = [" ", "!abv", "abc-def"])
+        fun `throws an exception if the namespace is not valid`(input: String) {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T>? = null
+            }
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            val property = SetPropertyDelegate<String>(
+                namespace = input,
+                configRegistry = testConfigRegistry,
+            )
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Config parameter can only consist of alphanumeric chars and dots. Adjust the namespace of [$input.testProp].")
+        }
+
+        @Test
+        fun `throws an exception if the value is not present and there is not default`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T>? = null
+            }
+
+            val property = SetPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Unable to find property [modb.core.unittest.testProp]. Property doesn't have a default set.")
+        }
+
+        @Test
+        fun `default namespace is qualified name of followed by property name`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T>? = null
+            }
+
+            val property = SetPropertyDelegate<String>(
+                configRegistry = testConfigRegistry,
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Unable to find property [kotlinx.coroutines.StandaloneCoroutine.testProp]. Property doesn't have a default set.")
+        }
+
+        @Test
+        fun `returns default value if value is not set and a default has been defined`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T>? = null
+            }
+
+            val property = SetPropertyDelegate(
+                namespace = "modb.core.unittest",
+                default = setOf("my-default"),
+                configRegistry = testConfigRegistry,
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(setOf("my-default"))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `returns value when a default has been defined`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf(
+                    "one",
+                    "one",
+                    "two",
+                    "two",
+                ) as List<T>
+            }
+
+            val property = SetPropertyDelegate(
+                namespace = "modb.core.unittest",
+                default = setOf("my-default"),
+                configRegistry = testConfigRegistry,
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(setOf(
+                "one",
+                "two",
+            ))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `returns value when no default has been defined`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf(
+                    "one",
+                    "one",
+                    "two",
+                    "two",
+                ) as List<T>
+            }
+
+            val property = SetPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(setOf(
+                "one",
+                "two",
+            ))
+        }
+    }
+
+    @Nested
     inner class MapPropertyDelegateTests {
 
         @ParameterizedTest

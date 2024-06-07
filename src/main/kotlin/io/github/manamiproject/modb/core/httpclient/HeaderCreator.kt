@@ -1,9 +1,18 @@
 package io.github.manamiproject.modb.core.httpclient
 
-import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
+import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import java.net.URL
 
-internal interface HeaderCreator {
+public interface HeaderCreator {
 
-    fun createHeadersFor(url: URL, browser: Browser = FIREFOX): Map<String, String>
+    public fun createHeadersFor(
+        url: URL,
+        browserType: BrowserType = DESKTOP,
+    ): Map<String, String>
+
+    public fun createHeadersFor(
+        url: URL,
+        browser: Browser,
+        browserType: BrowserType = DESKTOP,
+    ): Map<String, String>
 }
