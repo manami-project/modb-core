@@ -1,9 +1,11 @@
 package io.github.manamiproject.modb.core.httpclient
 
+import io.github.manamiproject.modb.core.config.ConfigRegistry
+import io.github.manamiproject.modb.core.config.DefaultConfigRegistry
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
-import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator.createHeadersFor
+import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
@@ -45,6 +47,8 @@ public class DefaultHttpClient(
     private val protocols: MutableList<HttpProtocol> = mutableListOf(HTTP_2, HTTP_1_1),
     private var okhttpClient: Call.Factory = sharedOkHttpClient,
     private val isTestContext: Boolean = false,
+    private val configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    private val headerCreator: HeaderCreator = DefaultHeaderCreator(configRegistry = configRegistry),
     public val retryBehavior: RetryBehavior = defaultRetryBehavior,
 ) : HttpClient {
 
@@ -63,7 +67,7 @@ public class DefaultHttpClient(
         headers: Map<String, Collection<String>>,
     ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
-        requestHeaders.putAll(createHeadersFor(url, Browser.random()))
+        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
         requestHeaders["content-type"] = requestBody.mediaType
 
@@ -84,7 +88,7 @@ public class DefaultHttpClient(
         headers: Map<String, Collection<String>>,
     ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
-        requestHeaders.putAll(createHeadersFor(url, Browser.random()))
+        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP))
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
 
         val request = Request.Builder()

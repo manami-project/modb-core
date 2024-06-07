@@ -673,7 +673,7 @@ public class OffsetDateTimePropertyDelegate private constructor(
  * @property default Default value in case the property cannot be found.
  * @property configRegistry Handles the retrieval of the value.
  */
-public class ListPropertyDelegate<out T> private constructor(
+public class ListPropertyDelegate<out T: Any> private constructor(
     private val namespace: String,
     private val default: PropertyDefault,
     private val configRegistry: ConfigRegistry,
@@ -713,6 +713,100 @@ public class ListPropertyDelegate<out T> private constructor(
         namespace = namespace,
         default = default,
         retrieval = { configRegistry.list("$namespace.${property.name}") },
+    )
+}
+
+/**
+ * Configuration parameter returning a [Set].
+ *
+ * # Usage
+ * Let's assume:
+ *
+ * ```kotlin
+ * package org.example.project
+ *
+ * class Test {
+ *   private val myProp by SetPropertyDelegate()
+ * }
+ * ```
+ *
+ * Then you property would look like this:
+ *
+ * ```toml
+ * org.example.project.Test.myProp=[
+ *  "one",
+ *  "two",
+ * ]
+ * ```
+ *
+ * # Custom namespace
+ * Let's assume:
+ *
+ * ```kotlin
+ * package org.example.project
+ *
+ * class Test {
+ *   private val myProp by SetPropertyDelegate(namespace = "something.different")
+ * }
+ * ```
+ *
+ * Then you property would look like this:
+ *
+ * ```toml
+ * something.different.myProp=[
+ *  "one",
+ *  "two",
+ * ]
+ * ```
+ *
+ * # Testing
+ *
+ * You can pass a mocked [ConfigRegistry] for testing.
+ * @since 13.0.0
+ * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
+ * @property default Default value in case the property cannot be found.
+ * @property configRegistry Handles the retrieval of the value.
+ */
+public class SetPropertyDelegate<out T: Any> private constructor(
+    private val namespace: String,
+    private val default: PropertyDefault,
+    private val configRegistry: ConfigRegistry,
+) {
+
+    /**
+     * @since 13.0.0
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     */
+    public constructor(
+        namespace: String = EMPTY,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+
+    /**
+     * @since 13.0.0
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param default Default value in case the property cannot be found.
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     */
+    public constructor(
+        namespace: String = EMPTY,
+        default: Set<T>,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+
+    /**
+     * This allows you to use this class as property delegate using `by` keyword.
+     * @since 13.0.0
+     * @param thisRef Calling class
+     * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
+     */
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Set<T> = valueFromRegistry(
+        thisRef = thisRef,
+        property = property,
+        namespace = namespace,
+        default = default,
+        retrieval = { configRegistry.list<T>("$namespace.${property.name}")?.toSet() },
     )
 }
 
@@ -763,7 +857,7 @@ public class ListPropertyDelegate<out T> private constructor(
  * @property default Default value in case the property cannot be found.
  * @property configRegistry Handles the retrieval of the value.
  */
-public class MapPropertyDelegate<out T> private constructor(
+public class MapPropertyDelegate<out T: Any> private constructor(
     private val namespace: String,
     private val default: PropertyDefault,
     private val configRegistry: ConfigRegistry,
