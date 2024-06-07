@@ -1,10 +1,15 @@
 package io.github.manamiproject.modb.core.logging
 
+public sealed interface LogLevelValue {
+
+    public data object NotSet: LogLevelValue
+}
+
 /**
  * TRACE < DEBUG < INFO < WARN < ERROR
  * @since 7.0.0
  */
-public enum class LogLevel {
+public enum class LogLevel: LogLevelValue {
     /**
      * Don't log anything at all.
      * @since 7.0.0
