@@ -17,18 +17,33 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
 import kotlin.io.path.Path
 
-/*
-1. Check (TOML) file in classpath
-2. Check (TOML) file elsewhere
-3. Check env var (overrides file)
-*/
-
+/**
+ * Default implementation of [ConfigRegistry]. Handling is as follows:
+ *
+ * 1. Loads configuration from `config.toml` if it exists in classpath.
+ * 2. Checks if environment variable `modb.core.config.location` is set.
+ * If a TOML file exists in this path, then it will be loaded. This possibly overrides configurations from the classpath with the same.
+ *
+ * If you request a property then the implementation checks if an environment variable with that key exists and returns the value accordingly.
+ * If that is not the case then it tries to find the key from the previously loaded config files.
+ *
+ * The files are loaded once when the class is initialized. The environment variables are checked with each function call.
+ *
+ * Setting environment variables is not supported for [List] and [Map].
+ *
+ * Property names are supposed to consist of alphanumeric chars and dots.
+ *
+ * The implementation includes some possible casts.
+ * Example: You can retrieve a value directly as [Long] if call [long] on a property of type [String].
+ * Or you could call [list] on a single value which is then returned as a [List] with one value in it.
+ * @since 13.0.0
+ */
 public object DefaultConfigRegistry: ConfigRegistry {
 
     private val log by LoggerDelegate()
-    private const val CONFIG_FILE = "config.toml"
     private val properties = mutableMapOf<String, Any?>()
-    public const val ENV_VAR_CONFIG_FILE_PATH: String = "io.github.manamiproject.modb.core.config.location"
+    private const val CONFIG_FILE = "config.toml"
+    public const val ENV_VAR_CONFIG_FILE_PATH: String = "modb.core.config.location"
 
     init {
         if (resourceFileExists(CONFIG_FILE)) {
