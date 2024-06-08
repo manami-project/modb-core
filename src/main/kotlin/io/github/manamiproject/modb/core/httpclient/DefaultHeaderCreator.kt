@@ -11,32 +11,38 @@ import io.github.manamiproject.modb.core.httpclient.BrowserType.MOBILE
 import java.net.URL
 
 /**
+ * Creates headers based on a [Browser] and the [BrowserType].
+ *
  * **See also:**
  * + [https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox)
  * + [https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome)
  * @since 13.0.0
+ * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
  */
 public class DefaultHeaderCreator(
     configRegistry: ConfigRegistry = DefaultConfigRegistry,
 ): HeaderCreator {
 
-    private val firefoxDesktopUserAgents: Set<String> by SetPropertyDelegate(
+    private val firefoxDesktop: Set<String> by SetPropertyDelegate(
+        namespace = NAMESPACE,
         default = defaultFirefoxDesktopUserAgents,
         configRegistry = configRegistry,
     )
-    private val firefoxMobileUserAgents: Set<String> by SetPropertyDelegate(
+    private val firefoxMobile: Set<String> by SetPropertyDelegate(
+        namespace = NAMESPACE,
         default = defaultFirefoxMobileUserAgents,
         configRegistry = configRegistry,
     )
-    private val chromeDesktopUserAgents: Set<String> by SetPropertyDelegate(
+    private val chromeDesktop: Set<String> by SetPropertyDelegate(
+        namespace = NAMESPACE,
         default = defaultChromeDesktopUserAgents,
         configRegistry = configRegistry,
     )
-    private val chromeMobileUserAgents: Set<String> by SetPropertyDelegate(
+    private val chromeMobile: Set<String> by SetPropertyDelegate(
+        namespace = NAMESPACE,
         default = defaultChromeMobileUserAgents,
         configRegistry = configRegistry,
     )
-
 
     override fun createHeadersFor(url: URL, browserType: BrowserType): Map<String, String> = createHeadersFor(
         url = url,
@@ -78,8 +84,8 @@ public class DefaultHeaderCreator(
 
     private fun addFirefoxSpecificHeaders(browserType: BrowserType): Map<String, String> {
         val userAgent = when(browserType) {
-            MOBILE -> firefoxMobileUserAgents
-            DESKTOP -> firefoxDesktopUserAgents
+            MOBILE -> firefoxMobile
+            DESKTOP -> firefoxDesktop
         }.pickRandom()
 
         return mutableMapOf(
@@ -90,8 +96,8 @@ public class DefaultHeaderCreator(
 
     private fun addChromeSpecificHeaders(browserType: BrowserType): Map<String, String> {
         val userAgent = when(browserType) {
-            MOBILE -> chromeMobileUserAgents
-            DESKTOP -> chromeDesktopUserAgents
+            MOBILE -> chromeMobile
+            DESKTOP -> chromeDesktop
         }.pickRandom()
 
         return mutableMapOf(
@@ -100,6 +106,7 @@ public class DefaultHeaderCreator(
     }
 
     private companion object {
+        private const val NAMESPACE = "modb.core.httpclient.useragents"
         private val defaultFirefoxDesktopUserAgents = setOf(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:126.0) Gecko/20100101 Firefox/126.0",

@@ -19,16 +19,6 @@ This lib contains the following features.
 
 ## HttpClient
 + Leightweight interface for creating HTTP calls including helpers for creating headers and setting user agents
-+ Constants for the name of the property which can contain the path to a file providing possible user agents:
-  + `FIREFOX_DESKTOP_USER_AGENTS_FILE_PROPERTY_NAME`
-  + `FIREFOX_MOBILE_USER_AGENT_PROPERTY_NAME`
-  + `CHROME_DESKTOP_USER_AGENT_PROPERTY_NAME`
-  + `CHROME_MOBILE_USER_AGENT_PROPERTY_NAME`
-+ Constants for the file name in the classpath providing possible user agents:
-  + `FIREFOX_DESKTOP_USER_AGENT_RESOURCE_FILE`
-  + `FIREFOX_MOBILE_USER_AGENT_RESOURCE_FILE`
-  + `CHROME_DESKTOP_USER_AGENT_RESOURCE_FILE`
-  + `CHROME_MOBILE_USER_AGENT_RESOURCE_FILE`
 
 ### DefaultHttpClient
 + Implementation of `HttpClient`
@@ -66,6 +56,21 @@ companion object {
 
 ## Json (de)serialization
 + Object class for serializing/deserializing objects to/from JSON
+
+## Possible configurations
+
+Configurations can either be set:
+* by adding a `config.toml` file to the classpath
+* setting `modb.core.config.location` environment variable containing the path to a local `*.toml` file
+* by setting environment variables with the given keys
+
+| Parameter                                        | Description                                                                                  |
+|--------------------------------------------------|----------------------------------------------------------------------------------------------|
+| `modb.core.logging.logLevel`                     | Can be one of: `OFF`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`                              |
+| `modb.core.httpclient.useragents.firefoxDesktop` | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
+| `modb.core.httpclient.useragents.firefoxMobile`  | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
+| `modb.core.httpclient.useragents.chromeDesktop`  | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
+| `modb.core.httpclient.useragents.chromeMobile`   | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
 
 ## Extension and utility functions
 
