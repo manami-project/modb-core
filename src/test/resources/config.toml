@@ -1,19 +1,19 @@
 [string]
 classpath.exclusive="exists-only-in-classpath"
-override.envvar="this-value-should-not-be-overridden"
+override.envVar="this-value-should-not-be-overridden"
 override.file="this-value-should-not-be-overridden"
 different.type=8
 
 [long]
 classpath.exclusive=5432
-override.envvar=8080
+override.envVar=8080
 override.file=9000
 different.type="8"
 null.on.wrong.type="error"
 
 [boolean]
 classpath.exclusive=true
-override.envvar=false
+override.envVar=false
 override.file=true
 different.type="true"
 null.on.wrong.type=8080
@@ -21,28 +21,28 @@ null.on.boolean.strict="True"
 
 [double]
 classpath.exclusive=128.42
-override.envvar=99.1
+override.envVar=99.1
 override.file=111.0
 different.type="8"
 null.on.wrong.type="error"
 
 [localDate]
 classpath.exclusive=2021-01-01
-override.envvar=2022-02-02
+override.envVar=2022-02-02
 override.file=2023-03-03
 different.type="2024-04-04"
 null.on.wrong.format="error"
 
 [localDateTime]
 classpath.exclusive=2021-01-01T06:32:09
-override.envvar=2022-02-02T07:32:00
+override.envVar=2022-02-02T07:32:00
 override.file=2023-03-03T08:32:00
 different.type="2024-04-04T09:32:00"
 null.on.wrong.format="error"
 
 [offsetDateTime]
 classpath.exclusive=2021-01-01T06:32:09Z
-override.envvar=2022-02-02T07:32:00+02:00
+override.envVar=2022-02-02T07:32:00+02:00
 override.file=2023-03-03T08:32:00+03:00
 different.type="2024-04-04T09:32:00+04:00"
 null.on.wrong.format="error"
@@ -62,3 +62,6 @@ single.element="single-element"
 [[map]]
 classpath.exclusive={ key1="value1", key2="value2" }
 override.file={ key3=8080 }
+
+[maptest]
+null.on.wrong.type="unexpected type"
