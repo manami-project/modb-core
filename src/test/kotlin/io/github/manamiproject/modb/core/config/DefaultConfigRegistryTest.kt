@@ -1,7 +1,6 @@
 package io.github.manamiproject.modb.core.config
 
 import io.github.manamiproject.modb.core.config.DefaultConfigRegistry.ENV_VAR_CONFIG_FILE_PATH
-import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
@@ -45,7 +44,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.string(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -104,7 +103,7 @@ internal class DefaultConfigRegistryTest {
         @Test
         fun `override by environment variable`() {
             // given
-            val key = "long.override"
+            val key = "long.override.envVar"
             val value = 443L
             System.setProperty(key, value.toString())
 
@@ -112,7 +111,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.long(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -183,7 +182,7 @@ internal class DefaultConfigRegistryTest {
         @Test
         fun `override by environment variable`() {
             // given
-            val key = "long.override"
+            val key = "long.override.envVar"
             val value = true
             System.setProperty(key, value.toString())
 
@@ -191,7 +190,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.boolean(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isTrue()
         }
 
@@ -274,7 +273,7 @@ internal class DefaultConfigRegistryTest {
         @Test
         fun `override by environment variable`() {
             // given
-            val key = "double.override"
+            val key = "double.override.envVar"
             val value = 256.77
             System.setProperty(key, value.toString())
 
@@ -282,7 +281,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.double(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -361,7 +360,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.localDate(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(LocalDate.of(2024, 6, 20))
         }
 
@@ -440,7 +439,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.localDateTime(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(LocalDateTime.of(2024, 4, 4, 11, 15, 25))
         }
 
@@ -519,7 +518,7 @@ internal class DefaultConfigRegistryTest {
             val result = DefaultConfigRegistry.offsetDateTime(key)
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).isEqualTo(OffsetDateTime.of(LocalDateTime.of(2024, 4, 4, 11, 15, 25), ZoneOffset.ofHours(6)))
         }
 
@@ -603,7 +602,7 @@ internal class DefaultConfigRegistryTest {
             }
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).hasMessage("Environment variable is not supported for property of type list. See [list.override.envVar]")
         }
 
@@ -681,7 +680,7 @@ internal class DefaultConfigRegistryTest {
             }
 
             // then
-            System.setProperty(key, EMPTY)
+            System.clearProperty(key)
             assertThat(result).hasMessage("Environment variable is not supported for property of type map. See [map.override.envVar]")
         }
 
@@ -707,6 +706,18 @@ internal class DefaultConfigRegistryTest {
         fun `return null if key doesn't exist`() {
             // given
             val key = "map.key.not.exists"
+
+            // when
+            val result = DefaultConfigRegistry.map<String>(key)
+
+            // then
+            assertThat(result).isNull()
+        }
+
+        @Test
+        fun `return null if type is wrong`() {
+            // given
+            val key = "maptest.null.on.wrong.type"
 
             // when
             val result = DefaultConfigRegistry.map<String>(key)
