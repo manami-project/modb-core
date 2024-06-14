@@ -67,7 +67,7 @@ public class DefaultHttpClient(
         headers: Map<String, Collection<String>>,
     ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
-        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP))
+        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP).mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
         requestHeaders["content-type"] = requestBody.mediaType
 
@@ -88,7 +88,7 @@ public class DefaultHttpClient(
         headers: Map<String, Collection<String>>,
     ): HttpResponse = withContext(LIMITED_NETWORK) {
         val requestHeaders = mutableMapOf<String, String>()
-        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP))
+        requestHeaders.putAll(headerCreator.createHeadersFor(url, DESKTOP).mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
         requestHeaders.putAll(headers.mapKeys { it.key.lowercase() }.map { it.key to it.value.joinToString(",") })
 
         val request = Request.Builder()

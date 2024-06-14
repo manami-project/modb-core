@@ -18,7 +18,7 @@ public interface HeaderCreator {
     public fun createHeadersFor(
         url: URL,
         browserType: BrowserType = DESKTOP,
-    ): Map<String, String>
+    ): Map<String, Collection<String>>
 
     /**
      * @since 13.0.0
@@ -30,5 +30,5 @@ public interface HeaderCreator {
         url: URL,
         browser: Browser,
         browserType: BrowserType = DESKTOP,
-    ): Map<String, String>
+    ): Map<String, Collection<String>>
 }
