@@ -4,6 +4,7 @@ import io.github.manamiproject.modb.core.config.DefaultConfigRegistry.ENV_VAR_CO
 import io.github.manamiproject.modb.test.exceptionExpected
 import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,8 +15,11 @@ import kotlin.test.Test
 
 internal class DefaultConfigRegistryTest {
 
-    init {
-        System.setProperty(ENV_VAR_CONFIG_FILE_PATH, testResource("default_config_registry_tests/override-config.toml").toAbsolutePath().toString())
+    @BeforeEach
+    fun beforeEach() {
+        DefaultConfigRegistry.environmentVariables.clear()
+        DefaultConfigRegistry.environmentVariables[ENV_VAR_CONFIG_FILE_PATH] = testResource("default_config_registry_tests/override-config.toml").toAbsolutePath().toString()
+        DefaultConfigRegistry.reloadConfig()
     }
 
     @Nested
@@ -38,13 +42,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "string.override.envVar"
             val value = "expected-value"
-            System.setProperty(key, value)
+            DefaultConfigRegistry.environmentVariables[key] = value
 
             // when
             val result = DefaultConfigRegistry.string(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -105,13 +108,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "long.override.envVar"
             val value = 443L
-            System.setProperty(key, value.toString())
+            DefaultConfigRegistry.environmentVariables[key] = value.toString()
 
             // when
             val result = DefaultConfigRegistry.long(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -184,13 +186,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "long.override.envVar"
             val value = true
-            System.setProperty(key, value.toString())
+            DefaultConfigRegistry.environmentVariables[key] = value.toString()
 
             // when
             val result = DefaultConfigRegistry.boolean(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isTrue()
         }
 
@@ -275,13 +276,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "double.override.envVar"
             val value = 256.77
-            System.setProperty(key, value.toString())
+            DefaultConfigRegistry.environmentVariables[key] = value.toString()
 
             // when
             val result = DefaultConfigRegistry.double(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(value)
         }
 
@@ -354,13 +354,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "localDate.override.envVar"
             val value = "2024-06-20"
-            System.setProperty(key, value)
+            DefaultConfigRegistry.environmentVariables[key] = value
 
             // when
             val result = DefaultConfigRegistry.localDate(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(LocalDate.of(2024, 6, 20))
         }
 
@@ -433,13 +432,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "localDateTime.override.envVar"
             val value = "2024-04-04T11:15:25"
-            System.setProperty(key, value)
+            DefaultConfigRegistry.environmentVariables[key] = value
 
             // when
             val result = DefaultConfigRegistry.localDateTime(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(LocalDateTime.of(2024, 4, 4, 11, 15, 25))
         }
 
@@ -512,13 +510,12 @@ internal class DefaultConfigRegistryTest {
             // given
             val key = "offsetDateTime.override.envVar"
             val value = "2024-04-04T11:15:25+06:00"
-            System.setProperty(key, value)
+            DefaultConfigRegistry.environmentVariables[key] = value
 
             // when
             val result = DefaultConfigRegistry.offsetDateTime(key)
 
             // then
-            System.clearProperty(key)
             assertThat(result).isEqualTo(OffsetDateTime.of(LocalDateTime.of(2024, 4, 4, 11, 15, 25), ZoneOffset.ofHours(6)))
         }
 
@@ -594,7 +591,7 @@ internal class DefaultConfigRegistryTest {
         fun `throws error when environment variable is set`() {
             // given
             val key = "list.override.envVar"
-            System.setProperty(key, "something")
+            DefaultConfigRegistry.environmentVariables[key] = "something"
 
             // when
             val result = exceptionExpected<IllegalStateException> {
@@ -602,7 +599,6 @@ internal class DefaultConfigRegistryTest {
             }
 
             // then
-            System.clearProperty(key)
             assertThat(result).hasMessage("Environment variable is not supported for property of type list. See [list.override.envVar]")
         }
 
@@ -672,7 +668,7 @@ internal class DefaultConfigRegistryTest {
         fun `throws error when environment variable is set`() {
             // given
             val key = "map.override.envVar"
-            System.setProperty(key, "something")
+            DefaultConfigRegistry.environmentVariables[key] = "something"
 
             // when
             val result = exceptionExpected<IllegalStateException> {
@@ -680,7 +676,6 @@ internal class DefaultConfigRegistryTest {
             }
 
             // then
-            System.clearProperty(key)
             assertThat(result).hasMessage("Environment variable is not supported for property of type map. See [map.override.envVar]")
         }
 
