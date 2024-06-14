@@ -43,9 +43,29 @@ public object DefaultConfigRegistry: ConfigRegistry {
     private val log by LoggerDelegate()
     private val properties = mutableMapOf<String, Any?>()
     private const val CONFIG_FILE = "config.toml"
+
+    /**
+     * Environment variable key. Value of the environment variable must be a path to a valid ocnfig file.
+     * @since 13.0.0
+     */
     public const val ENV_VAR_CONFIG_FILE_PATH: String = "modb.core.config.location"
 
+    /**
+     * Initially loads the environent variables. Because these are immutable and impossible to set via reflection
+     * without override parameter for the JVM those can be accessed and changed later on.
+     * @since 13.0.1
+     */
+    public val environmentVariables: MutableMap<String, String> = System.getenv().toMutableMap()
+
     init {
+        reloadConfig()
+    }
+
+    /**
+     * Allows to
+     * @since 13.0.1
+     */
+    public fun reloadConfig() {
         if (resourceFileExists(CONFIG_FILE)) {
             log.info { "Loading config.toml from classpath." }
             runBlocking {
@@ -55,7 +75,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
             }
         }
 
-        val envVar = System.getProperty(ENV_VAR_CONFIG_FILE_PATH, EMPTY)
+        val envVar = environmentVariables.getOrDefault(ENV_VAR_CONFIG_FILE_PATH, EMPTY)
 
         if (envVar.isNotEmpty()) {
             val file = Path(envVar)
@@ -72,7 +92,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun string(key: String): String? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -89,7 +109,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun long(key: String): Long? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -109,7 +129,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun boolean(key: String): Boolean? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -129,7 +149,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun double(key: String): Double? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -149,7 +169,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun localDate(key: String): LocalDate? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -169,7 +189,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun localDateTime(key: String): LocalDateTime? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -189,7 +209,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
     }
 
     override fun offsetDateTime(key: String): OffsetDateTime? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
@@ -210,7 +230,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T: Any> list(key: String): List<T>? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             throw IllegalStateException("Environment variable is not supported for property of type list. See [$key]")
@@ -229,7 +249,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T: Any> map(key: String): Map<String, T>? {
-        val envVar = System.getProperty(key, EMPTY)
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
 
         if (envVar.isNotEmpty()) {
             throw IllegalStateException("Environment variable is not supported for property of type map. See [$key]")
