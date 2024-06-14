@@ -44,20 +44,20 @@ public class DefaultHeaderCreator(
         configRegistry = configRegistry,
     )
 
-    override fun createHeadersFor(url: URL, browserType: BrowserType): Map<String, String> = createHeadersFor(
+    override fun createHeadersFor(url: URL, browserType: BrowserType): Map<String, Collection<String>> = createHeadersFor(
         url = url,
         browser = Browser.random(),
         browserType = browserType,
     )
 
-    override fun createHeadersFor(url: URL, browser: Browser, browserType: BrowserType): Map<String, String> {
-        val headers = mutableMapOf<String, String>(
-            "Host" to url.host,
-            "Connection" to "keep-alive",
-            "Upgrade-Insecure-Requests" to "1",
-            "Pragma" to "no-cache",
-            "Cache-Control" to "no-cache",
-            "TE" to "Trailers",
+    override fun createHeadersFor(url: URL, browser: Browser, browserType: BrowserType): Map<String, Collection<String>> {
+        val headers = mutableMapOf<String, Collection<String>>(
+            "Host" to setOf(url.host),
+            "Connection" to setOf("keep-alive"),
+            "Upgrade-Insecure-Requests" to setOf("1"),
+            "Pragma" to setOf("no-cache"),
+            "Cache-Control" to setOf("no-cache"),
+            "TE" to setOf("Trailers"),
         )
 
         headers.putAll(addBrowserUnspecificHeaders())
@@ -71,37 +71,33 @@ public class DefaultHeaderCreator(
         return headers.mapKeys { it.key.lowercase() }
     }
 
-    private fun addBrowserUnspecificHeaders(): Map<String, String> {
-        val languages = listOf(
-            "en-US,en;q=0.8",
-        )
-
+    private fun addBrowserUnspecificHeaders(): Map<String, Collection<String>> {
         return mapOf(
-            "Accept" to "*/*",
-            "Accept-Language" to languages.pickRandom(),
+            "Accept" to setOf("*/*"),
+            "Accept-Language" to setOf("en-US,en;q=0.8"),
         )
     }
 
-    private fun addFirefoxSpecificHeaders(browserType: BrowserType): Map<String, String> {
+    private fun addFirefoxSpecificHeaders(browserType: BrowserType): Map<String, Collection<String>> {
         val userAgent = when(browserType) {
             MOBILE -> firefoxMobile
             DESKTOP -> firefoxDesktop
         }.pickRandom()
 
         return mutableMapOf(
-            "DNT" to "1",
-            "User-Agent" to userAgent,
+            "DNT" to setOf("1"),
+            "User-Agent" to setOf(userAgent),
         )
     }
 
-    private fun addChromeSpecificHeaders(browserType: BrowserType): Map<String, String> {
+    private fun addChromeSpecificHeaders(browserType: BrowserType): Map<String, Collection<String>> {
         val userAgent = when(browserType) {
             MOBILE -> chromeMobile
             DESKTOP -> chromeDesktop
         }.pickRandom()
 
         return mutableMapOf(
-            "User-Agent" to userAgent,
+            "User-Agent" to setOf(userAgent),
         )
     }
 

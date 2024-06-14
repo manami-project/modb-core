@@ -33,16 +33,16 @@ internal class DefaultHeaderCreatorTest {
             // then
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+                    setOf("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
+                    setOf("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
+                    setOf("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
                 )
             )
         }
@@ -64,8 +64,8 @@ internal class DefaultHeaderCreatorTest {
             // then
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/126.0 Mobile/15E148 Safari/605.1.15",
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.35 Mobile/15E148 Safari/604.1",
+                    setOf("Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/126.0 Mobile/15E148 Safari/605.1.15"),
+                    setOf("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.35 Mobile/15E148 Safari/604.1"),
                 )
             )
         }
@@ -95,10 +95,10 @@ internal class DefaultHeaderCreatorTest {
             // then
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "agent-desktop1",
-                    "agent-desktop2",
-                    "agent-desktop3",
-                    "agent-desktop4",
+                    setOf("agent-desktop1"),
+                    setOf("agent-desktop2"),
+                    setOf("agent-desktop3"),
+                    setOf("agent-desktop4"),
                 )
             )
         }
@@ -128,10 +128,10 @@ internal class DefaultHeaderCreatorTest {
             // then
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "agent-desktop1",
-                    "agent-desktop2",
-                    "agent-desktop3",
-                    "agent-desktop4",
+                    setOf("agent-desktop1"),
+                    setOf("agent-desktop2"),
+                    setOf("agent-desktop3"),
+                    setOf("agent-desktop4"),
                 )
             )
         }
@@ -155,24 +155,24 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, FIREFOX, DESKTOP)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["dnt"]).isEqualTo("1")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["dnt"]).isEqualTo(setOf("1"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
-                    "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0",
+                    setOf("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
+                    setOf("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"),
                 )
             )
         }
@@ -199,20 +199,20 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, FIREFOX, DESKTOP)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["dnt"]).isEqualTo("1")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["dnt"]).isEqualTo(setOf("1"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "firefox-desktop1",
-                    "firefox-desktop2",
-                    "firefox-desktop3",
+                    setOf("firefox-desktop1"),
+                    setOf("firefox-desktop2"),
+                    setOf("firefox-desktop3"),
                 )
             )
         }
@@ -232,18 +232,18 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, FIREFOX, MOBILE)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["dnt"]).isEqualTo("1")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["dnt"]).isEqualTo(setOf("1"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/126.0 Mobile/15E148 Safari/605.1.15",
+                    setOf("Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/126.0 Mobile/15E148 Safari/605.1.15"),
                 )
             )
         }
@@ -270,20 +270,20 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, FIREFOX, MOBILE)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["dnt"]).isEqualTo("1")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["dnt"]).isEqualTo(setOf("1"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "firefox-mobile1",
-                    "firefox-mobile2",
-                    "firefox-mobile3",
+                    setOf("firefox-mobile1"),
+                    setOf("firefox-mobile2"),
+                    setOf("firefox-mobile3"),
                 )
             )
         }
@@ -303,19 +303,19 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, CHROME, DESKTOP)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+                    setOf("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
+                    setOf("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
+                    setOf("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"),
                 )
             )
         }
@@ -342,19 +342,19 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, CHROME, DESKTOP)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "chrome-desktop1",
-                    "chrome-desktop2",
-                    "chrome-desktop3",
+                    setOf("chrome-desktop1"),
+                    setOf("chrome-desktop2"),
+                    setOf("chrome-desktop3"),
                 )
             )
         }
@@ -374,17 +374,17 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, CHROME, MOBILE)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.35 Mobile/15E148 Safari/604.1",
+                    setOf("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.35 Mobile/15E148 Safari/604.1"),
                 )
             )
         }
@@ -411,19 +411,19 @@ internal class DefaultHeaderCreatorTest {
             val result = headerCreator.createHeadersFor(url, CHROME, MOBILE)
 
             // then
-            assertThat(result["host"]).isEqualTo("localhost")
-            assertThat(result["connection"]).isEqualTo("keep-alive")
-            assertThat(result["upgrade-insecure-requests"]).isEqualTo("1")
-            assertThat(result["accept-language"]).isIn(listOf("en-US,en;q=0.8"))
-            assertThat(result["accept"]).isEqualTo("*/*")
-            assertThat(result["pragma"]).isEqualTo("no-cache")
-            assertThat(result["cache-control"]).isEqualTo("no-cache")
-            assertThat(result["te"]).isEqualTo("Trailers")
+            assertThat(result["host"]).isEqualTo(setOf("localhost"))
+            assertThat(result["connection"]).isEqualTo(setOf("keep-alive"))
+            assertThat(result["upgrade-insecure-requests"]).isEqualTo(setOf("1"))
+            assertThat(result["accept-language"]).isEqualTo(setOf("en-US,en;q=0.8"))
+            assertThat(result["accept"]).isEqualTo(setOf("*/*"))
+            assertThat(result["pragma"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["cache-control"]).isEqualTo(setOf("no-cache"))
+            assertThat(result["te"]).isEqualTo(setOf("Trailers"))
             assertThat(result["user-agent"]).isIn(
                 listOf(
-                    "chrome-mobile1",
-                    "chrome-mobile2",
-                    "chrome-mobile3",
+                    setOf("chrome-mobile1"),
+                    setOf("chrome-mobile2"),
+                    setOf("chrome-mobile3"),
                 )
             )
         }
