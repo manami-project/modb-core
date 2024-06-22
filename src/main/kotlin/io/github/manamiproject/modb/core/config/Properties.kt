@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty
  * package org.example.project
  *
  * class Test {
- *   private val myProp by StringProperty()
+ *   private val myProp by StringPropertyDelegate()
  * }
  * ```
  *

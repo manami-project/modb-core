@@ -2,30 +2,39 @@
 # modb-core
 _[modb](https://github.com/manami-project?tab=repositories&q=modb&type=source)_ stands for _**M**anami **O**ffline **D**ata**B**ase_. Repositories prefixed with this acronym are used to create the [manami-project/anime-offline-database](https://github.com/manami-project/anime-offline-database).
 
-# What does this lib do?
+## What does this lib do?
 This lib is the base for every specific meta data provider module. It contains the API for downloaders and converters, defines the anime model and provides basic functionality.
 
-# Features
+## Features
 This lib contains the following features.
 
-## Interfaces
+### Interfaces
 * Interfaces for `MetaDataProviderConfig`, `Downloader`, `AnimeConverter`, `PathAnimeConverter`, `DataExtractor`, `PathDataExtractor`, `HttpClient` which define the standard API.
 
-## Converter
+### Converter
 + Default implementation for `PathAnimeConverter`. Takes an `AnimeConverter` as delegate and can convert files and directories.
 
-## DataExtractor
+### DataExtractor
 + Default implementation for `PathDataExtractor`. Takes an `DataExtractor` as delegate and can convert files and directories.
 
-## HttpClient
+### HttpClient
 + Leightweight interface for creating HTTP calls including helpers for creating headers and setting user agents
 
-### DefaultHttpClient
+#### DefaultHttpClient
 + Implementation of `HttpClient`
 + A client for HTTP requests based on [okhttp](https://github.com/square/okhttp)
 + Offers retry behavior which can be individualized
 
-## Logger
+### Configuration management
+
+Configurations can either be set:
+* by adding a `config.toml` file to the classpath
+* setting `modb.core.config.location` environment variable containing the path to a local `*.toml` file
+* by setting environment variables with the given keys
+
+Configuration properties can be injected by using delegated properties such as `StringPropertyDelegate`.
+
+### Logger
 + Delegate for [SLF4J](https://github.com/qos-ch/slf4j) logger
 ```kotlin
 companion object {
@@ -34,7 +43,7 @@ companion object {
 ```
 + Const `LOG_LEVEL_CONFIG_PROPERTY_NAME` for property name which lets you set the global log level
 
-## Models
+### Models
 * For `Anime` and all underlying subtypes
     * Typealias for `Episodes`
     * Typealias for `Title`
@@ -54,25 +63,10 @@ companion object {
 * Typealias for `Directory` as more specific version of `Path`
 * Typealias for `FileSuffix`
 
-## Json (de)serialization
+### Json (de)serialization
 + Object class for serializing/deserializing objects to/from JSON
 
-## Possible configurations
-
-Configurations can either be set:
-* by adding a `config.toml` file to the classpath
-* setting `modb.core.config.location` environment variable containing the path to a local `*.toml` file
-* by setting environment variables with the given keys
-
-| Parameter                                        | Description                                                                                  |
-|--------------------------------------------------|----------------------------------------------------------------------------------------------|
-| `modb.core.logging.logLevel`                     | Can be one of: `OFF`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`                              |
-| `modb.core.httpclient.useragents.firefoxDesktop` | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
-| `modb.core.httpclient.useragents.firefoxMobile`  | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
-| `modb.core.httpclient.useragents.chromeDesktop`  | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
-| `modb.core.httpclient.useragents.chromeMobile`   | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
-
-## Extension and utility functions
+### Extension and utility functions
 
 | function                                | description                                                                                                                                    |
 |-----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -99,3 +93,13 @@ Configurations can either be set:
 | `String.normalize`                      | Replaces tabs, carriage return and line feed with whitespaces and additionally does the same as `String.normalizeWhitespaces`.                 |
 | `String.eitherNullOrBlank`              | Returns true for `null`, empty strings and strings consisting only of non-visible characters.                                                  |
 | `String.neitherNullNorBlank`            | Opposite of `String.eitherNullOrBlank`                                                                                                         |
+
+## Configuration
+
+| parameter                                        | type           | default | description                                                                                  |
+|--------------------------------------------------|----------------|---------|----------------------------------------------------------------------------------------------|
+| `modb.core.logging.logLevel`                     | `String`       | `INFO`  | Can be one of: `OFF`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`                              |
+| `modb.core.httpclient.useragents.firefoxDesktop` | `List<String>` | -       | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
+| `modb.core.httpclient.useragents.firefoxMobile`  | `List<String>` | -       | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/firefox). |
+| `modb.core.httpclient.useragents.chromeDesktop`  | `List<String>` | -       | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
+| `modb.core.httpclient.useragents.chromeMobile`   | `List<String>` | -       | List of [user agents](https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome).  |
