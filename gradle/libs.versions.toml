@@ -9,6 +9,7 @@ jsoup = "1.17.2"
 logback-classic = "1.5.6"
 modb-test = "1.6.15"
 tomlj = "1.1.1"
+kover = "0.8.2"
 
 [libraries]
 kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines-core-jvm" }
@@ -25,3 +26,4 @@ tomlj = { module = "org.tomlj:tomlj", version.ref = "tomlj" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
