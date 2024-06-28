@@ -7,10 +7,9 @@ import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.*
-import kotlin.io.path.createFile
-import kotlin.io.path.exists
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.readLines
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+import kotlin.io.path.*
 import kotlin.io.path.Path as PathCreator
 
 /**
@@ -32,7 +31,7 @@ public typealias RegularFile = Path
  * call [createFile] afterwards.
  * + If the file is a regular file in form of `name.suffix` the suffix is simply changed to the given value. `test.yaml` => `test.yml`.
  * + If the file contains multiple suffix parts (**example:** `test.json.BAK`) only the last part is changed. `test.yml.BAK` => `test.yml.backup`.
- * + If the given path is an existing directory, norhing is changed and the given path is returned unchanged. `directory` => `directory`.
+ * + If the given path is an existing directory, nothing is changed and the given path is returned unchanged. `directory` => `directory`.
  * + If a file does not provide a suffix yet, it will be added. `test` => `test.yml`.
  * + If the path is a hidden file (files whose whole file name starts with a dot **example:** `.gitignore`) the suffix is simply appended. `.gitignore` => `.gitignore.BAK`.
  * @since 1.0.0
@@ -174,4 +173,33 @@ public suspend fun Directory.listRegularFiles(glob: String = "*"): Collection<Re
         dir.listDirectoryEntries(glob = glob)
             .filter { it.regularFileExists() }
     }
+}
+
+/**
+ * Packs multiple regular files into a single zip file.
+ * @since 13.1.0
+ * @param files Files to be included in the zip files.
+ * @receiver Any regular file which will be the zip file.
+ * @return Returns the instance of the zip file which is also the receiver.
+ */
+public suspend fun RegularFile.createZipOf(vararg files: RegularFile): RegularFile {
+    require(this.isRegularFile() || !this.exists()) { "Receiver must be a regular file." }
+    require(files.all { it.regularFileExists() }) { "Can only include regular files which exist." }
+
+    val target = this
+
+    withContext(LIMITED_FS) {
+        target.outputStream().use { fileOutputStream ->
+            ZipOutputStream(fileOutputStream).use { zipOutputStream ->
+                files.forEach { currentFile ->
+                    zipOutputStream.putNextEntry(ZipEntry(currentFile.fileName.toString()))
+                    currentFile.inputStream().use { fileInputStream ->
+                        fileInputStream.copyTo(zipOutputStream)
+                    }
+                }
+            }
+        }
+    }
+
+    return target
 }

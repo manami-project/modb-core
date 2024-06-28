@@ -5,6 +5,9 @@ import io.github.manamiproject.modb.test.tempDirectory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import java.nio.file.*
+import java.util.zip.ZipFile
+import kotlin.io.path.createFile
+import kotlin.io.path.writeText
 import kotlin.test.Test
 
 internal class PathExtensionsKtTest {
@@ -728,6 +731,131 @@ internal class PathExtensionsKtTest {
 
                 // then
                 assertThat(result).hasMessageContaining(file.fileName.toString())
+            }
+        }
+    }
+
+    @Nested
+    inner class CreateZipOfTests {
+
+        @Test
+        fun `throws exception if receiver is not a regular file`() {
+            tempDirectory {
+                // given
+                val testFile = tempDir.resolve(Paths.get("test.txt")).createFile()
+
+                // when
+                val result = exceptionExpected<IllegalArgumentException> {
+                    tempDir.createZipOf(testFile)
+                }
+
+                // then
+                assertThat(result).hasMessage("Receiver must be a regular file.")
+            }
+        }
+
+        @Test
+        fun `throws exception if file to put into the zip file doesn't exist`() {
+            tempDirectory {
+                // given
+                val receiver = tempDir.resolve(Paths.get("result.zip")).createFile()
+                val testFile = tempDir.resolve(Paths.get("test.txt"))
+
+                // when
+                val result = exceptionExpected<IllegalArgumentException> {
+                    receiver.createZipOf(testFile)
+                }
+
+                // then
+                assertThat(result).hasMessage("Can only include regular files which exist.")
+            }
+        }
+
+        @Test
+        fun `throws exception if file to put into the zip file is not a regular file`() {
+            tempDirectory {
+                // given
+                val receiver = tempDir.resolve(Paths.get("result.zip")).createFile()
+
+                // when
+                val result = exceptionExpected<IllegalArgumentException> {
+                    receiver.createZipOf(tempDir)
+                }
+
+                // then
+                assertThat(result).hasMessage("Can only include regular files which exist.")
+            }
+        }
+
+        @Test
+        fun `creates zip file if it doesn't exist`() {
+            tempDirectory {
+                // given
+                val receiver = tempDir.resolve(Paths.get("result.zip"))
+                val testFile = tempDir.resolve(Paths.get("test.txt")).createFile()
+
+                // when
+                val result = receiver.createZipOf(testFile)
+
+                // then
+                assertThat(result).exists()
+                assertThat(ZipFile(receiver.toAbsolutePath().toString()).entries().toList().map { it.name }).containsExactlyInAnyOrder(
+                    "test.txt",
+                )
+            }
+        }
+
+        @Test
+        fun `overrides existing zip file`() {
+            tempDirectory {
+                // given
+                val receiver = tempDir.resolve(Paths.get("result.zip")).createFile()
+                val testFile1 = tempDir.resolve(Paths.get("test1.txt")).createFile()
+                val testFile2 = tempDir.resolve(Paths.get("test2.txt")).createFile()
+                receiver.createZipOf(testFile1)
+
+                // when
+                val result = receiver.createZipOf(testFile2)
+
+                // then
+                assertThat(result).exists()
+                assertThat(ZipFile(receiver.toAbsolutePath().toString()).entries().toList().map { it.name }).containsExactlyInAnyOrder(
+                    "test2.txt",
+                )
+            }
+        }
+
+        @Test
+        fun `correctly creates zip with multiple files`() {
+            tempDirectory {
+                // given
+                val receiver = tempDir.resolve(Paths.get("result.zip"))
+
+                val files = mutableMapOf<String, String>()
+
+                val text1 = "here is some text"
+                val testFile1 = tempDir.resolve(Paths.get("test1.txt")).createFile().apply { writeText(text1) }
+                files[testFile1.fileName.toString()] = text1
+
+                val text2 = "some other text"
+                val testFile2 = tempDir.resolve(Paths.get("test2.txt")).createFile().apply { writeText(text2) }
+                files[testFile2.fileName.toString()] = text2
+
+                // when
+                val result = receiver.createZipOf(testFile1, testFile2)
+
+                // then
+                assertThat(result).exists()
+                val zipFile = ZipFile(receiver.toAbsolutePath().toString())
+                val entries = zipFile.entries().toList()
+                assertThat(entries.map { it.name }).containsExactlyInAnyOrder(
+                    "test1.txt",
+                    "test2.txt",
+                )
+                entries.map { it.name }.forEach { name ->
+                    val content = zipFile.getInputStream(zipFile.getEntry(name)).bufferedReader().readText()
+                    assertThat(content).isEqualTo(files[name])
+                }
             }
         }
     }
