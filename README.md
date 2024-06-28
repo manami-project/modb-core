@@ -86,6 +86,8 @@ companion object {
 | `Path.copyTo`                           | Copy file to file, directory to directory or a file into a directory                                                                           |
 | `Path.fileName`                         | Filename as `String`                                                                                                                           |
 | `Path.fileSuffix`                       | Returns the file suffix as `String`                                                                                                            |
+| `Path.listRegularFiles`                 | Returns a list of files. Optionally with additional glob filter.                                                                               |
+| `Path.createZipOf`                      | Creates a zip file containing one or multiple files.                                                                                           |
 | `ByteArray.writeToFile`                 | Write `ByteArray` to file and optionally write a lock file as indications for other processes that the file is being written                   |
 | `String.writeToFile`                    | Write `String` to file and optionally write a lock file as indications for other processes that the file is being written                      |
 | `String.remove`                         | Remove sequence from a `String`                                                                                                                |
