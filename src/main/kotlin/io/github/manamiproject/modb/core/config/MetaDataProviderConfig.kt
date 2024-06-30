@@ -23,15 +23,7 @@ public typealias AnimeId = String
  * Configuration for a specific meta data provider. A meta data provider is a website providing data about anime such as `myanimelist.net`, `kitsu.io` or `notify.moe`.
  * @since 1.0.0
  */
-public interface MetaDataProviderConfig {
-
-    /**
-     * Distinguish between a test context and production context.
-     * @since 1.0.0
-     * @return **true** if the current context is a test context. This is the case for unit tests for example.
-     * @see io.github.manamiproject.modb.core.excludeFromTestContext
-     */
-    public fun isTestContext(): Boolean = false
+public interface MetaDataProviderConfig: ContextAware {
 
     /**
      * Hostname of the meta data provider. **Example:** `notify.moe`.

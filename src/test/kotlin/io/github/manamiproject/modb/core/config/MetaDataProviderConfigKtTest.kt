@@ -10,21 +10,6 @@ import kotlin.test.Test
 internal class MetaDataProviderConfigKtTest {
 
     @Test
-    fun `isTestContext is false`() {
-        // given
-        val testConfig = object: MetaDataProviderConfig {
-            override fun hostname(): Hostname = shouldNotBeInvoked()
-            override fun fileSuffix(): FileSuffix = shouldNotBeInvoked()
-        }
-
-        // when
-        val result = testConfig.isTestContext()
-
-        // then
-        assertThat(result).isFalse()
-    }
-
-    @Test
     fun `default anime uri link is hostname -slash- anime -slash- id`() {
         // given
         val testConfig = object: MetaDataProviderConfig {
