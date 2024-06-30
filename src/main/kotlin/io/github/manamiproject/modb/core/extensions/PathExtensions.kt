@@ -177,7 +177,7 @@ public suspend fun Directory.listRegularFiles(glob: String = "*"): Collection<Re
 
 /**
  * Packs multiple regular files into a single zip file.
- * @since 13.1.0
+ * @since 14.0.0
  * @param files Files to be included in the zip files.
  * @receiver Any regular file which will be the zip file.
  * @return Returns the instance of the zip file which is also the receiver.
