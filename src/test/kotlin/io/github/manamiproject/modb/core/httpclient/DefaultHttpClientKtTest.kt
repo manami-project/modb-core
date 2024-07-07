@@ -6,10 +6,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
-import io.github.manamiproject.modb.test.MockServerTestCase
-import io.github.manamiproject.modb.test.WireMockServerCreator
-import io.github.manamiproject.modb.test.exceptionExpected
-import io.github.manamiproject.modb.test.shouldNotBeInvoked
+import io.github.manamiproject.modb.test.*
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.Protocol.HTTP_2
@@ -1127,6 +1124,25 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 protocols.isAccessible = true
                 val value = protocols.get(defaultHttpClient) as (ArrayList<*>)
                 assertThat(value).containsExactlyInAnyOrder(HTTP_1_1)
+            }
+        }
+    }
+
+    @Nested
+    inner class CompanionObjectTests {
+
+        @Test
+        fun `instance property always returns same instance`() {
+            tempDirectory {
+                // given
+                val previous = DefaultHttpClient.instance
+
+                // when
+                val result = DefaultHttpClient.instance
+
+                // then
+                assertThat(result).isExactlyInstanceOf(DefaultHttpClient::class.java)
+                assertThat(result===previous).isTrue()
             }
         }
     }

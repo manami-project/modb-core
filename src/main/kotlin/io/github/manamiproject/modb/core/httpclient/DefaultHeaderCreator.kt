@@ -101,7 +101,7 @@ public class DefaultHeaderCreator(
         )
     }
 
-    private companion object {
+    public companion object {
         private const val NAMESPACE = "modb.core.httpclient.useragents"
         private val defaultFirefoxDesktopUserAgents = setOf(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
@@ -123,5 +123,11 @@ public class DefaultHeaderCreator(
         private val defaultChromeMobileUserAgents = setOf(
             "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/126.0.6478.35 Mobile/15E148 Safari/604.1",
         )
+
+        /**
+         * Singleton of [DefaultHeaderCreator]
+         * @since 15.0.0
+         */
+        public val instance: DefaultHeaderCreator by lazy { DefaultHeaderCreator() }
     }
 }

@@ -1,6 +1,8 @@
 package io.github.manamiproject.modb.core.config
 
+import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator
 import io.github.manamiproject.modb.test.exceptionExpected
+import io.github.manamiproject.modb.test.tempDirectory
 import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -787,6 +789,25 @@ internal class DefaultConfigRegistryTest {
 
             // then
             assertThat(result).isNull()
+        }
+    }
+
+    @Nested
+    inner class CompanionObjectTests {
+
+        @Test
+        fun `instance property always returns same instance`() {
+            tempDirectory {
+                // given
+                val previous = DefaultConfigRegistry.instance
+
+                // when
+                val result = DefaultConfigRegistry.instance
+
+                // then
+                assertThat(result).isExactlyInstanceOf(DefaultConfigRegistry::class.java)
+                assertThat(result===previous).isTrue()
+            }
         }
     }
 }

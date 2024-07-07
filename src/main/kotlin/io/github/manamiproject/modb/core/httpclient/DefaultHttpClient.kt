@@ -1,7 +1,5 @@
 package io.github.manamiproject.modb.core.httpclient
 
-import io.github.manamiproject.modb.core.config.ConfigRegistry
-import io.github.manamiproject.modb.core.config.DefaultConfigRegistry
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
@@ -47,8 +45,7 @@ public class DefaultHttpClient(
     private val protocols: MutableList<HttpProtocol> = mutableListOf(HTTP_2, HTTP_1_1),
     private var okhttpClient: Call.Factory = sharedOkHttpClient,
     private val isTestContext: Boolean = false,
-    private val configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    private val headerCreator: HeaderCreator = DefaultHeaderCreator(configRegistry = configRegistry),
+    private val headerCreator: HeaderCreator = DefaultHeaderCreator.instance,
     public val retryBehavior: RetryBehavior = defaultRetryBehavior,
 ) : HttpClient {
 
@@ -155,8 +152,14 @@ public class DefaultHttpClient(
         }
     }
 
-    private companion object {
+    public companion object {
         private val log by LoggerDelegate()
+
+        /**
+         * Singleton of [DefaultHttpClient]
+         * @since 15.0.0
+         */
+        public val instance: DefaultHttpClient by lazy { DefaultHttpClient() }
     }
 }
 
