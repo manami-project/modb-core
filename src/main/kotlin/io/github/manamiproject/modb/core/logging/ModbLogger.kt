@@ -8,7 +8,7 @@ internal class ModbLogger(
     ref: KClass<*>,
     private val logLevel: LogLevelValue = LogLevelValue.NotSet,
     private val delegate: Logger = Slf4jLogger(ref = ref),
-    private val configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    private val configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     private val logLevelRetriever: LogLevelRetriever = DefaultLogLevelRetriever(
         localLogLevelOverride = logLevel,
         configRegistry = configRegistry,

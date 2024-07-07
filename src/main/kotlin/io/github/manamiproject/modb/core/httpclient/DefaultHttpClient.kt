@@ -47,7 +47,7 @@ public class DefaultHttpClient(
     private val protocols: MutableList<HttpProtocol> = mutableListOf(HTTP_2, HTTP_1_1),
     private var okhttpClient: Call.Factory = sharedOkHttpClient,
     private val isTestContext: Boolean = false,
-    private val configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    private val configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     private val headerCreator: HeaderCreator = DefaultHeaderCreator(configRegistry = configRegistry),
     public val retryBehavior: RetryBehavior = defaultRetryBehavior,
 ) : HttpClient {

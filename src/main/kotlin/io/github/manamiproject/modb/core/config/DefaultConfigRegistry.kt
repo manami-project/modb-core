@@ -4,7 +4,6 @@ import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.readFile
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import io.github.manamiproject.modb.core.loadResource
-import io.github.manamiproject.modb.core.logging.LoggerDelegate
 import io.github.manamiproject.modb.core.resourceFileExists
 import kotlinx.coroutines.runBlocking
 import org.tomlj.Toml
@@ -36,55 +35,38 @@ import kotlin.io.path.Path
  * The implementation includes some possible casts.
  * Example: You can retrieve a value directly as [Long] if call [long] on a property of type [String].
  * Or you could call [list] on a single value which is then returned as a [List] with one value in it.
- * @since 13.0.0
+ * @since 15.0.0
+ * @property environmentVariables Initially loads the environent variables. Because these are immutable and impossible
+ * to set via reflection without override parameter for the JVM those can be accessed and changed later on.
  */
-public object DefaultConfigRegistry: ConfigRegistry {
+public class DefaultConfigRegistry(
+    private val environmentVariables: Map<String, String> = System.getenv(),
+): ConfigRegistry {
 
-    private val log by LoggerDelegate()
     private val properties = mutableMapOf<String, Any?>()
-    private const val CONFIG_FILE = "config.toml"
-
-    /**
-     * Environment variable key. Value of the environment variable must be a path to a valid ocnfig file.
-     * @since 13.0.0
-     */
-    public const val ENV_VAR_CONFIG_FILE_PATH: String = "modb.core.config.location"
-
-    /**
-     * Initially loads the environent variables. Because these are immutable and impossible to set via reflection
-     * without override parameter for the JVM those can be accessed and changed later on.
-     * @since 13.0.1
-     */
-    public val environmentVariables: MutableMap<String, String> = System.getenv().toMutableMap()
 
     init {
-        reloadConfig()
-    }
-
-    /**
-     * Allows to
-     * @since 13.0.1
-     */
-    public fun reloadConfig() {
-        if (resourceFileExists(CONFIG_FILE)) {
-            log.info { "Loading config.toml from classpath." }
-            runBlocking {
-                deserializeToml(loadResource(CONFIG_FILE)).forEach { (key, value) ->
-                    properties[key] = value
+        runBlocking {
+            if (resourceFileExists(CONFIG_FILE)) {
+                println("Loading config.toml from classpath.")
+                runBlocking {
+                    deserializeToml(loadResource(CONFIG_FILE)).forEach { (key, value) ->
+                        properties[key] = value
+                    }
                 }
             }
-        }
 
-        val envVar = environmentVariables.getOrDefault(ENV_VAR_CONFIG_FILE_PATH, EMPTY)
+            val envVar = environmentVariables.getOrDefault(ENV_VAR_CONFIG_FILE_PATH, EMPTY)
 
-        if (envVar.isNotEmpty()) {
-            val file = Path(envVar)
+            if (envVar.isNotEmpty()) {
+                val file = Path(envVar)
 
-            if (file.regularFileExists()) {
-                log.info { "Loading configuration file from [${file.toAbsolutePath()}]." }
-                runBlocking {
-                    deserializeToml(file.readFile()).forEach { (key, value) ->
-                        properties[key] = value
+                if (file.regularFileExists()) {
+                    println("Loading configuration file from [${file.toAbsolutePath()}].")
+                    runBlocking {
+                        deserializeToml(file.readFile()).forEach { (key, value) ->
+                            properties[key] = value
+                        }
                     }
                 }
             }
@@ -96,7 +78,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable overrides property from config file: [$key]" }
+                println("Environment variable overrides property from config file: [$key]")
             }
             return envVar
         }
@@ -113,7 +95,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return envVar.toLong()
         }
@@ -133,7 +115,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return envVar.toBooleanStrictOrNull()
         }
@@ -153,7 +135,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return envVar.toDouble()
         }
@@ -173,7 +155,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return LocalDate.parse(envVar)
         }
@@ -193,7 +175,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return LocalDateTime.parse(envVar)
         }
@@ -213,7 +195,7 @@ public object DefaultConfigRegistry: ConfigRegistry {
 
         if (envVar.isNotEmpty()) {
             if (properties.containsKey(key)) {
-                log.info { "Environment variable override property from config file: [$key]" }
+                println("Environment variable override property from config file: [$key]")
             }
             return OffsetDateTime.parse(envVar)
         }
@@ -332,5 +314,16 @@ public object DefaultConfigRegistry: ConfigRegistry {
                 null
             }
         }
+    }
+
+    public companion object {
+        private const val ENV_VAR_CONFIG_FILE_PATH: String = "modb.core.config.location"
+        private const val CONFIG_FILE = "config.toml"
+
+        /**
+         * Singleton of [DefaultConfigRegistry]
+         * @since 15.0.0
+         */
+        public val instance: DefaultConfigRegistry by lazy { DefaultConfigRegistry() }
     }
 }
