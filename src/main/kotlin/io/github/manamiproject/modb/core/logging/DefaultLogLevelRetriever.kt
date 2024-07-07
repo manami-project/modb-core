@@ -6,7 +6,7 @@ import io.github.manamiproject.modb.core.config.StringPropertyDelegate
 
 internal class DefaultLogLevelRetriever(
     private val localLogLevelOverride: LogLevelValue = LogLevelValue.NotSet,
-    configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
 ): LogLevelRetriever {
 
     private val logLevel by StringPropertyDelegate(

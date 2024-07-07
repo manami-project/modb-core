@@ -60,23 +60,23 @@ public class StringPropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: String,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -148,23 +148,23 @@ public class LongPropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: Long,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -236,23 +236,23 @@ public class BooleanPropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: Boolean,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -324,23 +324,23 @@ public class DoublePropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: Double,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -412,23 +412,23 @@ public class LocalDatePropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: LocalDate,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -500,23 +500,23 @@ public class LocalDateTimePropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: LocalDateTime,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -588,23 +588,23 @@ public class OffsetDateTimePropertyDelegate private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: OffsetDateTime,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -682,23 +682,23 @@ public class ListPropertyDelegate<out T: Any> private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: List<T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -776,23 +776,23 @@ public class SetPropertyDelegate<out T: Any> private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: Set<T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**
@@ -866,23 +866,23 @@ public class MapPropertyDelegate<out T: Any> private constructor(
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.NoDefault, configRegistry)
 
     /**
      * @since 13.0.0
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      */
     public constructor(
         namespace: String = EMPTY,
         default: Map<String, T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry,
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
     ): this(namespace, PropertyDefault.Default(default), configRegistry)
 
     /**

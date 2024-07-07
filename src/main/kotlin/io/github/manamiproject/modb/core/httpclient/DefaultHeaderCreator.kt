@@ -20,7 +20,7 @@ import java.net.URL
  * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry]
  */
 public class DefaultHeaderCreator(
-    configRegistry: ConfigRegistry = DefaultConfigRegistry,
+    configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
 ): HeaderCreator {
 
     private val firefoxDesktop: Set<String> by SetPropertyDelegate(
