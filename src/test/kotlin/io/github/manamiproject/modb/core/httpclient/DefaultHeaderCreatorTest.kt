@@ -6,6 +6,7 @@ import io.github.manamiproject.modb.core.httpclient.Browser.CHROME
 import io.github.manamiproject.modb.core.httpclient.Browser.FIREFOX
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import io.github.manamiproject.modb.core.httpclient.BrowserType.MOBILE
+import io.github.manamiproject.modb.test.tempDirectory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import java.net.URI
@@ -426,6 +427,25 @@ internal class DefaultHeaderCreatorTest {
                     setOf("chrome-mobile3"),
                 )
             )
+        }
+    }
+
+    @Nested
+    inner class CompanionObjectTests {
+
+        @Test
+        fun `instance property always returns same instance`() {
+            tempDirectory {
+                // given
+                val previous = DefaultHeaderCreator.instance
+
+                // when
+                val result = DefaultHeaderCreator.instance
+
+                // then
+                assertThat(result).isExactlyInstanceOf(DefaultHeaderCreator::class.java)
+                assertThat(result===previous).isTrue()
+            }
         }
     }
 }

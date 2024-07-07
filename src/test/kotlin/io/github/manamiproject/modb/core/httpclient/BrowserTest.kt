@@ -16,6 +16,6 @@ internal class BrowserTest {
         }
 
         // then
-        assertThat(values).containsAll(Browser.entries)
+        assertThat(Browser.entries).containsAll(values)
     }
 }
