@@ -797,17 +797,15 @@ internal class DefaultConfigRegistryTest {
 
         @Test
         fun `instance property always returns same instance`() {
-            tempDirectory {
-                // given
-                val previous = DefaultConfigRegistry.instance
+            // given
+            val previous = DefaultConfigRegistry.instance
 
-                // when
-                val result = DefaultConfigRegistry.instance
+            // when
+            val result = DefaultConfigRegistry.instance
 
-                // then
-                assertThat(result).isExactlyInstanceOf(DefaultConfigRegistry::class.java)
-                assertThat(result===previous).isTrue()
-            }
+            // then
+            assertThat(result).isExactlyInstanceOf(DefaultConfigRegistry::class.java)
+            assertThat(result===previous).isTrue()
         }
     }
 }
