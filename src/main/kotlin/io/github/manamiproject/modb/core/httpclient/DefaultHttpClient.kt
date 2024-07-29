@@ -135,7 +135,7 @@ public class DefaultHttpClient(
         }
 
         if (retryBehavior.requiresRetry(response)) {
-            throw FailedAfterRetryException("Execution failed despite [$attempt] retry attempts. Last invocation returned http status code [${response.code}]")
+            throw FailedAfterRetryException("Execution failed despite [$attempt] retry attempts. Last invocation of [${request.method} ${request.url}] returned http status code [${response.code}]")
         }
 
         return@withContext response
