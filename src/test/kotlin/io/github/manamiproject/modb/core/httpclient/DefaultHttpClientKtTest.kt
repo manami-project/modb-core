@@ -306,7 +306,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 }
 
                 // then
-                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation returned http status code [429]")
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation of [GET http://localhost:$port/anime/1535] returned http status code [429]")
                 assertThat(result.cause).hasNoCause()
             }
         }
@@ -923,7 +923,7 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 }
 
                 // then
-                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation returned http status code [429]")
+                assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation of [POST http://localhost:$port/graphql] returned http status code [429]")
                 assertThat(result.cause).hasNoCause()
             }
         }
