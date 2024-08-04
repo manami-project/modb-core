@@ -163,6 +163,56 @@ internal class PropertiesKtTest {
             // then
             assertThat(result).isEqualTo("my-value")
         }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun string(key: String): String = "my-value"
+            }
+
+            val property = StringPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.endsWith("value") },
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo("my-value")
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun string(key: String): String = "my-value"
+            }
+
+            val property = StringPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.endsWith("non-existent") },
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [my-value] for property [modb.core.unittest.testProp] is invalid.")
+        }
     }
 
     @Nested
@@ -312,6 +362,56 @@ internal class PropertiesKtTest {
 
             // then
             assertThat(result).isEqualTo(128L)
+        }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun long(key: String): Long = 128L
+            }
+
+            val property = LongPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value > 100L }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(128L)
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun long(key: String): Long = 128L
+            }
+
+            val property = LongPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value < 100L }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [128] for property [modb.core.unittest.testProp] is invalid.")
         }
     }
 
@@ -463,6 +563,56 @@ internal class PropertiesKtTest {
             // then
             assertThat(result).isTrue()
         }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun boolean(key: String): Boolean = true
+            }
+
+            val property = BooleanPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isTrue()
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun boolean(key: String): Boolean = true
+            }
+
+            val property = BooleanPropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> !value }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [true] for property [modb.core.unittest.testProp] is invalid.")
+        }
     }
 
     @Nested
@@ -612,6 +762,56 @@ internal class PropertiesKtTest {
 
             // then
             assertThat(result).isEqualTo(128.43)
+        }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun double(key: String): Double = 128.43
+            }
+
+            val property = DoublePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value > 100.0 }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(128.43)
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun double(key: String): Double = 128.43
+            }
+
+            val property = DoublePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value < 100.0 }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [128.43] for property [modb.core.unittest.testProp] is invalid.")
         }
     }
 
@@ -770,6 +970,60 @@ internal class PropertiesKtTest {
             // then
             assertThat(result).isEqualTo(value)
         }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val date = LocalDate.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun localDate(key: String): LocalDate = date
+            }
+
+            val property = LocalDatePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isBefore(LocalDate.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(date)
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val date = LocalDate.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun localDate(key: String): LocalDate = date
+            }
+
+            val property = LocalDatePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isAfter(LocalDate.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [${date}] for property [modb.core.unittest.testProp] is invalid.")
+        }
     }
 
     @Nested
@@ -926,6 +1180,60 @@ internal class PropertiesKtTest {
 
             // then
             assertThat(result).isEqualTo(value)
+        }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val date = LocalDateTime.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun localDateTime(key: String): LocalDateTime = date
+            }
+
+            val property = LocalDateTimePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isBefore(LocalDateTime.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(date)
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val date = LocalDateTime.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun localDateTime(key: String): LocalDateTime = date
+            }
+
+            val property = LocalDateTimePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isAfter(LocalDateTime.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [$date] for property [modb.core.unittest.testProp] is invalid.")
         }
     }
 
@@ -1084,6 +1392,60 @@ internal class PropertiesKtTest {
             // then
             assertThat(result).isEqualTo(value)
         }
+
+        @Test
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val date = OffsetDateTime.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun offsetDateTime(key: String): OffsetDateTime = date
+            }
+
+            val property = OffsetDateTimePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isBefore(OffsetDateTime.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(date)
+        }
+
+        @Test
+        fun `throws exception if validator returns false`() {
+            // given
+            val date = OffsetDateTime.now().minusDays(2)
+
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun offsetDateTime(key: String): OffsetDateTime = date
+            }
+
+            val property = OffsetDateTimePropertyDelegate(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isAfter(OffsetDateTime.now()) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [$date] for property [modb.core.unittest.testProp] is invalid.")
+        }
     }
 
     @Nested
@@ -1235,6 +1597,58 @@ internal class PropertiesKtTest {
 
             // then
             assertThat(result).isEqualTo(listOf("my-value"))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf("my-value") as List<T>
+            }
+
+            val property = ListPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isNotEmpty() }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(listOf("my-value"))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf("my-value") as List<T>
+            }
+
+            val property = ListPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isEmpty() }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [my-value] for property [modb.core.unittest.testProp] is invalid.")
         }
     }
 
@@ -1404,6 +1818,71 @@ internal class PropertiesKtTest {
                 "two",
             ))
         }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf(
+                    "one",
+                    "one",
+                    "two",
+                    "two",
+                ) as List<T>
+            }
+
+            val property = SetPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isNotEmpty() }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(setOf(
+                "one",
+                "two",
+            ))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> list(key: String): List<T> = listOf(
+                    "one",
+                    "one",
+                    "two",
+                    "two",
+                ) as List<T>
+            }
+
+            val property = SetPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.isEmpty() }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [one, two] for property [modb.core.unittest.testProp] is invalid.")
+        }
     }
 
     @Nested
@@ -1557,6 +2036,58 @@ internal class PropertiesKtTest {
 
             // then
             assertThat(result).isEqualTo(mapOf("my-value" to 8080L))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `correctly returns value when custom validator matches`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> map(key: String): Map<String, T> = mapOf("my-value" to 8080L) as Map<String, T>
+            }
+
+            val property = MapPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.containsValue<String, Any>(8080L) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = property.getValue(this, testKProperty)
+
+            // then
+            assertThat(result).isEqualTo(mapOf("my-value" to 8080L))
+        }
+
+        @Test
+        @Suppress("UNCHECKED_CAST")
+        fun `throws exception if validator returns false`() {
+            // given
+            val testConfigRegistry = object: ConfigRegistry by TestConfigRegistry {
+                override fun <T: Any> map(key: String): Map<String, T> = mapOf("my-value" to 8080L) as Map<String, T>
+            }
+
+            val property = MapPropertyDelegate<String>(
+                namespace = "modb.core.unittest",
+                configRegistry = testConfigRegistry,
+                validator = { value -> value.containsValue<String, Any>(443L) }
+            )
+
+            val testKProperty = object: KProperty<String> by TestKProperty() {
+                override val name: String = "testProp"
+            }
+
+            // when
+            val result = exceptionExpected<IllegalStateException> {
+                property.getValue(this, testKProperty)
+            }
+
+            // then
+            assertThat(result).hasMessage("Value [{my-value=8080}] for property [modb.core.unittest.testProp] is invalid.")
         }
     }
 }

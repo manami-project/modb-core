@@ -47,51 +47,66 @@ import kotlin.reflect.KProperty
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class StringPropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (String) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        validator: (String) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: String,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (String) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
      * @since 13.0.0
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): String = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.string("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): String {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.string("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -135,37 +150,46 @@ public class StringPropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class LongPropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (Long) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (Long) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: Long,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (Long) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -173,13 +197,18 @@ public class LongPropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): Long = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.long("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Long {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.long("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -223,37 +252,46 @@ public class LongPropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class BooleanPropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (Boolean) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (Boolean) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: Boolean,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (Boolean) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -261,13 +299,18 @@ public class BooleanPropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): Boolean = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.boolean("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Boolean {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.boolean("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -311,37 +354,46 @@ public class BooleanPropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class DoublePropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (Double) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (Double) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: Double,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (Double) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -349,13 +401,18 @@ public class DoublePropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): Double = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.double("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Double {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.double("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -399,37 +456,46 @@ public class DoublePropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class LocalDatePropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (LocalDate) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (LocalDate) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: LocalDate,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (LocalDate) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -437,13 +503,18 @@ public class LocalDatePropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): LocalDate = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.localDate("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): LocalDate {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.localDate("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -487,37 +558,46 @@ public class LocalDatePropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class LocalDateTimePropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (LocalDateTime) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (LocalDateTime) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: LocalDateTime,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (LocalDateTime) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -525,13 +605,18 @@ public class LocalDateTimePropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): LocalDateTime = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.localDateTime("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): LocalDateTime {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.localDateTime("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -575,37 +660,46 @@ public class LocalDateTimePropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class OffsetDateTimePropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (OffsetDateTime) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (OffsetDateTime) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: OffsetDateTime,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (OffsetDateTime) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -613,13 +707,18 @@ public class OffsetDateTimePropertyDelegate private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): OffsetDateTime = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.offsetDateTime("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): OffsetDateTime {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.offsetDateTime("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -669,37 +768,46 @@ public class OffsetDateTimePropertyDelegate private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class ListPropertyDelegate<out T: Any> private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (List<T>) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (List<T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: List<T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (List<T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -707,13 +815,18 @@ public class ListPropertyDelegate<out T: Any> private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): List<T> = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.list("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): List<T> {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.list<T>("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value $value for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -763,37 +876,46 @@ public class ListPropertyDelegate<out T: Any> private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class SetPropertyDelegate<out T: Any> private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (Set<T>) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (Set<T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: Set<T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (Set<T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -801,13 +923,19 @@ public class SetPropertyDelegate<out T: Any> private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): Set<T> = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.list<T>("$namespace.${property.name}")?.toSet() },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Set<T> {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.list<T>("$namespace.${property.name}")?.toSet() },
+        )
+
+        check(validator(value)) { "Value $value for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 /**
@@ -853,37 +981,46 @@ public class SetPropertyDelegate<out T: Any> private constructor(
  *
  * You can pass a mocked [ConfigRegistry] for testing.
  * @since 13.0.0
+ * @property configRegistry Handles the retrieval of the value.
  * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
  * @property default Default value in case the property cannot be found.
- * @property configRegistry Handles the retrieval of the value.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
  */
 public class MapPropertyDelegate<out T: Any> private constructor(
+    private val configRegistry: ConfigRegistry,
     private val namespace: String,
     private val default: PropertyDefault,
-    private val configRegistry: ConfigRegistry,
+    private val validator: (Map<String, T>) -> Boolean,
 ) {
 
     /**
      * @since 13.0.0
-     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
-        namespace: String = EMPTY,
         configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.NoDefault, configRegistry)
+        namespace: String = EMPTY,
+        validator: (Map<String, T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
 
     /**
      * @since 13.0.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
      * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
      * @param default Default value in case the property cannot be found.
-     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param validator Checks the value and throws an exception if it doesn't pass the check. Default always returns `true`.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
      */
     public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
         namespace: String = EMPTY,
         default: Map<String, T>,
-        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
-    ): this(namespace, PropertyDefault.Default(default), configRegistry)
+        validator: (Map<String, T>) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
 
     /**
      * This allows you to use this class as property delegate using `by` keyword.
@@ -891,13 +1028,18 @@ public class MapPropertyDelegate<out T: Any> private constructor(
      * @param thisRef Calling class
      * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
      */
-    public operator fun getValue(thisRef: Any, property: KProperty<*>): Map<String, T> = valueFromRegistry(
-        thisRef = thisRef,
-        property = property,
-        namespace = namespace,
-        default = default,
-        retrieval = { configRegistry.map("$namespace.${property.name}") },
-    )
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Map<String, T> {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.map<T>("$namespace.${property.name}") },
+        )
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
 }
 
 private inline fun <reified T> valueFromRegistry(
