@@ -4,6 +4,9 @@ override.file="other-file-override"
 [long]
 override.file=21
 
+[int]
+override.file=21
+
 [boolean]
 override.file=false
 

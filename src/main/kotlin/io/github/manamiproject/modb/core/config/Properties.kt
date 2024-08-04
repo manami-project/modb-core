@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp="myValue"
@@ -37,7 +37,7 @@ import kotlin.reflect.KProperty
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp="myValue"
@@ -103,6 +103,7 @@ public class StringPropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.string("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -123,7 +124,7 @@ public class StringPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=1535
@@ -140,7 +141,7 @@ public class StringPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=1535
@@ -205,6 +206,108 @@ public class LongPropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.long("$namespace.${property.name}") },
         )
+
+        check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
+
+        return value
+    }
+}
+
+/**
+ * Configuration parameter returning a [Int].
+ *
+ * # Usage
+ * Let's assume:
+ *
+ * ```kotlin
+ * package org.example.project
+ *
+ * class Test {
+ *   private val myProp by IntPropertyDelegate()
+ * }
+ * ```
+ *
+ * Then your property would look like this:
+ *
+ * ```toml
+ * org.example.project.Test.myProp=1535
+ * ```
+ *
+ * # Custom namespace
+ * Let's assume:
+ *
+ * ```kotlin
+ * package org.example.project
+ *
+ * class Test {
+ *   private val myProp by IntPropertyDelegate(namespace = "something.different")
+ * }
+ * ```
+ *
+ * Then your property would look like this:
+ *
+ * ```toml
+ * something.different.myProp=1535
+ * ```
+ *
+ * # Testing
+ *
+ * You can pass a mocked [ConfigRegistry] for testing.
+ * @since 16.1.0
+ * @property configRegistry Handles the retrieval of the value.
+ * @property namespace The prefix of a fully qualified property name. It will internally be exted by the variable name.
+ * @property default Default value in case the property cannot be found.
+ * @property validator Checks the value and throws an exception if it doesn't pass the check.
+ * @throws IllegalStateException if value doesn't pass check from [validator].
+ */
+public class IntPropertyDelegate private constructor(
+    private val configRegistry: ConfigRegistry,
+    private val namespace: String,
+    private val default: PropertyDefault,
+    private val validator: (Int) -> Boolean,
+) {
+
+    /**
+     * @since 16.1.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @throws IllegalStateException if value doesn't pass check from [validator].
+     */
+    public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
+        namespace: String = EMPTY,
+        validator: (Int) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.NoDefault, validator)
+
+    /**
+     * @since 16.1.0
+     * @param configRegistry Handles the retrieval of the value. **Default:** [DefaultConfigRegistry.instance]
+     * @param namespace The prefix of a fully qualified property name. It will internally be exted by the variable name. **Default:** [EMPTY]
+     * @param default Default value in case the property cannot be found.
+     * @throws IllegalStateException if value doesn't pass check from [validator].
+     */
+    public constructor(
+        configRegistry: ConfigRegistry = DefaultConfigRegistry.instance,
+        namespace: String = EMPTY,
+        default: Int,
+        validator: (Int) -> Boolean = { true },
+    ): this(configRegistry, namespace, PropertyDefault.Default(default), validator)
+
+    /**
+     * This allows you to use this class as property delegate using `by` keyword.
+     * @since 16.1.0
+     * @param thisRef Calling class
+     * @param property Property to which the value will be assigned to. It is also part of the fully qualified property name.
+     */
+    public operator fun getValue(thisRef: Any, property: KProperty<*>): Int {
+        val value = valueFromRegistry(
+            thisRef = thisRef,
+            property = property,
+            namespace = namespace,
+            default = default,
+            retrieval = { configRegistry.int("$namespace.${property.name}") },
+        )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -225,7 +328,7 @@ public class LongPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=true
@@ -242,7 +345,7 @@ public class LongPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=true
@@ -307,6 +410,7 @@ public class BooleanPropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.boolean("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -327,7 +431,7 @@ public class BooleanPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=10.4
@@ -344,7 +448,7 @@ public class BooleanPropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=10.4
@@ -409,6 +513,7 @@ public class DoublePropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.double("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -429,7 +534,7 @@ public class DoublePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=2024-01-01
@@ -446,7 +551,7 @@ public class DoublePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=2024-01-01
@@ -511,6 +616,7 @@ public class LocalDatePropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.localDate("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -531,7 +637,7 @@ public class LocalDatePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=2024-04-04T09:32:00
@@ -548,7 +654,7 @@ public class LocalDatePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=2024-04-04T09:32:00
@@ -613,6 +719,7 @@ public class LocalDateTimePropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.localDateTime("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -633,7 +740,7 @@ public class LocalDateTimePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=2024-04-04T09:32:00+04:00
@@ -650,7 +757,7 @@ public class LocalDateTimePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=2024-04-04T09:32:00+04:00
@@ -715,6 +822,7 @@ public class OffsetDateTimePropertyDelegate private constructor(
             default = default,
             retrieval = { configRegistry.offsetDateTime("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -735,7 +843,7 @@ public class OffsetDateTimePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=[
@@ -755,7 +863,7 @@ public class OffsetDateTimePropertyDelegate private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=[
@@ -823,6 +931,7 @@ public class ListPropertyDelegate<out T: Any> private constructor(
             default = default,
             retrieval = { configRegistry.list<T>("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value $value for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -843,7 +952,7 @@ public class ListPropertyDelegate<out T: Any> private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * org.example.project.Test.myProp=[
@@ -863,7 +972,7 @@ public class ListPropertyDelegate<out T: Any> private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * something.different.myProp=[
@@ -952,7 +1061,7 @@ public class SetPropertyDelegate<out T: Any> private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * [[org.example.project.Test]]
@@ -970,7 +1079,7 @@ public class SetPropertyDelegate<out T: Any> private constructor(
  * }
  * ```
  *
- * Then you property would look like this:
+ * Then your property would look like this:
  *
  * ```toml
  * [[org.example.project.Test]]
@@ -1036,6 +1145,7 @@ public class MapPropertyDelegate<out T: Any> private constructor(
             default = default,
             retrieval = { configRegistry.map<T>("$namespace.${property.name}") },
         )
+
         check(validator(value)) { "Value [$value] for property [$namespace.${property.name}] is invalid." }
 
         return value
@@ -1056,7 +1166,7 @@ private inline fun <reified T> valueFromRegistry(
     val key = "$namespaceWithoutProperty.${property.name}"
 
     check("""^[a-zA-Z\d.]+$""".toRegex().matches(key)) { "Config parameter can only consist of alphanumeric chars and dots. Adjust the namespace of [$key]." }
-    val value = retrieval.invoke()
+    val value = retrieval()
 
     return when (default) {
         is PropertyDefault.Default<*> -> value ?: default.value as T
