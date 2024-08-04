@@ -32,6 +32,7 @@ internal object TestDataExtractor : DataExtractor {
 internal object TestConfigRegistry: ConfigRegistry {
     override fun string(key: String): String = shouldNotBeInvoked()
     override fun long(key: String): Long = shouldNotBeInvoked()
+    override fun int(key: String): Int = shouldNotBeInvoked()
     override fun <T: Any> list(key: String): List<T> = shouldNotBeInvoked()
     override fun boolean(key: String): Boolean = shouldNotBeInvoked()
     override fun double(key: String): Double = shouldNotBeInvoked()

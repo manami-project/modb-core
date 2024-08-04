@@ -1,8 +1,6 @@
 package io.github.manamiproject.modb.core.config
 
-import io.github.manamiproject.modb.core.httpclient.DefaultHeaderCreator
 import io.github.manamiproject.modb.test.exceptionExpected
-import io.github.manamiproject.modb.test.tempDirectory
 import io.github.manamiproject.modb.test.testResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -170,6 +168,93 @@ internal class DefaultConfigRegistryTest {
 
             // when
             val result = configRegistry.long(key)
+
+            // then
+            assertThat(result).isNull()
+        }
+    }
+
+    @Nested
+    inner class IntTests {
+
+        @Test
+        fun `correctly find property from config file in classpath`() {
+            // given
+            val key = "int.classpath.exclusive"
+            val configRegistry = DefaultConfigRegistry()
+
+            // when
+            val result = configRegistry.int(key)
+
+            // then
+            assertThat(result).isEqualTo(5432)
+        }
+
+        @Test
+        fun `override by environment variable`() {
+            // given
+            val key = "int.override.envVar"
+            val value = 443
+            val configRegistry = DefaultConfigRegistry(environmentVariables = mapOf(
+                key to value.toString(),
+            ))
+
+            // when
+            val result = configRegistry.int(key)
+
+            // then
+            assertThat(result).isEqualTo(value)
+        }
+
+        @Test
+        fun `override by custom config file`() {
+            // given
+            val key = "int.override.file"
+            val configRegistry = DefaultConfigRegistry(environmentVariables = mapOf(
+                "modb.core.config.location" to testResource("default_config_registry_tests/override-config.toml").toAbsolutePath().toString(),
+            ))
+
+            // when
+            val result = configRegistry.int(key)
+
+            // then
+            assertThat(result).isEqualTo(21)
+        }
+
+        @Test
+        fun `can cast different types`() {
+            // given
+            val key = "int.different.type"
+            val configRegistry = DefaultConfigRegistry()
+
+            // when
+            val result = configRegistry.int(key)
+
+            // then
+            assertThat(result).isEqualTo(8)
+        }
+
+        @Test
+        fun `return null if key doesn't exist`() {
+            // given
+            val key = "int.key.not.exists"
+            val configRegistry = DefaultConfigRegistry()
+
+            // when
+            val result = configRegistry.int(key)
+
+            // then
+            assertThat(result).isNull()
+        }
+
+        @Test
+        fun `return null if type is wrong`() {
+            // given
+            val key = "int.null.on.wrong.type"
+            val configRegistry = DefaultConfigRegistry()
+
+            // when
+            val result = configRegistry.int(key)
 
             // then
             assertThat(result).isNull()

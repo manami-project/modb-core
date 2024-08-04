@@ -11,6 +11,13 @@ override.file=9000
 different.type="8"
 null.on.wrong.type="error"
 
+[int]
+classpath.exclusive=5432
+override.envVar=8080
+override.file=9000
+different.type="8"
+null.on.wrong.type="error"
+
 [boolean]
 classpath.exclusive=true
 override.envVar=false

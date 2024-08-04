@@ -110,6 +110,26 @@ public class DefaultConfigRegistry(
         return null
     }
 
+    override fun int(key: String): Int? {
+        val envVar = environmentVariables.getOrDefault(key, EMPTY)
+
+        if (envVar.isNotEmpty()) {
+            if (properties.containsKey(key)) {
+                println("Environment variable override property from config file: [$key]")
+            }
+            return envVar.toInt()
+        }
+
+        if (properties.containsKey(key)) {
+            return when (val value = properties[key]) {
+                is Int -> value
+                else -> value?.toString()?.toIntOrNull()
+            }
+        }
+
+        return null
+    }
+
     override fun boolean(key: String): Boolean? {
         val envVar = environmentVariables.getOrDefault(key, EMPTY)
 

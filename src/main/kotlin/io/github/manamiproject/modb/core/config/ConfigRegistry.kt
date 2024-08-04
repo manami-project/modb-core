@@ -27,6 +27,13 @@ public interface ConfigRegistry {
     /**
      * @since 13.0.0
      * @param key Identifier of the configuration parameter.
+     * @return Either the value of the configuration parameter presented as [Int] or `null` if the parameter is not set.
+     */
+    public fun int(key: String): Int?
+
+    /**
+     * @since 13.0.0
+     * @param key Identifier of the configuration parameter.
      * @return Either the value of the configuration parameter presented as [Boolean] or `null` if the parameter is not set.
      */
     public fun boolean(key: String): Boolean?
