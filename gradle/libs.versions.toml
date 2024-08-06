@@ -1,6 +1,6 @@
 [versions]
 kotlinx-coroutines-core-jvm = "1.8.1"
-kotlin = "2.0.0"
+kotlin = "2.0.10"
 okhttp = "4.12.0"
 slf4j-api = "2.0.13"
 moshi = "1.15.1"
