@@ -7,7 +7,7 @@ import io.github.manamiproject.modb.core.models.Anime.Companion.NO_PICTURE
 import io.github.manamiproject.modb.core.models.Anime.Companion.NO_PICTURE_THUMBNAIL
 import java.net.URI
 
-internal class AnimeAdapter(private val serializeDuration: Boolean = true): JsonAdapter<Anime>() {
+internal class AnimeAdapter: JsonAdapter<Anime>() {
 
     private val titleAdapter = TitleAdapter()
     private val uriHashSetAdapter = HashSetAdapter(UriAdapter())
@@ -40,11 +40,12 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
         var pictureDeserialized = false
         var thumbnail = NO_PICTURE_THUMBNAIL
         var thumbnailDeserialized = false
+        var duration = Duration.UNKNOWN
+        var durationDeserialized = false
         var tags = HashSet<Tag>()
         var tagsDeserialized = false
         var relatedAnime = HashSet<URI>()
         var relatedAnimeDeserialized = false
-        var duration = Duration.UNKNOWN
         var animeSeason = AnimeSeason()
         var animeSeasonDeserialized = false
 
@@ -84,6 +85,7 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
                 }
                 "duration" -> {
                     duration = durationAdapter.fromJson(reader)
+                    durationDeserialized = true
                 }
                 "synonyms" -> {
                     synonyms = titleHashSetAdapter.fromJson(reader)
@@ -112,6 +114,7 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
             !statusDeserialized -> throw IllegalStateException("Property 'status' is either missing or null.")
             !pictureDeserialized -> throw IllegalStateException("Property 'picture' is either missing or null.")
             !thumbnailDeserialized -> throw IllegalStateException("Property 'thumbnail' is either missing or null.")
+            !durationDeserialized -> throw IllegalStateException("Property 'duration' is either missing or null.")
             !tagsDeserialized -> throw IllegalStateException("Property 'tags' is either missing or null.")
             !relatedAnimeDeserialized -> throw IllegalStateException("Property 'relatedAnime' is either missing or null.")
             !animeSeasonDeserialized -> throw IllegalStateException("Property 'animeSeason' is either missing or null.")
@@ -168,10 +171,8 @@ internal class AnimeAdapter(private val serializeDuration: Boolean = true): Json
         writer.name("thumbnail")
         uriAdapter.toJson(writer, value.thumbnail)
 
-        if (serializeDuration) {
-            writer.name("duration")
-            durationAdapter.toJson(writer, value.duration)
-        }
+        writer.name("duration")
+        durationAdapter.toJson(writer, value.duration)
 
         writer.name("synonyms").beginArray()
         value.synonyms.sorted().forEach { writer.value(it) }
