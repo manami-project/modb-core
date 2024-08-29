@@ -901,88 +901,84 @@ internal class AnimeAdapterTest {
         }
 
         @Test
-        fun `throws exception if duration is null`() {
+        fun `returns anime with unknown duration if duration property is null`() {
             // given
             val adapter = AnimeAdapter()
 
             // when
-            val result = exceptionExpected<JsonDataException> {
-                adapter.fromJson("""
-                    {
-                      "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                      "sources": [
-                        "https://myanimelist.net/anime/6351"
-                      ],
-                      "synonyms": [
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                      ],
-                      "type": "TV",
-                      "episodes": 24,
-                      "status": "FINISHED",
-                      "animeSeason": {
-                        "season": "SUMMER",
-                        "year": 2009
-                      },
-                      "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
-                      "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
-                      "duration": null,
-                      "relatedAnime": [
-                        "https://myanimelist.net/anime/2167"
-                      ],
-                      "tags": [
-                        "comedy",
-                        "romance"
-                      ]
-                    }
-            """.trimIndent())
-            }
+            val result = adapter.fromJson("""
+                {
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "sources": [
+                    "https://myanimelist.net/anime/6351"
+                  ],
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": 2009
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "duration": null,
+                  "relatedAnime": [
+                    "https://myanimelist.net/anime/2167"
+                  ],
+                  "tags": [
+                    "comedy",
+                    "romance"
+                  ]
+                }
+            """.trimIndent())!!
 
             // then
-            assertThat(result).hasMessage("Expected BEGIN_OBJECT but was NULL at path \$.duration")
+            assertThat(result.duration).isEqualTo(Duration.UNKNOWN)
         }
 
         @Test
-        fun `throws exception if duration is missing`() {
+        fun `returns anime with unknown duration if duration property is missing`() {
             // given
             val adapter = AnimeAdapter()
 
             // when
-            val result = exceptionExpected<IllegalStateException> {
-                adapter.fromJson("""
-                    {
-                      "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
-                      "sources": [
-                        "https://myanimelist.net/anime/6351"
-                      ],
-                      "synonyms": [
-                        "Clannad ~After Story~: Another World, Kyou Chapter",
-                        "Clannad: After Story OVA",
-                        "クラナド　アフターストーリー　もうひとつの世界　杏編"
-                      ],
-                      "type": "TV",
-                      "episodes": 24,
-                      "status": "FINISHED",
-                      "animeSeason": {
-                        "season": "SUMMER",
-                        "year": 2009
-                      },
-                      "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
-                      "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
-                      "relatedAnime": [
-                        "https://myanimelist.net/anime/2167"
-                      ],
-                      "tags": [
-                        "comedy",
-                        "romance"
-                      ]
-                    }
-            """.trimIndent())
-            }
+            val result = adapter.fromJson("""
+                {
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "sources": [
+                    "https://myanimelist.net/anime/6351"
+                  ],
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": 2009
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "relatedAnime": [
+                    "https://myanimelist.net/anime/2167"
+                  ],
+                  "tags": [
+                    "comedy",
+                    "romance"
+                  ]
+                }
+            """.trimIndent())!!
 
             // then
-            assertThat(result).hasMessage("Property 'duration' is either missing or null.")
+            assertThat(result.duration).isEqualTo(Duration.UNKNOWN)
         }
 
         @Test
@@ -1229,6 +1225,71 @@ internal class AnimeAdapterTest {
             """.trimIndent())
         }
 
+        @Test
+        fun `correctly serialize nullable data if serializeNulls has been set`() {
+            // given
+            val adapter = AnimeAdapter().indent("  ").serializeNulls()
+            val obj = Anime(
+                _title = "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                sources = hashSetOf(URI("https://myanimelist.net/anime/6351")),
+                relatedAnime = hashSetOf(URI("https://myanimelist.net/anime/2167")),
+                type = Anime.Type.TV,
+                episodes = 24,
+                status = Anime.Status.FINISHED,
+                animeSeason = AnimeSeason(
+                    season = AnimeSeason.Season.SUMMER,
+                    year = 0
+                ),
+                picture = URI("https://cdn.myanimelist.net/images/anime/10/19621.jpg"),
+                thumbnail = URI("https://cdn.myanimelist.net/images/anime/10/19621t.jpg"),
+                duration = Duration.UNKNOWN,
+                synonyms = hashSetOf(
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編",
+                ),
+                tags = hashSetOf(
+                    "comedy",
+                    "romance",
+                )
+            )
+
+            // when
+            val result = adapter.toJson(obj)
+
+            // then
+            assertThat(result).isEqualTo("""
+                {
+                  "sources": [
+                    "https://myanimelist.net/anime/6351"
+                  ],
+                  "title": "Clannad: After Story - Mou Hitotsu no Sekai, Kyou-hen",
+                  "type": "TV",
+                  "episodes": 24,
+                  "status": "FINISHED",
+                  "animeSeason": {
+                    "season": "SUMMER",
+                    "year": null
+                  },
+                  "picture": "https://cdn.myanimelist.net/images/anime/10/19621.jpg",
+                  "thumbnail": "https://cdn.myanimelist.net/images/anime/10/19621t.jpg",
+                  "duration": null,
+                  "synonyms": [
+                    "Clannad ~After Story~: Another World, Kyou Chapter",
+                    "Clannad: After Story OVA",
+                    "クラナド　アフターストーリー　もうひとつの世界　杏編"
+                  ],
+                  "relatedAnime": [
+                    "https://myanimelist.net/anime/2167"
+                  ],
+                  "tags": [
+                    "comedy",
+                    "romance"
+                  ]
+                }
+            """.trimIndent())
+        }
+
         @ParameterizedTest
         @ValueSource(strings = ["", " ", "    ", "\u200C"])
         fun `runs performChecks if activateChecks is false and throws an exception if title is blank`(value: String) {
@@ -1274,10 +1335,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [],
                   "relatedAnime": [],
                   "tags": []
@@ -1336,10 +1393,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [],
                   "relatedAnime": [
                     "https://myanimelist.net/anime/2167"
@@ -1376,10 +1429,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [
                     "Death Note"
                   ],
@@ -1416,10 +1465,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [],
                   "relatedAnime": [],
                   "tags": []
@@ -1454,10 +1499,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [],
                   "relatedAnime": [],
                   "tags": [
@@ -1494,10 +1535,6 @@ internal class AnimeAdapterTest {
                   },
                   "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                   "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                  "duration": {
-                    "value": 0,
-                    "unit": "SECONDS"
-                  },
                   "synonyms": [],
                   "relatedAnime": [],
                   "tags": []

@@ -2955,10 +2955,6 @@ internal class AnimeKtTest {
                       },
                       "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                       "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                      "duration": {
-                        "value": 0,
-                        "unit": "SECONDS"
-                      },
                       "synonyms": [],
                       "relatedAnime": [
                         "https://myanimelist.net/anime/2167"

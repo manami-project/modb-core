@@ -41,7 +41,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
         var thumbnail = NO_PICTURE_THUMBNAIL
         var thumbnailDeserialized = false
         var duration = Duration.UNKNOWN
-        var durationDeserialized = false
         var tags = HashSet<Tag>()
         var tagsDeserialized = false
         var relatedAnime = HashSet<URI>()
@@ -85,7 +84,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
                 }
                 "duration" -> {
                     duration = durationAdapter.fromJson(reader)
-                    durationDeserialized = true
                 }
                 "synonyms" -> {
                     synonyms = titleHashSetAdapter.fromJson(reader)
@@ -114,7 +112,6 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
             !statusDeserialized -> throw IllegalStateException("Property 'status' is either missing or null.")
             !pictureDeserialized -> throw IllegalStateException("Property 'picture' is either missing or null.")
             !thumbnailDeserialized -> throw IllegalStateException("Property 'thumbnail' is either missing or null.")
-            !durationDeserialized -> throw IllegalStateException("Property 'duration' is either missing or null.")
             !tagsDeserialized -> throw IllegalStateException("Property 'tags' is either missing or null.")
             !relatedAnimeDeserialized -> throw IllegalStateException("Property 'relatedAnime' is either missing or null.")
             !animeSeasonDeserialized -> throw IllegalStateException("Property 'animeSeason' is either missing or null.")
@@ -171,8 +168,10 @@ internal class AnimeAdapter: JsonAdapter<Anime>() {
         writer.name("thumbnail")
         uriAdapter.toJson(writer, value.thumbnail)
 
-        writer.name("duration")
-        durationAdapter.toJson(writer, value.duration)
+        if (value.duration.duration != 0 || (value.duration.duration == 0 && writer.serializeNulls)) {
+            writer.name("duration")
+            durationAdapter.toJson(writer, value.duration)
+        }
 
         writer.name("synonyms").beginArray()
         value.synonyms.sorted().forEach { writer.value(it) }
