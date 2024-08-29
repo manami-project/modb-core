@@ -9,6 +9,11 @@ internal class DurationAdapter: JsonAdapter<Duration>() {
 
     @FromJson
     override fun fromJson(reader: JsonReader): Duration {
+        if (reader.peek() == JsonReader.Token.NULL) {
+            reader.nextNull<Any>()
+            return Duration.UNKNOWN
+        }
+
         reader.beginObject()
 
         var value = 0
@@ -47,9 +52,16 @@ internal class DurationAdapter: JsonAdapter<Duration>() {
     override fun toJson(writer: JsonWriter, value: Duration?) {
         requireNotNull(value) { "DurationAdapter is non-nullable, but received null." }
 
-        writer.beginObject()
-        writer.name("value").value(value.duration)
-        writer.name("unit").value(SECONDS.toString())
-        writer.endObject()
+        when {
+            value.duration == 0 && writer.serializeNulls -> {
+                writer.nullValue()
+            }
+            value.duration != 0 -> {
+                writer.beginObject()
+                writer.name("value").value(value.duration)
+                writer.name("unit").value(SECONDS.toString())
+                writer.endObject()
+            }
+        }
     }
 }

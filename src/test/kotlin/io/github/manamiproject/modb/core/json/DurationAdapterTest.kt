@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.json
 
 import com.squareup.moshi.JsonDataException
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.models.Duration
 import io.github.manamiproject.modb.core.models.Duration.TimeUnit.MINUTES
 import io.github.manamiproject.modb.test.exceptionExpected
@@ -82,17 +83,15 @@ internal class DurationAdapterTest {
         }
 
         @Test
-        fun `throw exception on null value`() {
+        fun `returns unknown duration if value is null`() {
             // given
             val adapter = DurationAdapter()
 
             // when
-            val result = exceptionExpected<JsonDataException> {
-                adapter.fromJson("""null""")
-            }
+            val result = adapter.fromJson("""null""")
 
             // then
-            assertThat(result).hasMessage("Expected BEGIN_OBJECT but was NULL at path \$")
+            assertThat(result).isEqualTo(Duration.UNKNOWN)
         }
     }
 
@@ -124,6 +123,19 @@ internal class DurationAdapterTest {
 
             // then
             assertThat(result).hasMessage("DurationAdapter is non-nullable, but received null.")
+        }
+
+        @Test
+        fun `correctly serialize unknown value`() {
+            // given
+            val adapter = DurationAdapter()
+            val obj = Duration.UNKNOWN
+
+            // when
+            val result = adapter.toJson(obj)
+
+            // then
+            assertThat(result).isEqualTo(EMPTY)
         }
     }
 }

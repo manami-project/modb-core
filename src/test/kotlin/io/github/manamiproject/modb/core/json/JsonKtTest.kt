@@ -10,6 +10,8 @@ import io.github.manamiproject.modb.test.testResource
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.net.URI
 import kotlin.io.path.inputStream
 import kotlin.test.Test
@@ -106,7 +108,8 @@ internal class JsonKtTest {
             }
         }
 
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = ["anime_default_values", "anime_default_serialized_nullables.json", "anime_default_missing_nullables.json"])
         fun `deserialize Anime - default properties`() {
             runBlocking {
                 // given
@@ -376,10 +379,7 @@ internal class JsonKtTest {
                           },
                           "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                           "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                          "duration": {
-                            "value": 0,
-                            "unit": "SECONDS"
-                          },
+                          "duration": null,
                           "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
@@ -484,10 +484,6 @@ internal class JsonKtTest {
                           },
                           "picture": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic.png",
                           "thumbnail": "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/pics/no_pic_thumbnail.png",
-                          "duration": {
-                            "value": 0,
-                            "unit": "SECONDS"
-                          },
                           "synonyms": [],
                           "relatedAnime": [],
                           "tags": []
