@@ -1,15 +1,17 @@
 package io.github.manamiproject.modb.core.config
 
-import io.github.manamiproject.modb.core.extensions.EMPTY
-import io.github.manamiproject.modb.core.extensions.readFile
-import io.github.manamiproject.modb.core.extensions.regularFileExists
+import io.github.manamiproject.modb.core.coverage.KoverIgnore
+import io.github.manamiproject.modb.core.extensions.*
 import io.github.manamiproject.modb.core.loadResource
 import io.github.manamiproject.modb.core.resourceFileExists
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.tomlj.Toml
 import org.tomlj.TomlArray
 import org.tomlj.TomlParseResult
 import org.tomlj.TomlTable
+import java.nio.file.Path
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -19,252 +21,242 @@ import kotlin.io.path.Path
 /**
  * Default implementation of [ConfigRegistry]. Handling is as follows:
  *
- * 1. Loads configuration from `config.toml` if it exists in classpath.
- * 2. Checks if environment variable `modb.core.config.location` is set.
- * If a TOML file exists in this path, then it will be loaded. This possibly overrides configurations from the classpath with the same.
+ * 1. Loads `config.toml` from classpath if it exists.
+ * 2. Loads configuration from `config.toml` if it exists in the same directory of the file system and overrides
+ * existing properties.
+ * 3. If environment variable `modb.core.config.location` is set and directs to a valid `confg.toml` then this file will
+ * be loaded even if there is a `config.toml` in the same directory. Setting a system property with the same key will
+ * take precedence over the environment variable. Loading that file will override any existing properties as well.
+ * 4. If you request a property then the implementation checks if an environment variable with that key exists and
+ * returns the value instead of the value defined in any of the steps before..
+ * 5. System properties have the highest precedence. If you request a property whose key has been passed as a system
+ * property then this value will be used instead of any value defined in any previrous step.
  *
- * If you request a property then the implementation checks if an environment variable with that key exists and returns the value accordingly.
- * If that is not the case then it tries to find the key from the previously loaded config files.
+ * The files are loaded once when the class is initialized. The existence of environment variables and system properties
+ * are checked with each function call.
  *
- * The files are loaded once when the class is initialized. The environment variables are checked with each function call.
- *
- * Setting environment variables is not supported for [List] and [Map].
+ * Setting environment variables and system properties is not supported for [Map]s.
  *
  * Property names are supposed to consist of alphanumeric chars and dots.
  *
  * The implementation includes some possible casts.
- * Example: You can retrieve a value directly as [Long] if call [long] on a property of type [String].
+ * Example: You can retrieve a value directly as [Long] if you call [long] on a property of type [String]. This, of
+ * course, only works if the value can be cast from [String] to [Long].
  * Or you could call [list] on a single value which is then returned as a [List] with one value in it.
  * @since 15.0.0
+ * @property classPathFile Path of the config file within the classpath.
+ * @property localFile Path to a configuration file in the local file system.
  * @property environmentVariables Initially loads the environent variables. Because these are immutable and impossible
  * to set via reflection without override parameter for the JVM those can be accessed and changed later on.
+ * @property systemProperties System properties passed to the app which take precedence over any other declaration.
  */
-public class DefaultConfigRegistry(
+public class DefaultConfigRegistry @KoverIgnore constructor(
+    private val classPathFile: String = CONFIG_FILE,
+    private val localFile: Path = Path(CONFIG_FILE),
     private val environmentVariables: Map<String, String> = System.getenv(),
+    private val systemProperties: Map<String, String> = System.getProperties()
+        .filter { it.key is String}
+        .filter{ it.value != null }
+        .filter { it.value is String }
+        .map { it.key as String to it.value as String }
+        .toMap(),
 ): ConfigRegistry {
 
     private val properties = mutableMapOf<String, Any?>()
-
-    init {
-        runBlocking {
-            if (resourceFileExists(CONFIG_FILE)) {
-                println("Loading config.toml from classpath.")
-                runBlocking {
-                    deserializeToml(loadResource(CONFIG_FILE)).forEach { (key, value) ->
-                        properties[key] = value
-                    }
-                }
-            }
-
-            val envVar = environmentVariables.getOrDefault(ENV_VAR_CONFIG_FILE_PATH, EMPTY)
-
-            if (envVar.isNotEmpty()) {
-                val file = Path(envVar)
-
-                if (file.regularFileExists()) {
-                    println("Loading configuration file from [${file.toAbsolutePath()}].")
-                    runBlocking {
-                        deserializeToml(file.readFile()).forEach { (key, value) ->
-                            properties[key] = value
-                        }
-                    }
-                }
-            }
-        }
-    }
+    private var isInitialized = false
+    private val initializationMutex = Mutex()
 
     override fun string(key: String): String? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable overrides property from config file: [$key]")
-            }
-            return envVar
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return properties[key]?.toString()
-        }
-
-        return null
+        return fetchProperty(key)?.toString()
     }
 
     override fun long(key: String): Long? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return envVar.toLong()
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is Long -> value
-                else -> value?.toString()?.toLongOrNull()
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is Long -> value
+            else -> value.toString().toLongOrNull()
+        }
     }
 
     override fun int(key: String): Int? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return envVar.toInt()
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is Int -> value
-                else -> value?.toString()?.toIntOrNull()
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is Int -> value
+            else -> value.toString().toIntOrNull()
+        }
     }
 
     override fun boolean(key: String): Boolean? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return envVar.toBooleanStrictOrNull()
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is Boolean -> value
-                else -> value?.toString()?.toBooleanStrictOrNull()
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is Boolean -> value
+            else -> value.toString().toBooleanStrictOrNull()
+        }
     }
 
     override fun double(key: String): Double? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return envVar.toDouble()
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is Double -> value
-                else -> value?.toString()?.toDoubleOrNull()
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is Double -> value
+            else -> value.toString().toDoubleOrNull()
+        }
     }
 
     override fun localDate(key: String): LocalDate? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return LocalDate.parse(envVar)
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is LocalDate -> value
-                else -> parseToLocalDateOrNull(value)
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is LocalDate -> value
+            else -> parseToLocalDateOrNull(value)
+        }
     }
 
     override fun localDateTime(key: String): LocalDateTime? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return LocalDateTime.parse(envVar)
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is LocalDateTime -> value
-                else -> parseToLocalDateTimeOrNull(value)
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is LocalDateTime -> value
+            else -> parseToLocalDateTimeOrNull(value)
+        }
     }
 
     override fun offsetDateTime(key: String): OffsetDateTime? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            if (properties.containsKey(key)) {
-                println("Environment variable override property from config file: [$key]")
-            }
-            return OffsetDateTime.parse(envVar)
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val value = properties[key]) {
-                is OffsetDateTime -> value
-                else -> parseToOffsetDateTimeOrNull(value)
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when {
+            value is OffsetDateTime -> value
+            else -> parseToOffsetDateTimeOrNull(value)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T: Any> list(key: String): List<T>? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            throw IllegalStateException("Environment variable is not supported for property of type list. See [$key]")
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val entry = properties[key]) {
-                is Collection<*> -> entry.toList() as List<T>
-                null -> null
-                else -> listOf(entry as T)
-            }
-        }
+        val value = fetchProperty(key) ?: return null
 
-        return null
+        return when(value) {
+            is Collection<*> -> value.toList() as List<T>
+            else -> listOf(value as T)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T: Any> map(key: String): Map<String, T>? {
-        val envVar = environmentVariables.getOrDefault(key, EMPTY)
-
-        if (envVar.isNotEmpty()) {
-            throw IllegalStateException("Environment variable is not supported for property of type map. See [$key]")
+        if (!isInitialized) {
+            runBlocking { init() }
         }
 
-        if (properties.containsKey(key)) {
-            return when (val entry = properties[key]) {
-                is Map<*, *> -> entry.toMap() as Map<String, T>
-                else -> null
+        val value = fetchProperty(key) ?: return null
+
+        return when(value) {
+            is Map<*, *> -> value.toMap() as Map<String, T>
+            else -> null
+        }
+    }
+
+    private suspend fun init() {
+        initializationMutex.withLock {
+            if (!isInitialized) {
+                loadConfigFromClassPath()
+                loadingConfigFromLocalFile()
+                isInitialized = true
             }
         }
+    }
 
-        return null
+    private suspend fun loadConfigFromClassPath() {
+        if (resourceFileExists(classPathFile) && classPathFile.endsWith(CONFIG_FILE)) {
+            deserializeToml(loadResource(classPathFile)).forEach { (key, value) ->
+                properties[key] = value
+            }
+            println("config.toml from classpath: ✅")
+        } else {
+            println("config.toml from classpath: ❌")
+        }
+    }
+
+    private suspend fun loadingConfigFromLocalFile() {
+        val overriddenPath = if (systemProperties.containsKey(CONFIG_FILE_PATH_PROPERTY_KEY)) {
+            systemProperties.getOrDefault(CONFIG_FILE_PATH_PROPERTY_KEY, EMPTY)
+        } else {
+            environmentVariables.getOrDefault(CONFIG_FILE_PATH_PROPERTY_KEY, EMPTY)
+        }
+        val isValidOverriddenPath = overriddenPath.neitherNullNorBlank() && overriddenPath.endsWith(CONFIG_FILE)
+
+        when {
+            localFile.regularFileExists() && localFile.fileName().endsWith(CONFIG_FILE) && !isValidOverriddenPath -> {
+                deserializeToml(localFile.readFile()).forEach { (key, value) ->
+                    properties[key] = value
+                }
+                println("config.toml from local file: ✅")
+            }
+            isValidOverriddenPath -> {
+                val file = Path(overriddenPath)
+                when {
+                    file.regularFileExists() -> {
+                        deserializeToml(file.readFile()).forEach { (key, value) ->
+                            properties[key] = value
+                        }
+                        println("config.toml from local file [${file.toAbsolutePath()}] set via environment variable: ✅")
+                    }
+                    else -> println("config.toml from local file: ❌")
+                }
+            }
+            else -> println("config.toml from local file: ❌")
+        }
+    }
+
+    private fun fetchProperty(key: String): Any? {
+        if (systemProperties.containsKey(key)) {
+            println("System property taking precedence over any other configuration for: [$key]")
+            return systemProperties[key]!!
+        }
+
+        if (environmentVariables.containsKey(key)) {
+            println("Environment variable taking precedence over any other configuration for: [$key]")
+            return environmentVariables[key]!!
+        }
+
+        return properties[key]
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -337,7 +329,7 @@ public class DefaultConfigRegistry(
     }
 
     public companion object {
-        private const val ENV_VAR_CONFIG_FILE_PATH: String = "modb.core.config.location"
+        private const val CONFIG_FILE_PATH_PROPERTY_KEY: String = "modb.core.config.location"
         private const val CONFIG_FILE = "config.toml"
 
         /**

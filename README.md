@@ -29,8 +29,19 @@ This lib contains the following features.
 
 Configurations can either be set:
 * by adding a `config.toml` file to the classpath
-* setting `modb.core.config.location` environment variable containing the path to a local `*.toml` file
+* by adding a `config.toml` file to the same directory
+* setting `modb.core.config.location` environment variable containing the path to a local `config.toml` file
+* setting `modb.core.config.location` system property containing the path to a local `config.toml` file
 * by setting environment variables with the given keys
+* by setting system properties with the given keys
+
+Evaluation priority is as follows (higher number means higher priority):
+1. classpath
+2. same directory
+3. file via environment variable
+4. file via system property
+5. property set by environment variable
+6. property set by system property
 
 Configuration properties can be injected by using delegated properties such as `StringPropertyDelegate`.
 
