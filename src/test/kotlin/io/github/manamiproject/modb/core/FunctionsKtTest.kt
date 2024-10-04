@@ -72,12 +72,12 @@ internal class FunctionsKtTest {
             }
 
             // then
-            assertThat(result).hasMessage("Given path must not be blank")
+            assertThat(result).hasMessage("Given path must not be blank.")
         }
     }
 
     @Nested
-    inner class ResourceFileExists {
+    inner class ResourceFileExistsTests {
 
         @Test
         fun `returns true if the file exists`() {
@@ -124,7 +124,7 @@ internal class FunctionsKtTest {
             }
 
             // then
-            assertThat(result).hasMessage("Given path must not be blank")
+            assertThat(result).hasMessage("Given path must not be blank.")
         }
     }
 
