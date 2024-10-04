@@ -296,35 +296,26 @@ public class DefaultConfigRegistry @KoverIgnore constructor(
     }
 
     private fun parseToLocalDateOrNull(obj: Any?): LocalDate? {
-        return when (obj) {
-            null -> null
-            else -> try {
-                LocalDate.parse(obj.toString())
-            } catch (e: DateTimeParseException) {
-                null
-            }
+        return try {
+            LocalDate.parse(obj.toString())
+        } catch (e: DateTimeParseException) {
+            null
         }
     }
 
     private fun parseToLocalDateTimeOrNull(obj: Any?): LocalDateTime? {
-        return when (obj) {
-            null -> null
-            else -> try {
-                LocalDateTime.parse(obj.toString())
-            } catch (e: DateTimeParseException) {
-                null
-            }
+        return try {
+            LocalDateTime.parse(obj.toString())
+        } catch (e: DateTimeParseException) {
+            null
         }
     }
 
     private fun parseToOffsetDateTimeOrNull(obj: Any?): OffsetDateTime? {
-        return when (obj) {
-            null -> null
-            else -> try {
-                OffsetDateTime.parse(obj.toString())
-            } catch (e: DateTimeParseException) {
-                null
-            }
+        return try {
+            OffsetDateTime.parse(obj.toString())
+        } catch (e: DateTimeParseException) {
+            null
         }
     }
 
