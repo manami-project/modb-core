@@ -38,6 +38,29 @@ internal class ModbLoggerTest {
         }
 
         @Test
+        fun `don't log an error with exception if loglevel is OFF`() {
+            // given
+            var invokedStatement = EMPTY
+            val testLogger = object: Logger by TestLoggerImplementation {
+                override fun error(message: () -> String) {
+                    invokedStatement = message.invoke()
+                }
+            }
+
+            val modbLogger = ModbLogger(
+                ref = this::class,
+                logLevel = OFF,
+                delegate = testLogger,
+            )
+
+            // when
+            modbLogger.error(SocketTimeoutException("custom-message-here")) { "test-log-statement" }
+
+            // then
+            assertThat(invokedStatement).isEmpty()
+        }
+
+        @Test
         fun `don't log a warning if loglevel is OFF`() {
             // given
             var invokedStatement = EMPTY
@@ -55,6 +78,29 @@ internal class ModbLoggerTest {
 
             // when
             modbLogger.warn { "test-log-statement" }
+
+            // then
+            assertThat(invokedStatement).isEmpty()
+        }
+
+        @Test
+        fun `don't log a warning with exception if loglevel is OFF`() {
+            // given
+            var invokedStatement = EMPTY
+            val testLogger = object: Logger by TestLoggerImplementation {
+                override fun warn(message: () -> String) {
+                    invokedStatement = message.invoke()
+                }
+            }
+
+            val modbLogger = ModbLogger(
+                ref = this::class,
+                logLevel = OFF,
+                delegate = testLogger,
+            )
+
+            // when
+            modbLogger.warn(SocketTimeoutException("custom-message-here")) { "test-log-statement" }
 
             // then
             assertThat(invokedStatement).isEmpty()
