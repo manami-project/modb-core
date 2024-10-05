@@ -19,7 +19,7 @@ internal class FunctionsKtTest {
         fun `load test resource from root directory`() {
             runBlocking {
                 // when
-                val result = loadResource("load_resource_tests/test-file.txt")
+                val result = loadResource("FunctionsKtTest/load_resource_tests/test-file.txt")
 
                 // then
                 assertThat(result).isEqualTo("File in\n\nroot directory.")
@@ -30,7 +30,7 @@ internal class FunctionsKtTest {
         fun `load test resource from subdirectory`() {
             runBlocking {
                 // when
-                val result = loadResource("load_resource_tests/subdirectory/other-test-file.txt")
+                val result = loadResource("FunctionsKtTest/load_resource_tests/subdirectory/other-test-file.txt")
 
                 // then
                 assertThat(result).isEqualTo("File in\nsubdirectory.")
@@ -40,7 +40,7 @@ internal class FunctionsKtTest {
         @Test
         fun `returns a list of the names of the elements if the given path is a directory`() {
             runBlocking {
-                val path = "load_resource_tests"
+                val path = "FunctionsKtTest/load_resource_tests"
 
                 // when
                 val result = loadResource(path)
@@ -82,7 +82,7 @@ internal class FunctionsKtTest {
         @Test
         fun `returns true if the file exists`() {
             // given
-            val path = "resource_file_exists_tests/test-file.txt"
+            val path = "FunctionsKtTest/resource_file_exists_tests/test-file.txt"
 
             // when
             val result = resourceFileExists(path)
@@ -94,7 +94,7 @@ internal class FunctionsKtTest {
         @Test
         fun `returns false if the file exists`() {
             // given
-            val path = "resource_file_exists_tests/non-existent-file.txt"
+            val path = "FunctionsKtTest/resource_file_exists_tests/non-existent-file.txt"
 
             // when
             val result = resourceFileExists(path)
@@ -106,7 +106,7 @@ internal class FunctionsKtTest {
         @Test
         fun `returns false if the given path is a directory`() {
             // given
-            val path = "resource_file_exists_tests"
+            val path = "FunctionsKtTest/resource_file_exists_tests"
 
             // when
             val result = resourceFileExists(path)
