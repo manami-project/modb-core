@@ -66,6 +66,22 @@ internal class StringExtensionsKtTest {
         }
 
         @Test
+        fun `successfully write string with lock file`() {
+            tempDirectory {
+                // given
+                val string = "Some content\nfor a test file."
+                val file = tempDir.resolve("test.txt")
+
+                // when
+                string.writeToFile(file, true)
+
+                // then
+                assertThat(file).exists()
+                assertThat(file.readFile()).isEqualTo(string)
+            }
+        }
+
+        @Test
         fun `overrides file if the file already exists`() {
             tempDirectory {
                 // given
