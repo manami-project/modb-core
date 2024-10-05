@@ -206,6 +206,20 @@ internal class StringExtensionsKtTest {
                 duo dolores et ea rebum. Stet clita kasd test gubergren, no sea takimata sanctus est Lorem ipsum dolor 
                 amet.""".trimIndent())
         }
+
+        @Test
+        fun `correctly normalizes string`() {
+            // given
+            val initial = " Lorem     ipsum \u202F \uFEFF \u2007 \u180E \u2060 \u200D dolor \u200C sit amet      "
+
+
+
+            // when
+            val result = initial.remove("sit", ignoreCase = true, normalizeWhitespaces = true)
+
+            // then
+            assertThat(result).isEqualTo("Lorem ipsum dolor amet")
+        }
     }
 
     @Nested
