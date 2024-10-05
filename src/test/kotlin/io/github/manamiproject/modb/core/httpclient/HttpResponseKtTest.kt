@@ -63,41 +63,119 @@ internal class HttpResponseKtTest {
         }
     }
 
-    @Test
-    fun `equals and hashCode are working properly`() {
-        // given
-        val obj1 = HttpResponse(
-            code = 200,
-            body = "<html></html>".toByteArray(),
-            _headers = mutableMapOf("content-type" to listOf("text/html")),
-        )
+    @Nested
+    inner class EqualsAndHashCodeTests {
 
-        val obj2 = HttpResponse(
-            code = 200,
-            body = "<html></html>".toByteArray(),
-            _headers = mutableMapOf("content-type" to listOf("text/html")),
-        )
+        @Test
+        fun `returns true if objects are equal`() {
+            // given
+            val obj1 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
 
-        // when
-        val result = obj1 == obj2
+            val obj2 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
 
-        // then
-        assertThat(result).isTrue()
-        assertThat(obj1.hashCode()).isEqualTo(obj2.hashCode())
+            // when
+            val result = obj1 == obj2
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(obj1.hashCode()).isEqualTo(obj2.hashCode())
+        }
+
+        @Test
+        fun `returns false if code differs`() {
+            // given
+            val obj1 = HttpResponse(
+                code = 201,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
+
+            val obj2 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
+
+            // when
+            val result = obj1 == obj2
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(obj1.hashCode()).isNotEqualTo(obj2.hashCode())
+        }
+
+        @Test
+        fun `returns false if body differs`() {
+            // given
+            val obj1 = HttpResponse(
+                code = 200,
+                body = "<html></header></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
+
+            val obj2 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
+
+            // when
+            val result = obj1 == obj2
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(obj1.hashCode()).isNotEqualTo(obj2.hashCode())
+        }
+
+        @Test
+        fun `returns false if headers differ`() {
+            // given
+            val obj1 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/xhtml")),
+            )
+
+            val obj2 = HttpResponse(
+                code = 200,
+                body = "<html></html>".toByteArray(),
+                _headers = mutableMapOf("content-type" to listOf("text/html")),
+            )
+
+            // when
+            val result = obj1 == obj2
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(obj1.hashCode()).isNotEqualTo(obj2.hashCode())
+        }
     }
 
-    @Test
-    fun `bodyAsText returns the correct value`() {
-        // given
-        val bodyValue = "<html></html>"
 
-        // when
-        val result = HttpResponse(
-            code = 200,
-            body = bodyValue.toByteArray(),
-        )
+    @Nested
+    inner class BodyAsTextTests {
 
-        // then
-        assertThat(result.bodyAsText).isEqualTo(bodyValue)
+        @Test
+        fun `bodyAsText returns the correct value`() {
+            // given
+            val bodyValue = "<html></html>"
+
+            // when
+            val result = HttpResponse(
+                code = 200,
+                body = bodyValue.toByteArray(),
+            )
+
+            // then
+            assertThat(result.bodyAsText).isEqualTo(bodyValue)
+        }
     }
 }
