@@ -63,6 +63,22 @@ internal class ByteArrayExtensionsKtTest {
         }
 
         @Test
+        fun `successfully write ByteArray with lock file`() {
+            tempDirectory {
+                // given
+                val obj = "Some content\nfor a test file.".toByteArray()
+                val file = tempDir.resolve("test.txt")
+
+                // when
+                obj.writeToFile(file, true)
+
+                // then
+                assertThat(file).exists()
+                assertThat(file.readBytes()).isEqualTo(obj)
+            }
+        }
+
+        @Test
         fun `overrides file if the file already exists`() {
             tempDirectory {
                 // given
