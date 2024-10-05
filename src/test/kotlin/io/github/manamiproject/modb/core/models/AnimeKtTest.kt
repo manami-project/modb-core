@@ -1494,6 +1494,45 @@ internal class AnimeKtTest {
     inner class EqualityTests {
 
         @Test
+        fun `is equal if titles are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+            )
+
+            val b = Anime(
+                _title = title,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if titles are different`() {
+            // given
+            val a = Anime(
+                _title =  "Death Note",
+            )
+
+            val b = Anime(
+                _title =  "デスノート",
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
         fun `is equal if source links are the same`() {
             // given
             val title =  "Death Note"
@@ -1503,7 +1542,6 @@ internal class AnimeKtTest {
                     URI("https://myanimelist.net/anime/1535"),
                 ),
             )
-
 
             val b = Anime(
                 _title = title,
@@ -1529,7 +1567,7 @@ internal class AnimeKtTest {
                 sources = hashSetOf(
                     URI("https://myanimelist.net/anime/1535"),
                 ),
-            ).addSources()
+            )
 
             val b = Anime(
                 _title =  title,
@@ -1537,6 +1575,379 @@ internal class AnimeKtTest {
                     URI("https://myanimelist.net/anime/1535"),
                     URI("https://anidb.net/anime/4563"),
                 ),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if synonyms are the same`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
+
+            val b = Anime(
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if synonyms are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                ),
+            )
+
+            val b = Anime(
+                _title =  title,
+                synonyms = hashSetOf(
+                    "Caderno da Morte",
+                    "Quaderno della Morte",
+                ),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if types are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                type = TV,
+            )
+
+            val b = Anime(
+                _title = title,
+                type = TV,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if types are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                type = TV,
+            )
+
+            val b = Anime(
+                _title =  title,
+                type = MOVIE,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if episodes are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                episodes = 37,
+            )
+
+            val b = Anime(
+                _title = title,
+                episodes = 37,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if episodes are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                episodes = 37,
+            )
+
+            val b = Anime(
+                _title =  title,
+                episodes = 1,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if status is the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                status = FINISHED,
+            )
+
+            val b = Anime(
+                _title = title,
+                status = FINISHED,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if status is different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                status = FINISHED,
+            )
+
+            val b = Anime(
+                _title =  title,
+                status = UNKNOWN,
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if animeSeasons are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = 2006,
+                ),
+            )
+
+            val b = Anime(
+                _title = title,
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = 2006,
+                ),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if animeSeasons are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                animeSeason = AnimeSeason(
+                    season = UNDEFINED,
+                    year = 2006,
+                ),
+            )
+
+            val b = Anime(
+                _title =  title,
+                animeSeason = AnimeSeason(
+                    season = FALL,
+                    year = 2006,
+                ),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if pictures are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                picture = URI("https://example.org/pic/1.png"),
+            )
+
+            val b = Anime(
+                _title = title,
+                picture = URI("https://example.org/pic/1.png"),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if pictures are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                picture = URI("https://example.org/pictures/1.png"),
+            )
+
+            val b = Anime(
+                _title =  title,
+                picture = URI("https://example.org/pic/1.png"),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if thumbnail are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                thumbnail = URI("https://example.org/thumbnail/1.png"),
+            )
+
+            val b = Anime(
+                _title = title,
+                thumbnail = URI("https://example.org/thumbnail/1.png"),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if thumbnail are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                thumbnail = URI("https://example.org/thumbnails/1.png"),
+            )
+
+            val b = Anime(
+                _title =  title,
+                thumbnail = URI("https://example.org/thumbnail/1.png"),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isFalse()
+            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is equal if durations are the same`() {
+            // given
+            val title =  "Death Note"
+            val a = Anime(
+                _title = title,
+                duration = Duration(20, MINUTES),
+            )
+
+            val b = Anime(
+                _title = title,
+                duration = Duration(20, MINUTES),
+            )
+
+            // when
+            val result = a == b
+
+            // then
+            assertThat(result).isTrue()
+            assertThat(a.hashCode()).isEqualTo(b.hashCode())
+        }
+
+        @Test
+        fun `is not equal if durations are different`() {
+            // given
+            val title  =  "Death Note"
+            val a = Anime(
+                _title =  title,
+                duration = Duration(21, MINUTES),
+            )
+
+            val b = Anime(
+                _title =  title,
+                duration = Duration(20, MINUTES),
             )
 
             // when
@@ -1589,60 +2000,6 @@ internal class AnimeKtTest {
                 relatedAnime = hashSetOf(
                     URI("https://myanimelist.net/anime/2994"),
                     URI("http://anilist.co/anime/2994"),
-                ),
-            )
-
-            // when
-            val result = a == b
-
-            // then
-            assertThat(result).isFalse()
-            assertThat(a.hashCode()).isNotEqualTo(b.hashCode())
-        }
-
-        @Test
-        fun `is equal if synonyms are the same`() {
-            // given
-            val title  =  "Death Note"
-            val a = Anime(
-                _title =  title,
-                synonyms = hashSetOf(
-                    "Caderno da Morte",
-                ),
-            )
-
-            val b = Anime(
-                _title =  title,
-                synonyms = hashSetOf(
-                    "Caderno da Morte",
-                ),
-            )
-
-            // when
-            val result = a == b
-
-            // then
-            assertThat(result).isTrue()
-            assertThat(a.hashCode()).isEqualTo(b.hashCode())
-        }
-
-        @Test
-        fun `is not equal if synonyms are different`() {
-            // given
-            val title  =  "Death Note"
-            val a = Anime(
-                _title =  title,
-                synonyms = hashSetOf(
-                    "Caderno da Morte",
-                ),
-            )
-
-
-            val b = Anime(
-                _title =  title,
-                synonyms = hashSetOf(
-                    "Caderno da Morte",
-                    "Quaderno della Morte",
                 ),
             )
 
