@@ -145,7 +145,7 @@ internal class ExtractionResultTest {
         }
 
         @Test
-        fun `casts itn to string`() {
+        fun `casts it to string`() {
             // given
             val obj = ExtractionResult(mapOf("result" to 4))
 
@@ -172,6 +172,18 @@ internal class ExtractionResultTest {
 
             // then
             assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `returns string as-is`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to "test"))
+
+            // when
+            val result = obj.stringOrDefault("result")
+
+            // then
+            assertThat(result).isEqualTo("test")
         }
 
         @Test
@@ -297,6 +309,18 @@ internal class ExtractionResultTest {
         }
 
         @Test
+        fun `returns integer as-is`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to 4))
+
+            // when
+            val result = obj.intOrDefault("result")
+
+            // then
+            assertThat(result).isEqualTo(4)
+        }
+
+        @Test
         fun `returns default if the value is NotFound`() {
             // given
             val obj = ExtractionResult(mapOf("result" to NotFound))
@@ -416,6 +440,18 @@ internal class ExtractionResultTest {
 
             // then
             assertThat(result).hasMessage("Result doesn't contain entry [unknown]")
+        }
+
+        @Test
+        fun `returns double as-is`() {
+            // given
+            val obj = ExtractionResult(mapOf("result" to 4.2))
+
+            // when
+            val result = obj.doubleOrDefault("result")
+
+            // then
+            assertThat(result).isEqualTo(4.2)
         }
 
         @Test
