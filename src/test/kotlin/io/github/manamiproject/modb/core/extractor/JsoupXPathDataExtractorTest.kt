@@ -15,7 +15,7 @@ internal class JsoupXPathDataExtractorTest {
         runBlocking {
             // when
             val result = JsoupXPathDataExtractor.extract(
-                rawContent = loadTestResource("extractor_tests_all_cases/myanimelist/most_cases.html"),
+                rawContent = loadTestResource("DataExtractorTest/myanimelist/most_cases.html"),
                 selection = mapOf(
                     "result" to "//unknow",
                 )
@@ -37,7 +37,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `correctly parse most cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/anidb/most_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/anidb/most_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -122,7 +122,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `date published cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/anidb/date_published_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/anidb/date_published_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -144,7 +144,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `correctly parse most cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/anime-planet/most_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/anime-planet/most_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -207,7 +207,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `correctly parse most cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/anisearch/most_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/anisearch/most_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -264,7 +264,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `synonyms cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/anisearch/synonyms_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/anisearch/synonyms_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -295,7 +295,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `correctly parse most cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/livechart/most_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/livechart/most_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -343,7 +343,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `episodes countdown case`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/livechart/episodes_countdown_case.html")
+                    val html = loadTestResource<String>("DataExtractorTest/livechart/episodes_countdown_case.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(
@@ -365,7 +365,7 @@ internal class JsoupXPathDataExtractorTest {
             fun `correctly parse most cases`() {
                 runBlocking {
                     // given
-                    val html = loadTestResource<String>("extractor_tests_all_cases/myanimelist/most_cases.html")
+                    val html = loadTestResource<String>("DataExtractorTest/myanimelist/most_cases.html")
 
                     // when
                     val result = JsoupXPathDataExtractor.extract(html, mapOf(

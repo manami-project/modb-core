@@ -54,7 +54,7 @@ internal class JsonKtTest {
                     ),
                 )
 
-                val inputStream = testResource("json_tests/anime_all_properties_set.json").inputStream()
+                val inputStream = testResource("JsonKtTest/anime_all_properties_set.json").inputStream()
 
                 // when
                 val result = Json.parseJson<Anime>(inputStream)
@@ -98,7 +98,7 @@ internal class JsonKtTest {
                     ),
                 )
 
-                val json = loadTestResource<String>("json_tests/anime_all_properties_set.json")
+                val json = loadTestResource<String>("JsonKtTest/anime_all_properties_set.json")
 
                 // when
                 val result = Json.parseJson<Anime>(json)
@@ -115,7 +115,7 @@ internal class JsonKtTest {
                 // given
                 val expectedAnime = Anime("Death Note")
 
-                val json = loadTestResource<String>("json_tests/anime_default_values.json")
+                val json = loadTestResource<String>("JsonKtTest/anime_default_values.json")
 
                 // when
                 val result = Json.parseJson<Anime>(json)
