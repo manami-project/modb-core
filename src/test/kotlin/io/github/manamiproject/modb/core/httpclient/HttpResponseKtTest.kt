@@ -64,7 +64,7 @@ internal class HttpResponseKtTest {
     }
 
     @Nested
-    inner class EqualsAndHashCodeTests {
+    inner class EqualityTests {
 
         @Test
         fun `returns true if objects are equal`() {
@@ -158,7 +158,6 @@ internal class HttpResponseKtTest {
             assertThat(obj1.hashCode()).isNotEqualTo(obj2.hashCode())
         }
     }
-
 
     @Nested
     inner class BodyAsTextTests {
