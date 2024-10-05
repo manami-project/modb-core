@@ -1,4 +1,0 @@
-firefox-mobile-agent-1
-firefox-mobile-agent-2
-firefox-mobile-agent-3
-firefox-mobile-agent-4
