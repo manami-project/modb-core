@@ -3,13 +3,15 @@ package io.github.manamiproject.modb.core
 import io.github.manamiproject.modb.core.config.ContextAware
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_CPU
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_FS
+import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.security.SecureRandom
+import java.util.jar.JarFile
+import java.util.zip.ZipException
 
 /**
  * During development: Reads the content of a file from _src/main/resources_ into a [String].
@@ -58,13 +60,27 @@ public suspend fun loadResource(path: String): String = withContext(LIMITED_FS) 
  * @throws IllegalArgumentException If the given path is blank.
  * @return **true** if the file exists in classpath.
  */
-public fun resourceFileExists(path: String): Boolean {
+public fun resourceFileExists(path: String, classLoader: ClassLoader = ClassLoader.getSystemClassLoader()): Boolean {
     require(path.neitherNullNorBlank()) { "Given path must not be blank." }
 
-    val resource = ClassLoader.getSystemResource(path) ?: return false
-    val file = Paths.get(resource.toURI())
+    val resource = classLoader.getResource(path) ?: return false
 
-    return file.regularFileExists()
+    return when (resource.protocol) {
+        "file" -> Paths.get(resource.toURI()).regularFileExists()
+        "jar" -> {
+            val jarFile = Paths.get(resource.toURI().toString().replace("jar:file://", EMPTY)
+                .substringBefore('!'))
+                .toAbsolutePath()
+            val jarEntry = try {
+                JarFile(jarFile.toString()).getJarEntry(path)
+            } catch (e: ZipException) {
+                return false
+            }
+
+            return jarEntry != null && !jarEntry.isDirectory
+        }
+        else -> throw IllegalArgumentException("Unknown protocol.")
+    }
 }
 
 /**

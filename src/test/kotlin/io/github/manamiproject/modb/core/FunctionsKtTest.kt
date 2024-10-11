@@ -2,12 +2,15 @@ package io.github.manamiproject.modb.core
 
 import io.github.manamiproject.modb.core.config.MetaDataProviderConfig
 import io.github.manamiproject.modb.test.exceptionExpected
+import io.github.manamiproject.modb.test.testResource
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.net.URI
+import java.net.URL
 import kotlin.test.Test
 
 internal class FunctionsKtTest {
@@ -79,40 +82,141 @@ internal class FunctionsKtTest {
     @Nested
     inner class ResourceFileExistsTests {
 
-        @Test
-        fun `returns true if the file exists`() {
-            // given
-            val path = "FunctionsKtTest/resource_file_exists_tests/test-file.txt"
+        @Nested
+        inner class FileProtocolTests {
 
-            // when
-            val result = resourceFileExists(path)
+            @Test
+            fun `returns true if the file exists`() {
+                // given
+                val path = "FunctionsKtTest/resource_file_exists_tests/test-file.txt"
 
-            // then
-            assertThat(result).isTrue()
+                // when
+                val result = resourceFileExists(path)
+
+                // then
+                assertThat(result).isTrue()
+            }
+
+            @Test
+            fun `returns false if the file exists`() {
+                // given
+                val path = "FunctionsKtTest/resource_file_exists_tests/non-existent-file.txt"
+
+                // when
+                val result = resourceFileExists(path)
+
+                // then
+                assertThat(result).isFalse()
+            }
+
+            @Test
+            fun `returns false if the given path is a directory`() {
+                // given
+                val path = "FunctionsKtTest/resource_file_exists_tests"
+
+                // when
+                val result = resourceFileExists(path)
+
+                // then
+                assertThat(result).isFalse()
+            }
+        }
+
+        @Nested
+        inner class JarProtocolTests {
+
+            @Test
+            fun `returns false if the jar file doesn't exist`() {
+                // given
+                val existingTestResource = testResource("FunctionsKtTest/resource_file_exists_tests/not-exists.jar")
+                val renamedPath = existingTestResource.toUri().toString().replace("test-file.txt", "non-existent.jar")
+                val testClassLoader = object: ClassLoader() {
+                    override fun getResource(name: String?): URL? = URI("jar:${renamedPath}!/$name").toURL()
+                }
+
+                // when
+                val result = resourceFileExists("test-file.txt", testClassLoader)
+
+                // then
+                assertThat(result).isFalse()
+            }
+
+            @Test
+            fun `returns false if the jar file exist, but is empty`() {
+                // given
+                val jar = testResource("FunctionsKtTest/resource_file_exists_tests/empty.jar")
+                val testClassLoader = object: ClassLoader() {
+                    override fun getResource(name: String?): URL? = URI("jar:${jar.toUri()}!/$name").toURL()
+                }
+
+                // when
+                val result = resourceFileExists("test-file.txt", testClassLoader)
+
+                // then
+                assertThat(result).isFalse()
+            }
+
+            @Test
+            fun `returns false if the jar file exist, but it doesn't contain the resource`() {
+                // given
+                val jar = testResource("FunctionsKtTest/resource_file_exists_tests/not-exists.jar")
+                val testClassLoader = object: ClassLoader() {
+                    override fun getResource(name: String?): URL? = URI("jar:${jar.toUri()}!/$name").toURL()
+                }
+
+                // when
+                val result = resourceFileExists("test-file.txt", testClassLoader)
+
+                // then
+                assertThat(result).isFalse()
+            }
+
+            @Test
+            fun `returns true if the jar file contains the resource file`() {
+                // given
+                val jar = testResource("FunctionsKtTest/resource_file_exists_tests/exists.jar")
+                val testClassLoader = object: ClassLoader() {
+                    override fun getResource(name: String?): URL? = URI("jar:${jar.toUri()}!/$name").toURL()
+                }
+
+                // when
+                val result = resourceFileExists("test-file.txt", testClassLoader)
+
+                // then
+                assertThat(result).isTrue()
+            }
+
+            @Test
+            fun `returns false, because resource in jar is a directory`() {
+                // given
+                val jar = testResource("FunctionsKtTest/resource_file_exists_tests/contains-directory.jar")
+                val testClassLoader = object: ClassLoader() {
+                    override fun getResource(name: String?): URL? = URI("jar:${jar.toUri()}!/$name").toURL()
+                }
+
+                // when
+                val result = resourceFileExists("test-directory", testClassLoader)
+
+                // then
+                assertThat(result).isFalse()
+            }
         }
 
         @Test
-        fun `returns false if the file exists`() {
-            // given
-            val path = "FunctionsKtTest/resource_file_exists_tests/non-existent-file.txt"
-
-            // when
-            val result = resourceFileExists(path)
-
-            // then
-            assertThat(result).isFalse()
-        }
-
-        @Test
-        fun `returns false if the given path is a directory`() {
+        fun `throws exception if protocol is unknown`() {
             // given
             val path = "FunctionsKtTest/resource_file_exists_tests"
+            val testClassLoader = object: ClassLoader() {
+                override fun getResource(name: String?): URL? = URI("https://example.org/file.txt").toURL()
+            }
 
             // when
-            val result = resourceFileExists(path)
+            val result = exceptionExpected<IllegalArgumentException> {
+                resourceFileExists(path, testClassLoader)
+            }
 
             // then
-            assertThat(result).isFalse()
+            assertThat(result).hasMessage("Unknown protocol.")
         }
 
         @ParameterizedTest
