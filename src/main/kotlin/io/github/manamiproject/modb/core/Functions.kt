@@ -8,10 +8,12 @@ import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.extensions.regularFileExists
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
+import java.net.URI
 import java.nio.file.Paths
 import java.security.SecureRandom
 import java.util.jar.JarFile
 import java.util.zip.ZipException
+import kotlin.io.path.toPath
 
 /**
  * During development: Reads the content of a file from _src/main/resources_ into a [String].
@@ -68,8 +70,8 @@ public fun resourceFileExists(path: String, classLoader: ClassLoader = ClassLoad
     return when (resource.protocol) {
         "file" -> Paths.get(resource.toURI()).regularFileExists()
         "jar" -> {
-            val jarFile = Paths.get(resource.toURI().toString().replace("jar:file://", EMPTY)
-                .substringBefore('!'))
+            val jarFile = URI(resource.toString().replace("jar:", EMPTY).substringBefore('!'))
+                .toPath()
                 .toAbsolutePath()
             val jarEntry = try {
                 JarFile(jarFile.toString()).getJarEntry(path)
