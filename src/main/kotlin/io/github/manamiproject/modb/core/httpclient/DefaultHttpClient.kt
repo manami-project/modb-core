@@ -147,7 +147,6 @@ public class DefaultHttpClient(
         }
     }
 
-    @KoverIgnore
     public companion object {
         private val log by LoggerDelegate()
 
