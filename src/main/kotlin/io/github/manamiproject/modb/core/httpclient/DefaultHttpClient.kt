@@ -1,6 +1,7 @@
 package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
+import io.github.manamiproject.modb.core.coverage.KoverIgnore
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
@@ -19,6 +20,7 @@ import java.net.Proxy
 import java.net.Proxy.NO_PROXY
 import java.net.SocketTimeoutException
 import java.net.URL
+
 
 /**
  * Default HTTP client based on OKHTTP.
@@ -99,14 +101,7 @@ public class DefaultHttpClient(
 
     private suspend fun executeRetryable(request: Request): HttpResponse = withContext(LIMITED_NETWORK) {
         var attempt = 0
-
-        var response = try {
-            okhttpClient.newCall(request).execute().toHttpResponse()
-        } catch (e: SocketTimeoutException) {
-            log.warn { "SocketTimeoutException calling [${request.method} ${request.url}]. Waiting 8 minutes for a single retry." }
-            if (!isTestContext) delay(480000)
-            okhttpClient.newCall(request).execute().toHttpResponse()
-        }
+        var response = okhttpClient.newCall(request).execute().toHttpResponse()
 
         while (attempt < retryBehavior.maxAttempts && isActive && (response.code == 0 || retryBehavior.requiresRetry(response))) {
             log.info { "Performing retry [${attempt+1}/${retryBehavior.maxAttempts}]" }
@@ -152,8 +147,39 @@ public class DefaultHttpClient(
         }
     }
 
+    @KoverIgnore
     public companion object {
         private val log by LoggerDelegate()
+
+        /**
+         * Shared [OkHttpClient]. Useful, because this will result in a shared thread pool between different instances of [DefaultHttpClient].
+         * [see](https://square.github.io/okhttp/4.x/okhttp/okhttp3/-ok-http-client/#customize-your-client-with-newbuilder)
+         */
+        private val sharedOkHttpClient: Call.Factory by lazy {
+            OkHttpClient.Builder()
+                .retryOnConnectionFailure(true)
+                .addInterceptor { chain ->
+                    val request = chain.request()
+                    return@addInterceptor try {
+                        chain.proceed(request)
+                    } catch (e: SocketTimeoutException) {
+                        log.warn { "SocketTimeoutException on [${request.url}]. Evicting connection pool and performing retry." }
+                        if (sharedOkHttpClient is OkHttpClient)
+                            (sharedOkHttpClient as OkHttpClient).connectionPool.evictAll()
+                        chain.proceed(request)
+                    }
+                }
+                .build()
+        }
+
+        private val defaultRetryBehavior = RetryBehavior().apply {
+            addCases(
+                RetryCase { it.code in 500..599 },
+                RetryCase { it.code == 425 },
+                RetryCase { it.code == 429 },
+                RetryCase { it.code == 103 },
+            )
+        }
 
         /**
          * Singleton of [DefaultHttpClient]
@@ -168,22 +194,3 @@ private fun Response.toHttpResponse() = HttpResponse(
     body = this.body?.bytes() ?: EMPTY.toByteArray(),
     _headers = this.headers.toMultimap().toMutableMap()
 )
-
-/**
- * Shared [OkHttpClient]. Useful, because this will result in a shared thread pool between different instances of [DefaultHttpClient].
- * [see](https://square.github.io/okhttp/4.x/okhttp/okhttp3/-ok-http-client/#customize-your-client-with-newbuilder)
- */
-private val sharedOkHttpClient: Call.Factory by lazy {
-    OkHttpClient.Builder()
-        .retryOnConnectionFailure(true)
-        .build()
-}
-
-private val defaultRetryBehavior = RetryBehavior().apply {
-    addCases(
-        RetryCase { it.code in 500..599 },
-        RetryCase { it.code == 425 },
-        RetryCase { it.code == 429 },
-        RetryCase { it.code == 103 },
-    )
-}
