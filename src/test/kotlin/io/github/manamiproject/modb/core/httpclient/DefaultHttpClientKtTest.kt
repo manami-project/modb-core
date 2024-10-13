@@ -14,6 +14,8 @@ import okio.Timeout
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.UnknownHostException
@@ -61,11 +63,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).get(url)
+                val result = client.get(url)
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
@@ -91,11 +94,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).get(url)
+                val result = client.get(url)
 
                 // then
                 assertThat(result.code).isEqualTo(httpResponseCode)
@@ -118,10 +122,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).get(URI("http://localhost:$port/test").toURL(), header)
+                )
+
+                // when
+                client.get(URI("http://localhost:$port/test").toURL(), header)
 
                 // then
                 serverInstance.verify(
@@ -146,10 +152,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).get(
+                )
+
+                // when
+                client.get(
                     url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                 )
@@ -175,10 +183,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).get(
+                )
+
+                // when
+                client.get(
                     url = URI("http://localhost:$port/test").toURL(),
                     headers = headers,
                 )
@@ -188,6 +198,52 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     getRequestedFor(urlEqualTo("/test"))
                         .withHeader("multi-value-key", equalTo("value1,value2"))
                 )
+            }
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [500, 501, 502, 503, 504, 599, 425, 429])
+        fun `performs retry for a variety of status codes`(value: Int) {
+
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(value)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URI("http://localhost:$port/$path").toURL()
+
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = client.get(url)
+
+                // then
+                assertThat(result.code).isEqualTo(200)
             }
         }
 
@@ -271,10 +327,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 val url = URI("http://localhost:$port/$path").toURL()
 
-                // when
-                val result = DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).get(url)
+                )
+
+                // when
+                val result = client.get(url)
 
                 // then
                 assertThat(result.code).isEqualTo(200)
@@ -297,95 +355,18 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
                 val result = exceptionExpected<FailedAfterRetryException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                    ).get(url)
+                    client.get(url)
                 }
 
                 // then
                 assertThat(result).hasMessage("Execution failed despite [5] retry attempts. Last invocation of [GET http://localhost:$port/anime/1535] returned http status code [429]")
                 assertThat(result.cause).hasNoCause()
-            }
-        }
-
-        @Test
-        fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
-            runBlocking {
-                // given
-                val url = URI("http://localhost:$port/test").toURL()
-                val exception = SocketTimeoutException("invoked by test")
-
-                val testCall = object : Call {
-                    override fun cancel() = shouldNotBeInvoked()
-                    override fun clone(): Call = shouldNotBeInvoked()
-                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
-                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
-                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
-                    override fun request(): Request = shouldNotBeInvoked()
-                    override fun timeout(): Timeout = shouldNotBeInvoked()
-                    override fun execute(): Response = Response.Builder()
-                        .protocol(HTTP_2)
-                        .message(EMPTY)
-                        .request(
-                            Request.Builder()
-                                .url(url)
-                                .build()
-                        )
-                        .code(200)
-                        .build()
-                }
-
-                var currentAttempt = -1
-                val testOkHttpClient = Call.Factory {
-                    currentAttempt++
-                    when (currentAttempt) {
-                        1 -> testCall
-                        else -> throw exception
-                    }
-                }
-
-                // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                    okhttpClient = testOkHttpClient,
-                ).get(
-                    url = url,
-                )
-
-                assertThat(result.code).isEqualTo(200)
-            }
-        }
-
-        @Test
-        fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
-            runBlocking {
-                // given
-                val url = URI("http://localhost:$port/test").toURL()
-                val exception = SocketTimeoutException("invoked by test")
-
-                var currentAttempt = -1
-                val testOkHttpClient = Call.Factory {
-                    currentAttempt++
-                    when {
-                        currentAttempt < 2 -> throw exception
-                        else -> shouldNotBeInvoked()
-                    }
-                }
-
-                // when
-                val result = exceptionExpected<SocketTimeoutException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                        okhttpClient = testOkHttpClient,
-                    ).get(
-                        url = url,
-                    )
-                }
-
-                assertThat(result).hasMessage("invoked by test")
             }
         }
 
@@ -398,17 +379,90 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 val testOkHttpClient = Call.Factory { throw exception }
 
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                    okhttpClient = testOkHttpClient,
+                )
+
                 // when
                 val result = exceptionExpected<UnknownHostException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                        okhttpClient = testOkHttpClient,
-                    ).get(
+                    client.get(
                         url = url,
                     )
                 }
 
                 assertThat(result).hasMessage("invoked by test")
+            }
+        }
+
+        @Test
+        fun `performs a single retry in case of a SocketTimeoutException`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("SocketTimeoutException triggers retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withFixedDelay(10000)
+                        )
+                        .willSetStateTo("Retry")
+                )
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/$path"))
+                        .inScenario("SocketTimeoutException triggers retry")
+                        .whenScenarioStateIs("Retry")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody("Success")
+                        )
+                )
+
+                val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = client.get(url)
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.bodyAsText).isEqualTo("Success")
+            }
+        }
+
+        @Test
+        fun `re-throws SocketTimeoutException after maximum of attempts has been reached`() {
+            runBlocking {
+                serverInstance.stubFor(
+                    get(urlPathEqualTo("/test")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withFixedDelay(10000)
+                    )
+                )
+
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = exceptionExpected<SocketTimeoutException> {
+                    client.get(
+                        url = URI("http://localhost:$port/test").toURL(),
+                    )
+                }
+
+                // then
+                assertThat(result).hasMessage("timeout")
             }
         }
 
@@ -467,19 +521,19 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     }
                 }
 
-                val defaultHttpClient = DefaultHttpClient(
+                val client = DefaultHttpClient(
                     okhttpClient = testOkHttpClient,
                     isTestContext = true,
                 )
 
                 // when
-                val result = defaultHttpClient.get(url)
+                val result = client.get(url)
 
                 // then
                 assertThat(result.code).isEqualTo(200)
-                val protocols = defaultHttpClient.javaClass.getDeclaredField("protocols")
+                val protocols = client.javaClass.getDeclaredField("protocols")
                 protocols.isAccessible = true
-                val value = protocols.get(defaultHttpClient) as (ArrayList<*>)
+                val value = protocols.get(client) as (ArrayList<*>)
                 assertThat(value).containsExactlyInAnyOrder(HTTP_1_1)
             }
         }
@@ -505,11 +559,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
+                val result = client.post(
                     url = url,
                     headers = mapOf("test-header" to listOf("headervalue")),
                     requestBody = RequestBody(
@@ -541,11 +596,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
+                val result = client.post(
                     url = url,
                     headers = mapOf("test-header" to listOf("headervalue")),
                     requestBody = RequestBody(
@@ -575,10 +631,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                     requestBody = RequestBody(
@@ -606,10 +664,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -636,10 +696,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = "application/xml",
@@ -670,10 +732,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     headers = header,
                     requestBody = RequestBody(
@@ -703,10 +767,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 val headers = mapOf("multi-value-key" to listOf("value1", "value2"))
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(APPLICATION_JSON, "{ \"property\": \"value\" }"),
                     headers = headers,
@@ -731,10 +797,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     )
                 )
 
-                // when
-                DefaultHttpClient(
+                val client = DefaultHttpClient(
                     isTestContext = true,
-                ).post(
+                )
+
+                // when
+                client.post(
                     url = URI("http://localhost:$port/test").toURL(),
                     requestBody = RequestBody(
                         mediaType = APPLICATION_JSON,
@@ -753,7 +821,9 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if media type of the request body is blank`() {
             // given
-            val client = DefaultHttpClient(isTestContext = true)
+            val client = DefaultHttpClient(
+                isTestContext = true,
+            )
             val requestBody = RequestBody(
                 mediaType = EMPTY,
                 body = "{ \"property\": \"value\" }",
@@ -774,7 +844,9 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         @Test
         fun `throws exception if the body of the request body is blank`() {
             // given
-            val client = DefaultHttpClient(isTestContext = true)
+            val client = DefaultHttpClient(
+                isTestContext = true,
+            )
             val requestBody = RequestBody(
                 mediaType = APPLICATION_JSON,
                 body = EMPTY,
@@ -790,6 +862,58 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
             // then
             assertThat(result).hasMessage("The request's body must not be blank.")
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [500, 501, 502, 503, 504, 599, 425, 429])
+        fun `performs retry for a variety of status codes`(value: Int) {
+            runBlocking {
+                // given
+                val path = "graphql"
+                val body = "{ \"key\": \"some-value\" }"
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(value)
+                                .withBody(EMPTY)
+                        )
+                        .willSetStateTo("Retry")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("Fail until last retry")
+                        .whenScenarioStateIs("Retry")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody(EMPTY)
+                        )
+                )
+
+                val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = client.post(
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    )
+                )
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+            }
         }
 
         @Test
@@ -872,11 +996,12 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                ).post(
+                val result = client.post(
                     url = url,
                     headers = mapOf("test-header" to listOf("headervalue")),
                     requestBody = RequestBody(
@@ -907,12 +1032,13 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 )
 
                 val url = URI("http://localhost:$port/$path").toURL()
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
 
                 // when
                 val result = exceptionExpected<FailedAfterRetryException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                    ).post(
+                    client.post(
                         url = url,
                         headers = mapOf("test-header" to listOf("headervalue")),
                         requestBody = RequestBody(
@@ -929,96 +1055,6 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
         }
 
         @Test
-        fun `throws SocketTimeoutException and is retried exactly once returning 200 on retry`() {
-            runBlocking {
-                // given
-                val url = URI("http://localhost:$port/test").toURL()
-                val exception = SocketTimeoutException("invoked by test")
-                val body = "{ \"key\": \"some-value\" }"
-
-                val testCall = object : Call {
-                    override fun cancel() = shouldNotBeInvoked()
-                    override fun clone(): Call = shouldNotBeInvoked()
-                    override fun enqueue(responseCallback: Callback) = shouldNotBeInvoked()
-                    override fun isCanceled(): Boolean = shouldNotBeInvoked()
-                    override fun isExecuted(): Boolean = shouldNotBeInvoked()
-                    override fun request(): Request = shouldNotBeInvoked()
-                    override fun timeout(): Timeout = shouldNotBeInvoked()
-                    override fun execute(): Response = Response.Builder()
-                        .protocol(HTTP_2)
-                        .message(EMPTY)
-                        .request(
-                            Request.Builder()
-                                .url(url)
-                                .build()
-                        )
-                        .code(200)
-                        .build()
-                }
-
-                var currentAttempt = -1
-                val testOkHttpClient = Call.Factory {
-                    currentAttempt++
-                    when (currentAttempt) {
-                        1 -> testCall
-                        else -> throw exception
-                    }
-                }
-
-                // when
-                val result = DefaultHttpClient(
-                    isTestContext = true,
-                    okhttpClient = testOkHttpClient
-                ).post(
-                    url = url,
-                    headers = mapOf("test-header" to listOf("headervalue")),
-                    requestBody = RequestBody(
-                        mediaType = APPLICATION_JSON,
-                        body = body
-                    ),
-                )
-
-                assertThat(result.code).isEqualTo(200)
-            }
-        }
-
-        @Test
-        fun `throws SocketTimeoutException and rethrows is, because SocketTimeoutException will be tried only once`() {
-            runBlocking {
-                // given
-                val url = URI("http://localhost:$port/test").toURL()
-                val exception = SocketTimeoutException("invoked by test")
-                val body = "{ \"key\": \"some-value\" }"
-
-                var currentAttempt = -1
-                val testOkHttpClient = Call.Factory {
-                    currentAttempt++
-                    when {
-                        currentAttempt < 2 -> throw exception
-                        else -> shouldNotBeInvoked()
-                    }
-                }
-
-                // when
-                val result = exceptionExpected<SocketTimeoutException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                        okhttpClient = testOkHttpClient
-                    ).post(
-                        url = url,
-                        headers = mapOf("test-header" to listOf("headervalue")),
-                        requestBody = RequestBody(
-                            mediaType = APPLICATION_JSON,
-                            body = body
-                        ),
-                    )
-                }
-
-                assertThat(result).hasMessage("invoked by test")
-            }
-        }
-
-        @Test
         fun `exception - any exception except SocketTimeoutException is thrown as-is`() {
             runBlocking {
                 // given
@@ -1027,13 +1063,14 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 val body = "{ \"key\": \"some-value\" }"
 
                 val testOkHttpClient = Call.Factory { throw exception }
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                    okhttpClient = testOkHttpClient,
+                )
 
                 // when
                 val result = exceptionExpected<UnknownHostException> {
-                    DefaultHttpClient(
-                        isTestContext = true,
-                        okhttpClient = testOkHttpClient
-                    ).post(
+                    client.post(
                         url = url,
                         headers = mapOf("test-header" to listOf("headervalue")),
                         requestBody = RequestBody(
@@ -1044,6 +1081,95 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                 }
 
                 assertThat(result).hasMessage("invoked by test")
+            }
+        }
+
+        @Test
+        fun `performs a single retry in case of a SocketTimeoutException`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("SocketTimeoutException triggers retry")
+                        .whenScenarioStateIs(STARTED)
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withFixedDelay(10000)
+                        )
+                        .willSetStateTo("Retry")
+                )
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path"))
+                        .inScenario("SocketTimeoutException triggers retry")
+                        .whenScenarioStateIs("Retry")
+                        .willReturn(
+                            aResponse()
+                                .withHeader("Content-Type", "text/plain")
+                                .withStatus(200)
+                                .withBody("Success")
+                        )
+                )
+
+                val url = URI("http://localhost:$port/$path").toURL()
+                val body = "{ \"key\": \"some-value\" }"
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = client.post(
+                    url = url,
+                    headers = mapOf("test-header" to listOf("headervalue")),
+                    requestBody = RequestBody(
+                        mediaType = APPLICATION_JSON,
+                        body = body
+                    ),
+                )
+
+                // then
+                assertThat(result.code).isEqualTo(200)
+                assertThat(result.bodyAsText).isEqualTo("Success")
+            }
+        }
+
+        @Test
+        fun `re-throws SocketTimeoutException after maximum of attempts has been reached`() {
+            runBlocking {
+                // given
+                val path = "anime/1535"
+
+                serverInstance.stubFor(
+                    post(urlPathEqualTo("/$path")).willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withFixedDelay(10000)
+                    )
+                )
+
+                val url = URI("http://localhost:$port/$path").toURL()
+                val body = "{ \"key\": \"some-value\" }"
+                val client = DefaultHttpClient(
+                    isTestContext = true,
+                )
+
+                // when
+                val result = exceptionExpected<SocketTimeoutException> {
+                    client.post(
+                        url = url,
+                        headers = mapOf("test-header" to listOf("headervalue")),
+                        requestBody = RequestBody(
+                            mediaType = APPLICATION_JSON,
+                            body = body
+                        ),
+                    )
+                }
+
+                // then
+                assertThat(result).hasMessage("timeout")
             }
         }
 
@@ -1103,13 +1229,13 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
                     }
                 }
 
-                val defaultHttpClient = DefaultHttpClient(
+                val client = DefaultHttpClient(
                     okhttpClient = testOkHttpClient,
                     isTestContext = true,
                 )
 
                 // when
-                val result = defaultHttpClient.post(
+                val result = client.post(
                     url = url,
                     headers = mapOf("test-header" to listOf("headervalue")),
                     requestBody = RequestBody(
@@ -1120,9 +1246,9 @@ internal class DefaultHttpClientKtTest : MockServerTestCase<WireMockServer> by W
 
                 // then
                 assertThat(result.code).isEqualTo(200)
-                val protocols = defaultHttpClient.javaClass.getDeclaredField("protocols")
+                val protocols = client.javaClass.getDeclaredField("protocols")
                 protocols.isAccessible = true
-                val value = protocols.get(defaultHttpClient) as (ArrayList<*>)
+                val value = protocols.get(client) as (ArrayList<*>)
                 assertThat(value).containsExactlyInAnyOrder(HTTP_1_1)
             }
         }
