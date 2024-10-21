@@ -1,15 +1,16 @@
 package io.github.manamiproject.modb.core.httpclient
 
 import io.github.manamiproject.modb.core.coroutines.ModbDispatchers.LIMITED_NETWORK
-import io.github.manamiproject.modb.core.coverage.KoverIgnore
 import io.github.manamiproject.modb.core.extensions.EMPTY
 import io.github.manamiproject.modb.core.extensions.neitherNullNorBlank
 import io.github.manamiproject.modb.core.httpclient.BrowserType.DESKTOP
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_1_1
 import io.github.manamiproject.modb.core.httpclient.HttpProtocol.HTTP_2
 import io.github.manamiproject.modb.core.logging.LoggerDelegate
+import io.github.manamiproject.modb.core.random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
@@ -20,6 +21,7 @@ import java.net.Proxy
 import java.net.Proxy.NO_PROXY
 import java.net.SocketTimeoutException
 import java.net.URL
+import java.time.LocalDateTime
 
 
 /**
@@ -149,6 +151,7 @@ public class DefaultHttpClient(
 
     public companion object {
         private val log by LoggerDelegate()
+        private var lastEviction = LocalDateTime.of(2024, 1, 1, 0, 0, 0)
 
         /**
          * Shared [OkHttpClient]. Useful, because this will result in a shared thread pool between different instances of [DefaultHttpClient].
@@ -163,8 +166,15 @@ public class DefaultHttpClient(
                         chain.proceed(request)
                     } catch (e: SocketTimeoutException) {
                         log.warn { "SocketTimeoutException on [${request.url}]. Evicting connection pool and performing retry." }
-                        if (sharedOkHttpClient is OkHttpClient)
+
+                        val difference = java.time.Duration.between(LocalDateTime.now(), lastEviction)
+
+                        if (sharedOkHttpClient is OkHttpClient && difference.seconds >= 60) {
                             (sharedOkHttpClient as OkHttpClient).connectionPool.evictAll()
+                        } else {
+                            runBlocking { delay(random(1500, 2500)) }
+                        }
+
                         chain.proceed(request)
                     }
                 }
