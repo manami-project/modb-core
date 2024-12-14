@@ -226,7 +226,22 @@ internal class StringExtensionsKtTest {
     inner class NormalizeWhitespacesTests {
 
         @ParameterizedTest
-        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D"])
+        @ValueSource(strings = [
+            "\u00A0",
+            "\u202F",
+            "\u200A",
+            "\u205F",
+            "\u2000",
+            "\u2001",
+            "\u2002",
+            "\u2003",
+            "\u2004",
+            "\u2005",
+            "\u2006",
+            "\u2007",
+            "\u2008",
+            "\u2009",
+        ])
         fun `correctly normalizes whitespaces`(value: String) {
             // when
             val result = "  a${value}bc${value}${value}de${value}${value}${value}f ".normalizeWhitespaces()
@@ -235,10 +250,22 @@ internal class StringExtensionsKtTest {
             assertThat(result).isEqualTo("a bc de f")
         }
 
-        @Test
-        fun `correctly normalizes zero width non joiner`() {
+        @ParameterizedTest
+        @ValueSource(strings = [
+            "\uFEFF",
+            "\u180E",
+            "\u2060",
+            "\u200D",
+            "\u0090",
+            "\u200C",
+            "\u200B",
+            "\u00AD",
+            "\u000C",
+            "\u2028",
+        ])
+        fun `correctly removed non-width or optional chars`(value: String) {
             // when
-            val result = "Ba\u200Cek".normalizeWhitespaces()
+            val result = "Ba${value}ek".normalizeWhitespaces()
 
             // then
             assertThat(result).isEqualTo("Baek")
@@ -286,7 +313,36 @@ internal class StringExtensionsKtTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = ["\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " "])
+        @ValueSource(strings = [
+            "\u00A0",
+            "\u202F",
+            "\u200A",
+            "\u205F",
+            "\u2000",
+            "\u2001",
+            "\u2002",
+            "\u2003",
+            "\u2004",
+            "\u2005",
+            "\u2006",
+            "\u2007",
+            "\u2008",
+            "\u2009",
+            "\uFEFF",
+            "\u180E",
+            "\u2060",
+            "\u200D",
+            "\u0090",
+            "\u200C",
+            "\u200B",
+            "\u00AD",
+            "\u000C",
+            "\u2028",
+            "\r",
+            "\n",
+            "\t",
+            " ",
+        ])
         fun `returns true if string only contains types of whitespaces or new lines or tabs`(input: String) {
             // given
             val value = "$input$input"
@@ -301,7 +357,36 @@ internal class StringExtensionsKtTest {
         @Test
         fun `returns true if string only contains variations of types of whitespaces or new lines or tabs`() {
             // given
-            val chars = setOf("\u00A0", "\u202F", "\uFEFF", "\u2007", "\u180E", "\u2060", "\u200D", "\u200C", "\r", "\n", "\t", " ")
+            val chars = setOf(
+                "\u00A0",
+                "\u202F",
+                "\u200A",
+                "\u205F",
+                "\u2000",
+                "\u2001",
+                "\u2002",
+                "\u2003",
+                "\u2004",
+                "\u2005",
+                "\u2006",
+                "\u2007",
+                "\u2008",
+                "\u2009",
+                "\uFEFF",
+                "\u180E",
+                "\u2060",
+                "\u200D",
+                "\u0090",
+                "\u200C",
+                "\u200B",
+                "\u00AD",
+                "\u000C",
+                "\u2028",
+                "\r",
+                "\n",
+                "\t",
+                " ",
+            )
             val builder = StringBuilder()
             for (i in 1..random(4, 8)) {
                 builder.append(chars.pickRandom())
