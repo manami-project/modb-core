@@ -72,27 +72,64 @@ public fun String.remove(value: String, ignoreCase: Boolean = false, normalizeWh
 /**
  * Replaces multiple consecutive whitespaces with a single one, trims the string and replaces different types of
  * whitespaces (not line breaks or tabs) to default whitespaces.
- * Replaces:
+ *
+ * **Replaces:**
  * - no-break space
  * - narrow no-break space
- * - zero width no-break space
+ * - hair space
+ * - medium mathematical space (MMSP)
+ * - en quad
+ * - em quad
+ * - en space
+ * - em space
+ * - three-per-em space
+ * - four-per-em space
+ * - six-per-em space
  * - figure space
+ * - punctuation space
+ * - thin space
+ *
+ * **Removes:**
+ * - zero width no-break space
  * - mongolian vowel separator
  * - word joiner
  * - zero-width joiner
+ * - device control string
  * - zero-width non-joiner
+ * - zero-width space
+ * - soft hyphen (SHY)
+ * - form feed
+ * - line separator
  * @since 5.3.0
  * @return The original [String], but trimmed and having a single whitespace in places where it had multiple consecutive whitespaces before and containing only default whitespaces.
  * @receiver Any non-nullable [String].
  */
 public fun String.normalizeWhitespaces(): String = this.replace('\u00A0', ' ') // no-break space
     .replace('\u202F', ' ') // narrow no-break space
-    .replace('\uFEFF', ' ') // zero width no-break space
+    .replace('\u200A', ' ') // hair space
+    .replace('\u205F', ' ') // medium mathematical space (MMSP)
+    .replace('\u2000', ' ') // en quad
+    .replace('\u2001', ' ') // em quad
+    .replace('\u2002', ' ') // en space
+    .replace('\u2003', ' ') // em space
+    .replace('\u2004', ' ') // three-per-em space
+    .replace('\u2005', ' ') // four-per-em space
+    .replace('\u2006', ' ') // six-per-em space
     .replace('\u2007', ' ') // figure space
-    .replace('\u180E', ' ') // mongolian vowel separator
-    .replace('\u2060', ' ') // word joiner
-    .replace('\u200D', ' ') // zero-width joiner
+    .replace('\u2008', ' ') // punctuation space
+    .replace('\u2009', ' ') // thin space
+    // remove non-visible chars
+    .remove("\uFEFF") // zero width no-break space
+    .remove("\u180E") // mongolian vowel separator
+    .remove("\u2060") // word joiner
+    .remove("\u200D") // zero-width joiner
+    .remove("\u0090") // device control string
     .remove("\u200C") // zero-width non-joiner
+    .remove("\u200B") // zero-width space
+    .remove("\u00AD") // soft hyphen (SHY)
+    .remove("\u000C") // form feed
+    .remove("\u2028") // line separator
+    // reduce multiple consecutive whitespaces to a single whitespace
     .replace(Regex(" {2,}"), " ")
     .trim()
 
@@ -119,7 +156,7 @@ public fun String?.eitherNullOrBlank(): Boolean {
         return true
     }
 
-    return """^[\u00A0\u202F\uFEFF\u2007\u180E\u2060\u200D\u200C\r\n\t ]*$""".toRegex().matches(this)
+    return """^[\u00A0\u202F\u200A\u205F\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\uFEFF\u180E\u2060\u200D\u0090\u200C\u200B\u00AD\u000C\u2028\r\n\t ]*$""".toRegex().matches(this)
 }
 
 @OptIn(ExperimentalContracts::class)
